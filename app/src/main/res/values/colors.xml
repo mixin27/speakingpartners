@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+
+    <!-- Basic color (r,g,b) -->
+    <color name="color_white">#FFFFFF</color>
+    <color name="color_black">#000000</color>
+    <color name="color_red">#FF0000</color>
+    <color name="color_green">#00FF00</color>
+    <color name="color_blue">#0000FF</color>
+    <color name="color_grey">#BDBDBD</color>
+
+    <color name="color_green_700">#388e3c</color>
+    <color name="color_green_500">#4caf50</color>
+    <color name="color_orange_500">#ff9800</color>
+    <color name="color_orange_700">#c66900</color>
+    <color name="color_orange_A_200">#ffff00</color>
+
+    <!-- Speaking Partners Theme Color -->
+
+    <!-- App Theme -->
+    <!-- Light Blue Theme -->
+    <color name="color_light_blue_500">#03A9F4</color>
+    <color name="color_light_blue_700">#0288D1</color>
+    <color name="color_accent_light_blue_500">#FF5252</color>
+
+    <!-- Blue Theme -->
+    <color name="color_blue_500">#2196F3</color>
+    <color name="color_blue_700">#1976D2</color>
+    <color name="color_accent_blue_500">#FF5252</color>
+
+</resources>

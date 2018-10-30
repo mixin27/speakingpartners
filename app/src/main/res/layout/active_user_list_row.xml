@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/list_row_height"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:baselineAligned="false">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:gravity="center">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/active_user_img"
+            android:layout_width="70dp"
+            android:layout_height="65dp"
+            android:layout_gravity="center"
+            android:background="@drawable/circular_border_image_view"
+            android:src="@drawable/ic_person_white_24dp"
+            android:scaleType="fitCenter"
+            android:contentDescription="@string/str_user_name"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="6dp"
+        android:layout_marginStart="6dp"
+        android:layout_weight="2">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="6dp">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/active_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/str_user_name"
+                android:textStyle="bold"
+                android:textSize="@dimen/general_text_size_16"
+                android:textColor="@android:color/darker_gray"/>
+
+        </LinearLayout>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/active_user_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@string/str_user_level"
+            android:textSize="@dimen/general_text_size_14"
+            android:textColor="@color/color_blue_500"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:gravity="center">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/active_user_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_fiber_manual_record_white_24dp"
+            app:tint="@color/color_green"/>
+
+        <!--<android.support.v7.widget.AppCompatTextView-->
+            <!--android:id="@+id/active_user_country"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="5dp"-->
+            <!--android:text="@string/str_user_country_myanmar"/>-->
+
+    </LinearLayout>
+
+</LinearLayout>

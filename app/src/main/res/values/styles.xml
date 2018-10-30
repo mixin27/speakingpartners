@@ -1,0 +1,45 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/color_blue_500</item>
+        <item name="colorPrimaryDark">@color/color_blue_700</item>
+        <item name="colorAccent">@color/color_accent_blue_500</item>
+
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+    </style>
+
+    <!-- Speaking Partners Main Theme -->
+
+    <!-- Light Blue -->
+    <style name="Main.SpeakingPartner.LightBlueTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/color_light_blue_500</item>
+        <item name="colorPrimaryDark">@color/color_light_blue_700</item>
+        <item name="colorAccent">@color/color_accent_light_blue_500</item>
+
+        <!--<item name="windowActionBar">false</item>-->
+        <!--<item name="windowNoTitle">true</item>-->
+    </style>
+
+    <!-- Blue -->
+    <style name="Main.SpeakingPartner.BlueTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/color_blue_500</item>
+        <item name="colorPrimaryDark">@color/color_blue_700</item>
+        <item name="colorAccent">@color/color_accent_blue_500</item>
+
+        <!--<item name="windowActionBar">false</item>-->
+        <!--<item name="windowNoTitle">true</item>-->
+    </style>
+    
+    <!-- Progress -->
+    <style name="CircularProgress" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">@color/color_blue_700</item>
+    </style>
+
+    <!-- Switch -->
+    <style name="CustomSwitchTheme" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">@color/color_green</item>
+    </style>
+
+</resources>

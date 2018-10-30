@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white"
+    android:padding="@dimen/general_padding_16"
+    tools:context=".activity.EditProfileActivity">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:gravity="center">
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/img_edit_profile"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:contentDescription="@string/str_profile"
+                    android:background="@drawable/circular_border_image_view"
+                    android:src="@drawable/ic_person_white_24dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal">
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/general_padding_16"
+                android:background="@color/color_grey"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/general_padding_16">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/lbl_edit_profile_user_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/str_user_name"
+                    android:textStyle="bold"
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/general_text_size_16"/>
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/edit_profile_user_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:inputType="text"
+                    android:textSize="@dimen/general_text_size_16"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/general_padding_16"
+                android:background="@color/color_grey"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/general_padding_16">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/lbl_edit_profile_gender"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/str_user_gender"
+                    android:textStyle="bold"
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/general_text_size_16"/>
+
+                <RadioGroup
+                    android:id="@+id/edit_gender_gp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:orientation="horizontal">
+
+                    <android.support.v7.widget.AppCompatRadioButton
+                        android:id="@+id/edit_rad_male"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/str_user_gender_male"/>
+
+                    <android.support.v7.widget.AppCompatRadioButton
+                        android:id="@+id/edit_rad_female"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/str_user_gender_female"/>
+
+                </RadioGroup>
+
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/general_padding_16"
+                android:background="@color/color_grey"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/general_padding_16">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/lbl_edit_profile_dob"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/str_user_birthday"
+                    android:textStyle="bold"
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/general_text_size_16"/>
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/edit_profile_dob"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:editable="false"
+                    android:hint="@string/select_your_birthday"
+                    android:textSize="@dimen/general_text_size_16"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/general_padding_16"
+                android:background="@color/color_grey"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/general_padding_16">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/lbl_edit_profile_level"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/str_user_level"
+                    android:textStyle="bold"
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/general_text_size_16"/>
+
+                <android.support.v7.widget.AppCompatSpinner
+                    android:id="@+id/sp_edit_profile_level"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:textSize="@dimen/general_text_size_16"/>
+
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/general_padding_16"
+                android:background="@color/color_grey"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/general_padding_16">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/lbl_edit_profile_country"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/str_user_country"
+                    android:textStyle="bold"
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/general_text_size_16"/>
+
+                <android.support.v7.widget.AppCompatSpinner
+                    android:id="@+id/sp_edit_profile_country"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:textSize="@dimen/general_text_size_16"/>
+
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/general_padding_16"
+                android:background="@color/color_grey"/>
+
+            <LinearLayout
+                android:id="@+id/layout_btn_save"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:clickable="true"
+                android:background="@drawable/click_event"
+                android:layout_marginTop="@dimen/general_padding_16"
+                android:focusable="true">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/btn_update"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/save"
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/general_text_size_16"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/general_padding_16"
+                android:background="@color/color_grey"/>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</RelativeLayout>

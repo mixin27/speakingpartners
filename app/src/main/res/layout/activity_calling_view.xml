@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.voicecall.CallingViewActivity">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tvJoinChannel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/color_blue"/>
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btnSpeaker"
+        android:onClick="btnClickSpeaker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvJoinChannel"
+        android:text="Speaker"
+        android:textColor="@color/color_black"/>
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btnAudio"
+        android:onClick="btnClickAudio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnSpeaker"
+        android:textColor="@color/color_black"
+        android:text="Audio"/>
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btnEnd"
+        android:onClick="btnClickEnd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnAudio"
+        android:textColor="@color/color_black"
+        android:text="End"/>
+
+</RelativeLayout>

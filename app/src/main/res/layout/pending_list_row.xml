@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/list_row_height"
+    android:orientation="horizontal"
+    android:baselineAligned="false">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:gravity="center">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/pending_user_img"
+            android:layout_width="70dp"
+            android:layout_height="65dp"
+            android:layout_gravity="center"
+            android:background="@drawable/circular_border_image_view"
+            android:src="@drawable/ic_person_white_24dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/str_user_name"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_weight="3">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="6dp">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/pending_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/str_user_name"
+                android:textStyle="bold"
+                android:textSize="@dimen/general_text_size_16"
+                android:textColor="@android:color/darker_gray"/>
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/pending_user_gender_img"
+                android:layout_width="20dp"
+                android:layout_height="18dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="@dimen/general_padding_8"
+                android:layout_marginStart="@dimen/general_padding_8"
+                android:contentDescription="@string/str_user_gender"
+                android:src="@drawable/mm"
+                android:scaleType="fitCenter"/>
+
+        </LinearLayout>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/pending_user_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@string/str_user_level"
+            android:textSize="@dimen/general_text_size_14"
+            android:textColor="@color/color_blue_500"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:gravity="center">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/pending_accept"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pending_accept"
+            android:textColor="@color/color_blue_500"
+            android:textStyle="normal"
+            android:textSize="@dimen/general_text_size_14"
+            android:clickable="true"
+            android:focusable="true"/>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/pending_reject"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pending_reject"
+            android:textColor="@color/color_red"
+            android:textStyle="normal"
+            android:textSize="@dimen/general_text_size_14"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginTop="@dimen/general_padding_8"/>
+
+    </LinearLayout>
+
+</LinearLayout>

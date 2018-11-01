@@ -229,19 +229,43 @@ public class EditProfileActivity extends AppCompatActivity {
             byte[] data = baos.toByteArray();
 
             UploadTask uploadTask = profileImageRef.putBytes(data);
-            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+
+                    // Continue with the task to get the download URL
+                    return profileImageRef.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        urlProfileImage = task.getResult().toString();
+                        Log.d(TAG, "Image URL = " + urlProfileImage);
+                        progressBar.setVisibility(View.GONE);
+                    } else {
+                        // Handle failures
+                        // ...
+                    }
+                }
+            });
+
+            /*addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                    urlProfileImage = taskSnapshot.toString();
-//                    Log.d(TAG, "Image URL = " + urlProfileImage);
-//                    progressBar.setVisibility(View.GONE);
+                    urlProfileImage = taskSnapshot.
+                    Log.d(TAG, "Image URL = " + urlProfileImage);
+                    progressBar.setVisibility(View.GONE);
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
 
                 }
-            });
+            });*/
 
         }
 

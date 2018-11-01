@@ -61,8 +61,8 @@ public class ActiveUserFragment extends Fragment implements ActiveUserListAdapte
         mActiveUserList = root.findViewById(R.id.active_user_list);
 
         mAdapter = new ActiveUserListAdapter(getContext());
-        mAdapter.setItemClickListener(this);
         mAdapter.setItemLists(new ArrayList<UserModel>());
+        mAdapter.setItemClickListener(this);
 
         mActiveUserList.setLayoutManager(new LinearLayoutManager(getContext()));
         mActiveUserList.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST));
@@ -75,10 +75,6 @@ public class ActiveUserFragment extends Fragment implements ActiveUserListAdapte
     }
 
     private void prepareData() {
-        fetchAllUser();
-    }
-
-    private void fetchAllUser() {
 
         Query query = mFirestore.collection("users").whereEqualTo("active_status", 1).orderBy("user_name");
         query.addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -92,6 +88,7 @@ public class ActiveUserFragment extends Fragment implements ActiveUserListAdapte
                 for (QueryDocumentSnapshot change : queryDocumentSnapshots) {
 
                     UserModel userModel = change.toObject(UserModel.class);
+                    Log.d(TAG, "Model" + userModel.getEmail());
                     data.add(userModel);
                 }
                 mAdapter.setItemLists(data);

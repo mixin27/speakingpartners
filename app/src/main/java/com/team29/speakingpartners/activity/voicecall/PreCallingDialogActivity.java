@@ -1,5 +1,6 @@
 package com.team29.speakingpartners.activity.voicecall;
 
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatImageView;
@@ -7,10 +8,14 @@ import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -18,6 +23,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.team29.speakingpartners.R;
+import com.team29.speakingpartners.model.CallingRequestListModel;
 import com.team29.speakingpartners.model.UserModel;
 
 import javax.annotation.Nullable;
@@ -63,7 +69,30 @@ public class PreCallingDialogActivity extends AppCompatActivity {
         btnRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                CallingRequestListModel model = new CallingRequestListModel(
+                        FirebaseAuth.getInstance().getUid(),
+                        true,
+                        false,
+                        FirebaseAuth.getInstance().getCurrentUser().getEmail(),
+                        USER_EMAIL
+                );
 
+                mFirestore.collection("calling")
+                        .add(model)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                Log.d(TAG, "Join Channel Success");
+                                Toast.makeText(getApplicationContext(), "Request sent", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, "Error at joining channel");
+                            }
+                        });
             }
         });
 

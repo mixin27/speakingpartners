@@ -2,8 +2,8 @@ package com.team29.speakingpartners.model;
 
 public class PendingListModel {
 
-    String user_name;
-    String level;
+    private String user_name;
+    private String level;
 
     public PendingListModel(String user_name, String level) {
         this.user_name = user_name;

@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:name="com.team29.speakingpartners.SpeakingPartnersApplication"
+        android:name=".SpeakingPartnersApplication"
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
@@ -20,7 +20,7 @@
         android:theme="@style/Main.SpeakingPartner.LightBlueTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name="com.team29.speakingpartners.activity.LoginActivity"
+            android:name=".activity.LoginActivity"
             android:theme="@style/AppTheme"
             tools:targetApi="lollipop">
             <intent-filter>
@@ -30,28 +30,30 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.team29.speakingpartners.activity.SignUpActivity"
+            android:name=".activity.SignUpActivity"
             android:theme="@style/AppTheme"
             tools:targetApi="lollipop" />
         <activity
-            android:name="com.team29.speakingpartners.activity.ProfileDetailActivity"
+            android:name=".activity.ProfileDetailActivity"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/Main.SpeakingPartner.BlueTheme"
-            android:parentActivityName="com.team29.speakingpartners.MainActivity"
             tools:targetApi="jelly_bean" />
         <activity
-            android:name="com.team29.speakingpartners.activity.SettingsActivity"
+            android:name=".activity.SettingsActivity"
             android:theme="@style/Main.SpeakingPartner.BlueTheme" />
         <activity
-            android:name="com.team29.speakingpartners.MainActivity"
+            android:name=".MainActivity"
             android:theme="@style/Main.SpeakingPartner.BlueTheme" />
-
-        <activity android:name="com.team29.speakingpartners.activity.voicecall.CallingViewActivity" />
-
-        <activity android:name="com.team29.speakingpartners.activity.EachRecentListActivity" />
-
-        <activity android:name="com.team29.speakingpartners.activity.EditProfileActivity"
-            android:parentActivityName="com.team29.speakingpartners.activity.ProfileDetailActivity"
+        <activity android:name=".activity.voicecall.CallingViewActivity" />
+        <activity android:name=".activity.EachRecentListActivity" />
+        <activity
+            android:name=".activity.EditProfileActivity"
+            android:parentActivityName=".activity.ProfileDetailActivity"
             tools:targetApi="jelly_bean" />
+
+        <activity android:name=".activity.voicecall.PreCallingDialogActivity"
+            android:theme="@style/Main.SpeakingPartner.DialogTheme"
+            tools:targetApi="lollipop" />
     </application>
 
 </manifest>

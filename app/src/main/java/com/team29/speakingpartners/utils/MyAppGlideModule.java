@@ -1,4 +1,6 @@
 package com.team29.speakingpartners.utils;
 
-public class MyAppGlideModule {
+import com.bumptech.glide.module.AppGlideModule;
+
+public class MyAppGlideModule extends AppGlideModule {
 }

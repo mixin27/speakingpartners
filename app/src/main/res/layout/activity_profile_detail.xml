@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingTop="@dimen/general_padding_16"
     android:paddingLeft="@dimen/general_padding_16"
     android:paddingRight="@dimen/general_padding_16"
     android:paddingBottom="@dimen/general_padding_16"
@@ -29,8 +31,9 @@
                     android:layout_width="120dp"
                     android:layout_height="120dp"
                     android:contentDescription="@string/str_profile"
-                    android:background="@drawable/circular_border_image_view"
-                    android:src="@drawable/ic_person_white_24dp"/>
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/rounded_rectangle_border_image_view"
+                    android:src="@drawable/ic_image_black_24dp"/>
 
                 <LinearLayout
                     android:orientation="vertical"

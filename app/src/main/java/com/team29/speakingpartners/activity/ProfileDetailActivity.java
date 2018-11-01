@@ -1,6 +1,7 @@
 package com.team29.speakingpartners.activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,8 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -221,6 +224,14 @@ public class ProfileDetailActivity extends AppCompatActivity {
                         tvUserDOB.setText(dob);
 
                         tvUserGender.setText(change.getDocument().getString("gender"));
+
+                        String url_img = change.getDocument().getString("url_photo");
+                        if (!url_img.equals("")) {
+                            Glide.with(getApplicationContext())
+                                    .load(Uri.parse(url_img))
+                                    .apply(RequestOptions.circleCropTransform())
+                                    .into(imgProfile);
+                        }
                     }
                 }
             });

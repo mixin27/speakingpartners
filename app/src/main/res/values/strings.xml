@@ -71,6 +71,14 @@
     <string name="str_user_record_title">Another User name</string>
 
     <string name="str_user_sample_email">example@gmail.com</string>
+    <string name="str_sample_level_beginner">Beginner</string>
+    <string name="str_sample_country_myanmar">Myanmar (Burma)</string>
+    <string name="str_sample_dob">July 27, 1998</string>
+    <string name="str_online">Online</string>
+    <string name="str_offline">Offline</string>
+    <string name="save">Save</string>
+    <string name="select_your_birthday">Select Your Birthday</string>
+    <string name="str_profile_upload">Set a new profile picture</string>
 
     <string name="str_user_photo">Photo</string>
 
@@ -115,12 +123,11 @@
     <!-- Voice Call -->
     <!-- Agora -->
     <string name="agora_app_id">d08ab25c4cda4d63be2b37d0188d0409</string>
-    <string name="str_sample_level_beginner">Beginner</string>
-    <string name="str_sample_country_myanmar">Myanmar (Burma)</string>
-    <string name="str_sample_dob">July 27, 1998</string>
-    <string name="str_online">Online</string>
-    <string name="str_offline">Offline</string>
-    <string name="save">Save</string>
-    <string name="select_your_birthday">Select Your Birthday</string>
+
+    <string name="str_pre_calling_request">Request</string>
+    <string name="pre_calling_topic">Topic</string>
+    <string name="str_id">ID</string>
+    <string name="str_pre_calling_motivation">About Your Partner</string>
+    <string name="str_topic_selection_header">Choose topic and request to speak</string>
 
 </resources>

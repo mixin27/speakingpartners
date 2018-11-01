@@ -1,12 +1,26 @@
 package com.team29.speakingpartners.activity;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.AppCompatSpinner;
 import android.util.Log;
@@ -15,21 +29,43 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.team29.speakingpartners.R;
+import com.team29.speakingpartners.helper.ImagePickerHelper;
+import com.team29.speakingpartners.helper.ImageProcessingHelper;
 import com.team29.speakingpartners.net.ConnectionChecking;
 
 public class EditProfileActivity extends AppCompatActivity {
@@ -41,7 +77,11 @@ public class EditProfileActivity extends AppCompatActivity {
     RadioGroup radioGroup;
     AppCompatRadioButton radMale, radFemale;
 
-    LinearLayout btnSave;
+    AppCompatImageView imgProfile;
+    AppCompatButton btnUploadProfileImage;
+
+    LinearLayout btnSave, btnCancel;
+    ProgressBar progressBar;
 
     ArrayList<String> levelLists, countryLists;
     String currentLevel = "", currentCountry = "";
@@ -53,6 +93,12 @@ public class EditProfileActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseFirestore mFirestore;
 
+    Uri uriProfileImage = null;
+    String urlProfileImage = "";
+    String user_id = "";
+
+    Bitmap profileImageBitmap;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +107,8 @@ public class EditProfileActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mFirestore = FirebaseFirestore.getInstance();
+
+        progressBar = findViewById(R.id.progress_profile_edit);
 
         // ActionBar
         setUpActionBar();
@@ -112,25 +160,97 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
 
+        imgProfile = findViewById(R.id.img_edit_profile);
+
+        btnUploadProfileImage = findViewById(R.id.btn_edit_profile_img);
+        btnUploadProfileImage.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                showPhotoPicker();
+            }
+        });
+
         btnSave = findViewById(R.id.layout_btn_save);
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateUserInformation();
+                if (txtName.getText().toString().isEmpty()) {
+                    txtName.setError("Name is required!");
+                    txtName.requestFocus();
+                }
+                progressBar.setVisibility(View.VISIBLE);
+                saveToFireStore();
+
+                finish();
+            }
+        });
+
+        btnCancel = findViewById(R.id.layout_btn_cancel);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 
     }
 
-    private void updateUserInformation() {
-        if (txtName.getText().toString().isEmpty()) {
-            txtName.setError("Name is required!");
-            txtName.requestFocus();
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            uriProfileImage = ImagePickerHelper.getPickImageResultUri(this, data);
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriProfileImage);
+                profileImageBitmap = ImageProcessingHelper.scaleDownBitmapImage(bitmap, 300, true);
+                imgProfile.setImageBitmap(profileImageBitmap);
+
+                storeImageToFirebase();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void storeImageToFirebase() {
+        final StorageReference profileImageRef = FirebaseStorage.getInstance()
+                .getReference("user-profile-images/"
+                        + mAuth.getCurrentUser().getEmail()
+                        + "/" + mAuth.getCurrentUser().getEmail()
+                        + "-" + System.currentTimeMillis());
+        Log.d(TAG, "Path = " + profileImageRef.getDownloadUrl());
+
+        if (profileImageBitmap != null) {
+            progressBar.setVisibility(View.VISIBLE);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            profileImageBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            byte[] data = baos.toByteArray();
+
+            UploadTask uploadTask = profileImageRef.putBytes(data);
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                    urlProfileImage = taskSnapshot.toString();
+//                    Log.d(TAG, "Image URL = " + urlProfileImage);
+//                    progressBar.setVisibility(View.GONE);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                }
+            });
+
         }
 
-        saveToFireStore();
-
     }
+
+    private void showPhotoPicker() {
+        ImagePickerHelper.startSelectImageIntent(EditProfileActivity.this);
+    }
+
 
     private void saveToFireStore() {
         String name = txtName.getText().toString();
@@ -138,8 +258,40 @@ public class EditProfileActivity extends AppCompatActivity {
         String level = spLevel.getSelectedItem().toString();
         String country = spCountry.getSelectedItem().toString();
 
+        DocumentReference docRef = mFirestore.collection("users").document(user_id);
+        updateInformation(docRef, "user_name", name);
+        updateInformation(docRef, "gender", gender);
+        updateInformation(docRef, "level", level);
+        updateInformation(docRef, "country", country);
+        if (dateOfBirth != null) {
+            docRef.update("date_of_birth", dateOfBirth);
+        }
+        if (!urlProfileImage.equals("")) {
+            updateInformation(docRef, "url_photo", urlProfileImage);
+        }
+        updateInformation(docRef, "modified_date", new Date());
+    }
 
+    private void updateInformation(DocumentReference docRef, final String field_name, final String value) {
 
+        docRef.update(field_name, value)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "Update Success " + field_name + " = " + value);
+                    }
+                });
+    }
+
+    private void updateInformation(DocumentReference docRef, final String field_name, final Date date) {
+        docRef.update(field_name, date)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "Update Success " + field_name + " = " + date);
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
     }
 
     private void setUpCountryLists() {
@@ -199,35 +351,45 @@ public class EditProfileActivity extends AppCompatActivity {
     private void fetchData() {
         if (mAuth.getCurrentUser() != null) {
             String email = mAuth.getCurrentUser().getEmail();
-            mFirestore.collection("users")
-                    .whereEqualTo("email", email)
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                Log.d(TAG, "Fetch User information success!");
-                                for (QueryDocumentSnapshot doc : task.getResult()) {
-                                    txtName.setText(doc.getString("user_name"));
+            Query query = mFirestore.collection("users")
+                    .whereEqualTo("email", email);
+            query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@javax.annotation.Nullable QuerySnapshot snapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                    if (e != null) {
+                        Log.w(TAG, "Listen error", e);
+                        return;
+                    }
 
-                                    String dob = getDateOfBirth(doc.getDate("date_of_birth"));
-                                    txtDateOfBirth.setText(dob);
+                    if (snapshots != null) {
+                        for (QueryDocumentSnapshot snapshot : snapshots) {
+                            user_id = snapshot.getId();
 
-                                    String gender = doc.getString("gender");
-                                    if (gender.equals("Male")) {
-                                        radMale.setChecked(true);
-                                    } else if (gender.equals("Female")) {
-                                        radFemale.setChecked(true);
-                                    }
+                            txtName.setText(snapshot.getString("user_name"));
 
-                                    currentLevel = doc.getString("level");
-                                    Log.d(TAG, "CurrentLevel => " + currentLevel);
-                                    currentCountry = doc.getString("country");
-                                    Log.d(TAG, "CurrentCountry => " + currentCountry);
-                                }
+                            String dob = getDateOfBirth(snapshot.getDate("date_of_birth"));
+                            txtDateOfBirth.setText(dob);
+
+                            String gender = snapshot.getString("gender");
+                            if (gender.equals("Male")) {
+                                radMale.setChecked(true);
+                            } else if (gender.equals("Female")) {
+                                radFemale.setChecked(true);
+                            }
+
+                            currentLevel = snapshot.getString("level");
+                            Log.d(TAG, "CurrentLevel => " + currentLevel);
+                            currentCountry = snapshot.getString("country");
+                            Log.d(TAG, "CurrentCountry => " + currentCountry);
+
+                            String url_img = snapshot.getString("url_photo");
+                            if (!url_img.equals("")) {
+                                Glide.with(getApplicationContext()).load(Uri.parse(url_img)).into(imgProfile);
                             }
                         }
-                    });
+                    }
+                }
+            });
 
         }
     }

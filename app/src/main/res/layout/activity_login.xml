@@ -71,7 +71,8 @@
                     android:id="@+id/app_logo"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
-                    android:src="@drawable/ic_launcher_background"
+                    android:src="@drawable/ic_person_white_24dp"
+                    android:background="@drawable/circular_border_image_view"
                     android:contentDescription="@string/app_name"/>
 
             </LinearLayout>

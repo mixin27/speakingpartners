@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.team29.speakingpartners.R;
 import com.team29.speakingpartners.model.UserModel;
 
@@ -19,42 +21,12 @@ public class ActiveUserListAdapter extends RecyclerView.Adapter<ActiveUserListAd
 
     public static final String TAG = ActiveUserListAdapter.class.getSimpleName();
 
-    Context mContext;
+    private Context mContext;
     private List<UserModel> mLists;
 
-    public ActiveUserListAdapter(Context mContext) {
-        this.mContext = mContext;
-    }
+    private ItemClickListener mItemClickListener;
 
-    public void setmLists(List<UserModel> mLists) {
-        this.mLists = mLists;
-        notifyDataSetChanged();
-    }
-
-    @NonNull
-    @Override
-    public ActiveUserViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.active_user_list_row, viewGroup, false);
-        return new ActiveUserViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull ActiveUserViewHolder activeUserViewHolder, int i) {
-        UserModel model = mLists.get(i);
-        activeUserViewHolder.bindView(model);
-    }
-
-    @Override
-    public int getItemCount() {
-        return mLists.size();
-    }
-
-    public void addItems(List<UserModel> list) {
-        this.mLists = list;
-        notifyDataSetChanged();
-    }
-
-    public class ActiveUserViewHolder extends RecyclerView.ViewHolder {
+    public class ActiveUserViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private UserModel mActiveUserModel;
 
@@ -68,6 +40,8 @@ public class ActiveUserListAdapter extends RecyclerView.Adapter<ActiveUserListAd
 
             imgUserProfile = itemView.findViewById(R.id.active_user_img);
             imgActiveStatus = itemView.findViewById(R.id.active_user_status);
+
+            itemView.setOnClickListener(this);
         }
 
         private void bindView(UserModel model) {
@@ -87,6 +61,13 @@ public class ActiveUserListAdapter extends RecyclerView.Adapter<ActiveUserListAd
                 imgActiveStatus.setColorFilter(mContext.getResources().getColor(R.color.color_green));
             }
 
+            if (!mActiveUserModel.getUrl_photo().equals("")) {
+                imgUserProfile.setBackgroundDrawable(null);
+                Glide.with(mContext)
+                        .load(mActiveUserModel.getUrl_photo())
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(imgUserProfile);
+            }
             imgUserProfile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -96,7 +77,50 @@ public class ActiveUserListAdapter extends RecyclerView.Adapter<ActiveUserListAd
 
         }
 
+        @Override
+        public void onClick(View v) {
+            mItemClickListener.setOnItemClick(mActiveUserModel);
+        }
     }
 
+    public ActiveUserListAdapter(Context mContext) {
+        this.mContext = mContext;
+    }
+
+    public void setItemClickListener(ItemClickListener listener) {
+        this.mItemClickListener = listener;
+    }
+
+    public void setItemLists(List<UserModel> mLists) {
+        this.mLists = mLists;
+        notifyDataSetChanged();
+    }
+
+    @NonNull
+    @Override
+    public ActiveUserViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.active_user_list_row, viewGroup, false);
+        return new ActiveUserViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull final ActiveUserViewHolder activeUserViewHolder, int i) {
+        UserModel model = mLists.get(i);
+        activeUserViewHolder.bindView(model);
+    }
+
+    @Override
+    public int getItemCount() {
+        return mLists.size();
+    }
+
+    public void addItems(List<UserModel> list) {
+        this.mLists = list;
+        notifyDataSetChanged();
+    }
+
+    public interface ItemClickListener {
+        void setOnItemClick(UserModel userModel);
+    }
 
 }

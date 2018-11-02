@@ -12,6 +12,8 @@ import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -47,9 +49,9 @@ public class ProfileDetailActivity extends AppCompatActivity {
     AppCompatImageView imgProfile;
     AppCompatTextView tvUserName, tvUserEmail, tvUserLevel, tvUserCountry, tvUserDOB, tvUserGender, tvVerifiedEmailStatus;
     SwitchCompat switchOnlineOffline;
-    AppCompatButton btnEditProfile, btnVerify;
+    AppCompatButton btnEditProfile, btnLogOutLayout, btnChangePasswordLayout, btnVerify;
 
-    LinearLayout btnLogOutLayout, btnChangePasswordLayout, layoutVerifyEmail;
+    LinearLayout layoutVerifyEmail;
 
     ProgressBar progressVerify;
 
@@ -63,6 +65,12 @@ public class ProfileDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Fullscreen
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_profile_detail);
 
         mAuth = FirebaseAuth.getInstance();
@@ -119,17 +127,19 @@ public class ProfileDetailActivity extends AppCompatActivity {
         switchOnlineOffline.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    switchOnlineOffline.setText(getResources().getString(R.string.str_online));
-                    updateActiveStatus(1);
-                } else {
-                    switchOnlineOffline.setText(getResources().getString(R.string.str_offline));
-                    updateActiveStatus(0);
+                if (ConnectionChecking.checkConnection(getApplicationContext())) {
+                    if (isChecked) {
+                        switchOnlineOffline.setText(getResources().getString(R.string.str_online));
+                        updateActiveStatus(1);
+                    } else {
+                        switchOnlineOffline.setText(getResources().getString(R.string.str_offline));
+                        updateActiveStatus(0);
+                    }
                 }
             }
         });
 
-        btnLogOutLayout = findViewById(R.id.btn_log_out_layout);
+        btnLogOutLayout = findViewById(R.id.btn_log_out);
         btnLogOutLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -144,7 +154,7 @@ public class ProfileDetailActivity extends AppCompatActivity {
             }
         });
 
-        btnChangePasswordLayout = findViewById(R.id.btn_change_password_layout);
+        btnChangePasswordLayout = findViewById(R.id.btn_reset_password);
         btnChangePasswordLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -214,19 +224,18 @@ public class ProfileDetailActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (ConnectionChecking.checkConnection(getApplicationContext())) {
-            if (!mAuth.getCurrentUser().isEmailVerified()) {
-                layoutVerifyEmail.setVisibility(View.VISIBLE);
-            } else {
-                layoutVerifyEmail.setVisibility(View.GONE);
-            }
-        }
+//        if (ConnectionChecking.checkConnection(getApplicationContext())) {
+//            if (!mAuth.getCurrentUser().isEmailVerified()) {
+//                layoutVerifyEmail.setVisibility(View.VISIBLE);
+//            } else {
+//                layoutVerifyEmail.setVisibility(View.GONE);
+//            }
+//        }
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
     private void fetchUserInformation() {

@@ -128,11 +128,12 @@
     <string name="pre_calling_topic">Topic</string>
     <string name="str_id">ID</string>
     <string name="str_pre_calling_motivation">About Your Partner</string>
-    <string name="str_topic_selection_header">Choose topic and request to speak</string>
+    <string name="str_topic_selection_header">Choose Topic</string>
     <string name="str_you">(You)</string>
     <string name="str_verify">Verify</string>
     <string name="str_email_is_not_verified">Your email is not verified</string>
     <string name="str_sent_mail">We send verify mail!</string>
     <string name="str_review">Review</string>
+    <string name="str_start">start</string>
 
 </resources>

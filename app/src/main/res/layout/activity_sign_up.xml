@@ -152,6 +152,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:theme="@style/CustomCheckBoxTheme"
                     android:paddingTop="5dp">
 
                     <android.support.v7.widget.AppCompatRadioButton
@@ -161,7 +162,6 @@
                         android:layout_weight="1"
                         android:checked="true"
                         android:text="@string/str_user_gender_male"
-                        android:textColor="@color/color_blue_700"
                         android:textStyle="bold" />
 
                     <android.support.v7.widget.AppCompatRadioButton
@@ -171,7 +171,6 @@
                         android:layout_weight="1"
                         android:checked="false"
                         android:text="@string/str_user_gender_female"
-                        android:textColor="@color/color_blue_700"
                         android:textStyle="bold" />
 
                 </RadioGroup>
@@ -280,6 +279,7 @@
                     android:id="@+id/chk_agree"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:theme="@style/CustomCheckBoxTheme"
                     android:checked="false" />
 
                 <TextView

@@ -11,6 +11,7 @@
     <color name="color_green">#00FF00</color>
     <color name="color_blue">#0000FF</color>
     <color name="color_grey">#BDBDBD</color>
+    <color name="color_more_grey">#848484</color>
 
     <color name="color_green_700">#388e3c</color>
     <color name="color_green_500">#4caf50</color>

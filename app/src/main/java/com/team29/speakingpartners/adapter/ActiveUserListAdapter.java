@@ -79,7 +79,7 @@ public class ActiveUserListAdapter extends RecyclerView.Adapter<ActiveUserListAd
             imgUserProfile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(mContext.getApplicationContext(), "Profile of " + tvUserName.getText(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext.getApplicationContext(), tvUserName.getText(), Toast.LENGTH_SHORT).show();
                 }
             });
 

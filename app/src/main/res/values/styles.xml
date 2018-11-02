@@ -31,6 +31,15 @@
         <!--<item name="windowActionBar">false</item>-->
         <!--<item name="windowNoTitle">true</item>-->
     </style>
+
+    <style name="Main.SpeakingPartner.BlueTheme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/color_blue_500</item>
+        <item name="colorPrimaryDark">@color/color_blue_700</item>
+        <item name="colorAccent">@color/color_accent_blue_500</item>
+
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
     
     <!-- Progress -->
     <style name="CircularProgress" parent="Theme.AppCompat.Light">
@@ -40,6 +49,11 @@
     <!-- Switch -->
     <style name="CustomSwitchTheme" parent="Theme.AppCompat.Light">
         <item name="colorAccent">@color/color_green</item>
+    </style>
+
+    <!-- Check box -->
+    <style name="CustomCheckBoxTheme" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">@color/color_blue_700</item>
     </style>
 
     <!-- Dialog Activity Theme -->

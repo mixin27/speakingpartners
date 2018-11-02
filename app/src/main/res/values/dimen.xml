@@ -31,12 +31,12 @@
 
     <!-- List Row -->
     <dimen name="list_row_height">75dp</dimen>
+    <dimen name="big_list_row_height">90dp</dimen>
 
     <!-- Dialog -->
     <dimen name="dialog_width">300dp</dimen>
     <dimen name="dialog_height">400dp</dimen>
-    <dimen name="dialog_footer">45dp</dimen>
-    <dimen name="dialog_header">45dp</dimen>
+    <dimen name="dialog_footer_header">45dp</dimen>
     <dimen name="dialog_content">300dp</dimen>
 
 </resources>

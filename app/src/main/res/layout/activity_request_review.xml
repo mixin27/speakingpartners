@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/dialog_width"
     android:layout_height="@dimen/dialog_height"
-    android:background="@drawable/rounded_rectangle_border_image_view">
+    android:background="@drawable/rounded_rectangle_border_image_view"
+    tools:context=".activity.voicecall.RequestReviewActivity">
 
     <LinearLayout
         android:id="@+id/calling_request_header"
@@ -15,7 +15,7 @@
         android:gravity="center_vertical">
 
         <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/pre_calling_profile_img"
+            android:id="@+id/calling_request_profile_img"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:src="@drawable/ic_person_white_24dp"
@@ -23,7 +23,7 @@
             android:layout_marginStart="@dimen/general_padding_8" />
 
         <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/tv_pre_calling_user_name"
+            android:id="@+id/tv_calling_request_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/general_padding_8"
@@ -36,7 +36,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/pre_calling_content"
+        android:id="@+id/calling_request_content"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dialog_content"
         android:layout_below="@id/calling_request_header"
@@ -67,7 +67,7 @@
                 android:textColor="@color/color_black"/>
 
             <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/tv_pre_calling_level"
+                android:id="@+id/tv_calling_request_level"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
@@ -92,7 +92,7 @@
                 android:textColor="@color/color_black"/>
 
             <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/tv_pre_calling_country"
+                android:id="@+id/tv_calling_request_country"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
@@ -117,7 +117,7 @@
                 android:textColor="@color/color_black"/>
 
             <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/tv_pre_calling_gender"
+                android:id="@+id/tv_calling_request_gender"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
@@ -142,7 +142,7 @@
                 android:textColor="@color/color_black"/>
 
             <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/tv_pre_calling_email"
+                android:id="@+id/tv_calling_request_email"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
@@ -161,7 +161,6 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="@string/str_topic_selection_header"
                 android:textSize="@dimen/general_text_size_16"
                 android:textStyle="bold" />
 
@@ -182,28 +181,19 @@
                 android:textSize="@dimen/general_text_size_16"
                 android:textStyle="bold" />
 
-            <android.support.v7.widget.AppCompatSpinner
-                android:id="@+id/tv_pre_calling_topic"
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tv_pre_calling_request_topic"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:textSize="@dimen/general_text_size_14"
-                android:entries="@array/speaking_level"/>
+                android:textSize="@dimen/general_text_size_14"/>
 
         </LinearLayout>
 
-
     </LinearLayout>
 
-    <!--<View-->
-        <!--android:id="@+id/divider_view"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="3dip"-->
-        <!--android:layout_below="@id/pre_calling_content"-->
-        <!--android:background="@color/color_blue_500"/>-->
-
     <LinearLayout
-        android:id="@+id/pre_calling_footer"
+        android:id="@+id/calling_request_footer"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dialog_footer_header"
@@ -212,28 +202,14 @@
         tools:ignore="RtlHardcoded">
 
         <android.support.v7.widget.AppCompatButton
-            android:id="@+id/pre_calling_request_cancel"
+            android:id="@+id/calling_request_start"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/log_in_button_design"
-            android:text="@string/str_cancel"
+            android:text="@string/str_start"
             android:textColor="@color/color_white"
             android:textAllCaps="true"
-            android:layout_marginEnd="@dimen/general_padding_16"
-            android:layout_marginRight="@dimen/general_padding_16" />
-
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/pre_calling_request"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/log_in_button_design"
-            android:text="@string/str_pre_calling_request"
-            android:textColor="@color/color_white"
-            android:textAllCaps="true"
-            android:layout_marginEnd="@dimen/general_padding_8"
-            android:layout_marginRight="@dimen/general_padding_8"/>
+            android:background="@drawable/log_in_button_design"/>
 
     </LinearLayout>
 

@@ -3,6 +3,7 @@ package com.team29.speakingpartners.activity.voicecall;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.AppCompatTextView;
@@ -37,7 +38,8 @@ public class PreCallingDialogActivity extends AppCompatActivity {
     String USER_EMAIL = "";
     String USER_LEVEL = "";
 
-    AppCompatTextView tvUserName, tvUserLevel, tvUserCountry, tvUserEmail, tvUserGender, btnCancel, btnRequest;
+    AppCompatTextView tvUserName, tvUserLevel, tvUserCountry, tvUserEmail, tvUserGender;
+    AppCompatButton btnCancel, btnRequest;
     AppCompatImageView imgUserProfile;
     AppCompatSpinner spTopic;
 

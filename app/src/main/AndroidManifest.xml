@@ -36,7 +36,7 @@
         <activity
             android:name=".activity.ProfileDetailActivity"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/Main.SpeakingPartner.BlueTheme"
+            android:theme="@style/Main.SpeakingPartner.BlueTheme.NoActionBar"
             tools:targetApi="jelly_bean" />
         <activity
             android:name=".activity.SettingsActivity"
@@ -49,11 +49,15 @@
         <activity
             android:name=".activity.EditProfileActivity"
             android:parentActivityName=".activity.ProfileDetailActivity"
+            android:theme="@style/Main.SpeakingPartner.BlueTheme.NoActionBar"
             tools:targetApi="jelly_bean" />
-
-        <activity android:name=".activity.voicecall.PreCallingDialogActivity"
+        <activity
+            android:name=".activity.voicecall.PreCallingDialogActivity"
             android:theme="@style/Main.SpeakingPartner.DialogTheme"
             tools:targetApi="lollipop" />
+        <activity android:name=".activity.voicecall.RequestReviewActivity"
+            android:theme="@style/Main.SpeakingPartner.DialogTheme"
+            tools:targetApi="lollipop"/>
     </application>
 
 </manifest>

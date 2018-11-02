@@ -26,6 +26,8 @@ import com.team29.speakingpartners.R;
 import com.team29.speakingpartners.model.CallingRequestListModel;
 import com.team29.speakingpartners.model.UserModel;
 
+import java.util.Date;
+
 import javax.annotation.Nullable;
 
 public class PreCallingDialogActivity extends AppCompatActivity {
@@ -69,30 +71,37 @@ public class PreCallingDialogActivity extends AppCompatActivity {
         btnRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CallingRequestListModel model = new CallingRequestListModel(
-                        FirebaseAuth.getInstance().getUid(),
-                        true,
-                        false,
-                        FirebaseAuth.getInstance().getCurrentUser().getEmail(),
-                        USER_EMAIL
-                );
 
-                mFirestore.collection("calling")
-                        .add(model)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                Log.d(TAG, "Join Channel Success");
-                                Toast.makeText(getApplicationContext(), "Request sent", Toast.LENGTH_SHORT).show();
-                                finish();
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d(TAG, "Error at joining channel");
-                            }
-                        });
+                if (!FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(USER_EMAIL)) {
+                    CallingRequestListModel model = new CallingRequestListModel(
+                            FirebaseAuth.getInstance().getUid(),
+                            true,
+                            false,
+                            FirebaseAuth.getInstance().getCurrentUser().getEmail(),
+                            USER_EMAIL,
+                            new Date()
+                    );
+
+                    mFirestore.collection("calling")
+                            .add(model)
+                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                @Override
+                                public void onSuccess(DocumentReference documentReference) {
+                                    Log.d(TAG, "Join Channel Success");
+                                    Toast.makeText(getApplicationContext(), "Request sent", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d(TAG, "Error at joining channel");
+                                }
+                            });
+                } else {
+                    Toast.makeText(getApplicationContext(), "You cannot make call yourself!", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
             }
         });
 

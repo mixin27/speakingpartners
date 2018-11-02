@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.team29.speakingpartners.R;
-import com.team29.speakingpartners.adapter.PendingListAdpater;
-import com.team29.speakingpartners.model.PendingListModel;
+import com.team29.speakingpartners.adapter.PendingListAdapter;
+import com.team29.speakingpartners.model.UserModel;
 import com.team29.speakingpartners.ui.DividerItemDecoration;
 
 /**
@@ -30,8 +30,8 @@ public class PendingFragment extends Fragment {
     // Firebase
     private FirebaseFirestore firestore;
 
-    private List<PendingListModel> mLists = new ArrayList<>();
-    private PendingListAdpater mAdapter;
+    private List<UserModel> mLists = new ArrayList<>();
+    private PendingListAdapter mAdapter;
     RecyclerView mPendingListView;
 
     public PendingFragment() {
@@ -47,7 +47,7 @@ public class PendingFragment extends Fragment {
 
         firestore = FirebaseFirestore.getInstance();
 
-        mAdapter = new PendingListAdpater(getContext(), mLists);
+        mAdapter = new PendingListAdapter(getContext(), mLists);
 
         mPendingListView = (RecyclerView) root.findViewById(R.id.pending_list);
         mPendingListView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -62,8 +62,6 @@ public class PendingFragment extends Fragment {
 
     private void prepareData() {
         mLists.clear();
-
-        mLists.add(new PendingListModel("Henry", "Beginner"));
 
         mAdapter.notifyDataSetChanged();
     }

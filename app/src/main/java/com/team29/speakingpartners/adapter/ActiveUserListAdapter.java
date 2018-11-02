@@ -1,5 +1,6 @@
 package com.team29.speakingpartners.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatImageView;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.team29.speakingpartners.R;
 import com.team29.speakingpartners.model.UserModel;
 
@@ -44,11 +46,17 @@ public class ActiveUserListAdapter extends RecyclerView.Adapter<ActiveUserListAd
             itemView.setOnClickListener(this);
         }
 
+        @SuppressLint("SetTextI18n")
         private void bindView(UserModel model) {
             this.mActiveUserModel = model;
 
             if (mActiveUserModel.getUser_name() != null) {
-                tvUserName.setText(mActiveUserModel.getUser_name());
+                if (FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(mActiveUserModel.getEmail())) {
+                    tvUserName.setText(mActiveUserModel.getUser_name() + mContext.getString(R.string.str_you));
+                    imgActiveStatus.setVisibility(View.GONE);
+                } else {
+                    tvUserName.setText(mActiveUserModel.getUser_name());
+                }
             }
 
             if (mActiveUserModel.getLevel() != null) {

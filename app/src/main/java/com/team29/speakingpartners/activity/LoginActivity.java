@@ -15,11 +15,13 @@ import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -52,6 +54,11 @@ public class LoginActivity extends AppCompatActivity {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
+
+        // Fullscreen
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_login);
 
@@ -109,6 +116,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 finish();
                 startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
         });
 
@@ -170,10 +178,21 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        txtEmail.clearFocus();
-        txtPassword.clearFocus();
+        txtEmail.setEnabled(false);
+        txtPassword.setEnabled(false);
+        btnLogin.setEnabled(false);
         progressLogin.setVisibility(View.VISIBLE);
-        doSignIn(email, password);
+
+        if (ConnectionChecking.checkConnection(getApplicationContext())) {
+            doSignIn(email, password);
+        } else {
+            progressLogin.setVisibility(View.GONE);
+            btnLogin.setEnabled(true);
+            txtEmail.setEnabled(true);
+            txtPassword.setEnabled(true);
+            txtPassword.requestFocus();
+            Toast.makeText(getApplicationContext(), "No internet access!", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -191,12 +210,19 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(i);
                 } else {
                     progressLogin.setVisibility(View.GONE);
-
                     txtPassword.requestFocus();
-
-                    Log.d(TAG, "Login Failed!");
-                    Toast.makeText(getApplicationContext(), "Login Falied", Toast.LENGTH_SHORT).show();
                 }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "Login Failed!");
+                progressLogin.setVisibility(View.GONE);
+                Toast.makeText(getApplicationContext(), "Login Falied", Toast.LENGTH_SHORT).show();
+                txtEmail.setEnabled(true);
+                txtPassword.setEnabled(true);
+                txtPassword.requestFocus();
+                btnLogin.setEnabled(true);
             }
         });
 
@@ -211,15 +237,6 @@ public class LoginActivity extends AppCompatActivity {
             Log.d(TAG, "User : " + currentUser.getEmail());
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
-        }
-
-        // Connection
-        if (ConnectionChecking.checkConnection(this)) {
-            Log.d(TAG, "You are online");
-            Toast.makeText(getApplicationContext(), "Connection: online", Toast.LENGTH_SHORT).show();
-        } else {
-            Log.d(TAG, "Offline");
-            Toast.makeText(getApplicationContext(), "Connection: offline", Toast.LENGTH_SHORT).show();
         }
 
     }

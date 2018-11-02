@@ -14,19 +14,21 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -43,11 +45,13 @@ public class ProfileDetailActivity extends AppCompatActivity {
     public static final String TAG = ProfileDetailActivity.class.getSimpleName();
 
     AppCompatImageView imgProfile;
-    AppCompatTextView tvUserName, tvUserEmail, tvUserLevel, tvUserCountry, tvUserDOB, tvUserGender;
+    AppCompatTextView tvUserName, tvUserEmail, tvUserLevel, tvUserCountry, tvUserDOB, tvUserGender, tvVerifiedEmailStatus;
     SwitchCompat switchOnlineOffline;
-    AppCompatButton btnEditProfile;
+    AppCompatButton btnEditProfile, btnVerify;
 
-    LinearLayout btnLogOutLayout, btnChangePasswordLayout;
+    LinearLayout btnLogOutLayout, btnChangePasswordLayout, layoutVerifyEmail;
+
+    ProgressBar progressVerify;
 
     String user_id = "";
     long active_status = 0;
@@ -62,12 +66,7 @@ public class ProfileDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile_detail);
 
         mAuth = FirebaseAuth.getInstance();
-        FirebaseFirestoreSettings firestoreSettings = new FirebaseFirestoreSettings.Builder()
-//                .setTimestampsInSnapshotsEnabled(true)
-                .setPersistenceEnabled(true)
-                .build();
         mFirestore = FirebaseFirestore.getInstance();
-        mFirestore.setFirestoreSettings(firestoreSettings);
 
         // ActionBar
         setUpActionBar();
@@ -87,6 +86,30 @@ public class ProfileDetailActivity extends AppCompatActivity {
         tvUserGender = findViewById(R.id.tv_profile_gender);
 
         switchOnlineOffline = findViewById(R.id.btn_switch_active);
+
+        layoutVerifyEmail = findViewById(R.id.verified_layout);
+
+        tvVerifiedEmailStatus = findViewById(R.id.email_verified);
+
+        progressVerify = findViewById(R.id.progress_verify);
+
+        btnVerify = findViewById(R.id.btn_send_me);
+        btnVerify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnVerify.setVisibility(View.GONE);
+                progressVerify.setVisibility(View.VISIBLE);
+                mAuth.getCurrentUser()
+                        .sendEmailVerification()
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                progressVerify.setVisibility(View.GONE);
+                                tvVerifiedEmailStatus.setText(getString(R.string.str_sent_mail));
+                            }
+                        });
+            }
+        });
 
         // FetchInformation
         if (ConnectionChecking.checkConnection(this)) {
@@ -116,6 +139,7 @@ public class ProfileDetailActivity extends AppCompatActivity {
 
                     finish();
                     startActivity(new Intent(ProfileDetailActivity.this, LoginActivity.class));
+                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 }
             }
         });
@@ -137,6 +161,7 @@ public class ProfileDetailActivity extends AppCompatActivity {
                     i.putExtra("EMAIL", mAuth.getCurrentUser().getEmail());
                 }
                 startActivity(i);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
         });
     }
@@ -177,6 +202,31 @@ public class ProfileDetailActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        // Don't use this for now
+//        if (!mAuth.getCurrentUser().isEmailVerified()) {
+//            layoutVerifyEmail.setVisibility(View.VISIBLE);
+//        } else {
+//            layoutVerifyEmail.setVisibility(View.GONE);
+//        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (ConnectionChecking.checkConnection(getApplicationContext())) {
+            if (!mAuth.getCurrentUser().isEmailVerified()) {
+                layoutVerifyEmail.setVisibility(View.VISIBLE);
+            } else {
+                layoutVerifyEmail.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
     private void fetchUserInformation() {
@@ -222,11 +272,9 @@ public class ProfileDetailActivity extends AppCompatActivity {
                         tvUserDOB.setText(dob);
 
                         tvUserGender.setText(change.getDocument().getString("gender"));
-
-                        String url_img = change.getDocument().getString("url_photo");
-                        if (!url_img.equals("")) {
+                        if (!change.getDocument().getString("url_photo").equals("")) {
                             Glide.with(getApplicationContext())
-                                    .load(Uri.parse(url_img))
+                                    .load(Uri.parse(change.getDocument().getString("url_photo")))
                                     .apply(RequestOptions.circleCropTransform())
                                     .into(imgProfile);
                         }

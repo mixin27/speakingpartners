@@ -30,8 +30,6 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView mBottomNavView;
     private ViewPager mViewPager;
 
-    boolean isNetworkValid = false;
-
     HomeFragment mHomeFragment;
     ActiveUserFragment mActiveUserFragment;
     RecentFragment mRecentFragment;

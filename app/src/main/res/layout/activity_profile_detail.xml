@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingTop="@dimen/general_padding_16"
     android:paddingLeft="@dimen/general_padding_16"
     android:paddingRight="@dimen/general_padding_16"
@@ -19,6 +18,40 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/verified_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="visible">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/email_verified"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/str_email_is_not_verified"
+                    android:textColor="@color/color_red"/>
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/btn_send_me"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:text="@string/str_verify"
+                    android:textColor="@color/color_white"
+                    android:background="@drawable/log_in_button_design"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"/>
+
+                <ProgressBar
+                    android:id="@+id/progress_verify"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:theme="@style/CircularProgress"
+                    style="@style/Widget.AppCompat.ProgressBar"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
 
             <LinearLayout
                 android:orientation="horizontal"

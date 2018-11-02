@@ -253,20 +253,6 @@ public class EditProfileActivity extends AppCompatActivity {
                 }
             });
 
-            /*addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    urlProfileImage = taskSnapshot.
-                    Log.d(TAG, "Image URL = " + urlProfileImage);
-                    progressBar.setVisibility(View.GONE);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-
-                }
-            });*/
-
         }
 
     }

@@ -1,5 +1,7 @@
 package com.team29.speakingpartners.model;
 
+import java.util.Date;
+
 public class CallingRequestListModel {
 
     private String channel_id;
@@ -8,6 +10,8 @@ public class CallingRequestListModel {
 
     private String from_email;
     private String to_email;
+
+    private Date date;
 
     public CallingRequestListModel() {
     }
@@ -18,12 +22,13 @@ public class CallingRequestListModel {
         this.to_status = to_status;
     }
 
-    public CallingRequestListModel(String channel_id, boolean from_status, boolean to_status, String from_email, String to_email) {
+    public CallingRequestListModel(String channel_id, boolean from_status, boolean to_status, String from_email, String to_email, Date date) {
         this.channel_id = channel_id;
         this.from_status = from_status;
         this.to_status = to_status;
         this.from_email = from_email;
         this.to_email = to_email;
+        this.date = date;
     }
 
     public String getChannel_id() {
@@ -64,5 +69,13 @@ public class CallingRequestListModel {
 
     public void setTo_email(String to_email) {
         this.to_email = to_email;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 }

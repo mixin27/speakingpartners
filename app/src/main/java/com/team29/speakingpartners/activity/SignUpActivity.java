@@ -19,6 +19,7 @@ import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -84,6 +85,11 @@ public class SignUpActivity extends AppCompatActivity {
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
 
+        // Fullscreen
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_sign_up);
 
         // FirebaseFirestore
@@ -142,8 +148,9 @@ public class SignUpActivity extends AppCompatActivity {
         tvAlreadyAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
                 finish();
+                startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
         });
 
@@ -233,6 +240,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                             finish();
                             startActivity(new Intent(SignUpActivity.this, MainActivity.class));
+                            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                         } else {
                             Log.d(TAG, "Sign Up Failed");
 
@@ -395,8 +403,9 @@ public class SignUpActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
         finish();
+        startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
     @Override

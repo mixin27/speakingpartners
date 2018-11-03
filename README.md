@@ -2,7 +2,7 @@
 
 Final Project
 
-Project name: SpeakingPartners
+Project name: SpeakingPartners<br/>
 Target : Speaking for foreign language
 
 <div>

@@ -2,7 +2,9 @@
 
 Final Project
 
-<ul>
-<li>Project name: SpeakingPartners</l>
+Project name: SpeakingPartners
+Target : Speaking for foreign language
 
-</u>
+<div>
+  <i>zattwine.8191@gmail.com</i>  
+</div>

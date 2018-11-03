@@ -9,6 +9,7 @@ import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -47,6 +48,10 @@ public class PreCallingDialogActivity extends AppCompatActivity {
 
     UserModel userModel;
 
+    String[] topicLists = {
+            "Myself", "Hobby", "Birthday"
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +64,9 @@ public class PreCallingDialogActivity extends AppCompatActivity {
         getIntentData();
 
         imgUserProfile = findViewById(R.id.pre_calling_profile_img);
+
+        spTopic = findViewById(R.id.sp_pre_calling_topic);
+        spTopic.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, topicLists));
 
         tvUserName = findViewById(R.id.tv_pre_calling_user_name);
         tvUserLevel = findViewById(R.id.tv_pre_calling_level);
@@ -81,7 +89,8 @@ public class PreCallingDialogActivity extends AppCompatActivity {
                             false,
                             FirebaseAuth.getInstance().getCurrentUser().getEmail(),
                             USER_EMAIL,
-                            new Date()
+                            new Date(),
+                            spTopic.getSelectedItem().toString()
                     );
 
                     mFirestore.collection("calling")

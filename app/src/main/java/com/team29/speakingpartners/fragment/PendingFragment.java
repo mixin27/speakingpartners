@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -26,6 +27,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.team29.speakingpartners.R;
 import com.team29.speakingpartners.activity.voicecall.RequestReviewActivity;
 import com.team29.speakingpartners.adapter.PendingListAdapter;
+import com.team29.speakingpartners.model.CallingRequestListModel;
 import com.team29.speakingpartners.model.UserModel;
 import com.team29.speakingpartners.ui.DividerItemDecoration;
 
@@ -59,7 +61,7 @@ public class PendingFragment extends Fragment implements PendingListAdapter.Butt
         mFirestore = FirebaseFirestore.getInstance();
 
         mAdapter = new PendingListAdapter(getContext());
-        mAdapter.setItemLists(new ArrayList<UserModel>());
+        mAdapter.setItemLists(new ArrayList<CallingRequestListModel>());
         mAdapter.setButtonClickListener(this);
 
         mPendingListView = root.findViewById(R.id.pending_list);
@@ -74,30 +76,37 @@ public class PendingFragment extends Fragment implements PendingListAdapter.Butt
     }
 
     private void prepareData() {
-        Query query = mFirestore.collection("users").orderBy("user_name");
-        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+
+        Query callingQuery = mFirestore
+                .collection("calling")
+                .whereEqualTo("to_email", FirebaseAuth.getInstance().getCurrentUser().getEmail())
+                .whereEqualTo("from_status", true)
+                .orderBy("date");
+        callingQuery.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+            public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
                 if (e != null) {
                     Log.w(TAG, "Listen failed.", e);
                     return;
                 }
-                List<UserModel> data = new ArrayList<>();
-                for (QueryDocumentSnapshot change : queryDocumentSnapshots) {
 
-                    UserModel userModel = change.toObject(UserModel.class);
-                    Log.d(TAG, "Model" + userModel.getEmail());
-                    data.add(userModel);
+                List<CallingRequestListModel> requestListModelList = new ArrayList<>();
+                for (QueryDocumentSnapshot change : snapshots) {
+                    CallingRequestListModel requestListModel = change.toObject(CallingRequestListModel.class);
+                    requestListModelList.add(requestListModel);
                 }
-                mAdapter.setItemLists(data);
+
+                mAdapter.setItemLists(requestListModelList);
             }
         });
     }
 
     @Override
-    public void setOnAcceptButtonClick(UserModel userModel) {
+    public void setOnAcceptButtonClick(String reqTopic, String fromEmail, String channelId) {
         Intent i = new Intent(getActivity(), RequestReviewActivity.class);
-        i.putExtra("TO_EMAIL", "");
+        i.putExtra("FROM_EMAIL", fromEmail);
+        i.putExtra("REQ_TOPIC", reqTopic);
+        i.putExtra("CHANNEL_ID", channelId);
         startActivity(i);
     }
 

@@ -56,6 +56,7 @@ public class ActiveUserListAdapter extends RecyclerView.Adapter<ActiveUserListAd
                     imgActiveStatus.setVisibility(View.GONE);
                 } else {
                     tvUserName.setText(mActiveUserModel.getUser_name());
+                    imgActiveStatus.setVisibility(View.VISIBLE);
                 }
             }
 

@@ -19,6 +19,19 @@ public class UserModel {
     public UserModel() {
     }
 
+    public UserModel(String user_name, String email, String gender,
+                     String level, String country, String url_photo,
+                     Date date_of_birth, int active_status) {
+        this.user_name = user_name;
+        this.email = email;
+        this.gender = gender;
+        this.level = level;
+        this.country = country;
+        this.url_photo = url_photo;
+        this.date_of_birth = date_of_birth;
+        this.active_status = active_status;
+    }
+
     public UserModel(String user_name, String email, String gender, String level,
                      String country, String url_photo, Date created_date,
                      Date modified_date, Date date_of_birth, int active_status) {

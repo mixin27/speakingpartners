@@ -6,37 +6,51 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.team29.speakingpartners.R;
+import com.team29.speakingpartners.model.CallingRequestListModel;
 import com.team29.speakingpartners.model.UserModel;
 
+import javax.annotation.Nullable;
+
 public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.PendingListViewHolder> {
+
+    private FirebaseFirestore mFirestore;
 
     public static final String TAG = PendingListAdapter.class.getSimpleName();
 
     private Context mContext;
-    private List<UserModel> mLists;
+    private List<CallingRequestListModel> mLists;
 
     private ButtonItemClickListener buttonItemClickListener;
 
     public PendingListAdapter(Context mContext) {
         this.mContext = mContext;
+        mFirestore = FirebaseFirestore.getInstance();
     }
 
-    public PendingListAdapter(Context mContext, List<UserModel> mLists) {
+    public PendingListAdapter(Context mContext, List<CallingRequestListModel> mLists) {
         this.mContext = mContext;
         this.mLists = mLists;
     }
 
-    public void setItemLists(List<UserModel> mLists) {
+    public void setItemLists(List<CallingRequestListModel> mLists) {
         this.mLists = mLists;
         notifyDataSetChanged();
     }
@@ -54,7 +68,7 @@ public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull PendingListViewHolder pendingListViewHolder, int i) {
-        UserModel pendingListModel = mLists.get(i);
+        CallingRequestListModel pendingListModel = mLists.get(i);
         pendingListViewHolder.bindView(pendingListModel);
     }
 
@@ -65,7 +79,7 @@ public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.
 
     public class PendingListViewHolder extends RecyclerView.ViewHolder {
 
-        UserModel mPendingUserModel;
+        CallingRequestListModel mPendingUserModel;
 
         AppCompatTextView pendingUserName, pendingUserActiveStatus;
         AppCompatButton btnPendingReject, btnPendingAccept;
@@ -84,18 +98,42 @@ public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.
 
         }
 
-        private void bindView(UserModel model) {
+        private void bindView(final CallingRequestListModel model) {
             this.mPendingUserModel = model;
 
-            pendingUserName.setText(mPendingUserModel.getUser_name());
+            Query userQuery = mFirestore.collection("users")
+                    .whereEqualTo("email", mPendingUserModel.getFrom_email());
+            userQuery.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
+                    if (e != null) {
+                        Log.e(TAG, "Error Snapshot");
+                        return;
+                    }
 
-            if (!mPendingUserModel.getUrl_photo().equals("")) {
-                imgProfile.setBackgroundDrawable(null);
-                Glide.with(mContext)
-                        .load(mPendingUserModel.getUrl_photo())
-                        .apply(RequestOptions.circleCropTransform())
-                        .into(imgProfile);
-            }
+                    for (QueryDocumentSnapshot snapshot : snapshots) {
+
+                        pendingUserName.setText(snapshot.getString("user_name"));
+
+                        if (!snapshot.getString("url_photo").equals("")) {
+                            imgProfile.setBackgroundDrawable(null);
+                            Glide.with(mContext)
+                                    .load(snapshot.getString("url_photo"))
+                                    .apply(RequestOptions.circleCropTransform())
+                                    .into(imgProfile);
+                        }
+
+                        if (Integer.parseInt(snapshot.get("active_status").toString()) == 0) {
+                            pendingUserActiveStatus.setText(mContext.getResources().getString(R.string.str_offline));
+                            pendingUserActiveStatus.setTextColor(mContext.getResources().getColor(R.color.color_grey));
+                        } else if (Integer.parseInt(snapshot.get("active_status").toString()) == 1) {
+                            pendingUserActiveStatus.setText(mContext.getResources().getString(R.string.str_user_active_now));
+                            pendingUserActiveStatus.setTextColor(mContext.getResources().getColor(R.color.color_green));
+                        }
+                    }
+                }
+            });
+
             imgProfile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -103,18 +141,11 @@ public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.
                 }
             });
 
-            if (mPendingUserModel.getActive_status() == 0) {
-                pendingUserActiveStatus.setText(mContext.getResources().getString(R.string.str_offline));
-                pendingUserActiveStatus.setTextColor(mContext.getResources().getColor(R.color.color_grey));
-            } else if (mPendingUserModel.getActive_status() == 1) {
-                pendingUserActiveStatus.setText(mContext.getResources().getString(R.string.str_user_active_now));
-                pendingUserActiveStatus.setTextColor(mContext.getResources().getColor(R.color.color_green));
-            }
-
             btnPendingAccept.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    buttonItemClickListener.setOnAcceptButtonClick(mPendingUserModel);
+                    buttonItemClickListener.setOnAcceptButtonClick(mPendingUserModel.getReq_topic(),
+                            mPendingUserModel.getFrom_email(), mPendingUserModel.getChannel_id());
                 }
             });
 
@@ -129,7 +160,7 @@ public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.
     }
 
     public interface ButtonItemClickListener {
-        void setOnAcceptButtonClick(UserModel userModel);
+        void setOnAcceptButtonClick(String reqTopic, String fromEmail, String channelId);
 
         void setOnRejectButtonClick();
     }

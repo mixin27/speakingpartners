@@ -10,6 +10,7 @@ public class CallingRequestListModel {
 
     private String from_email;
     private String to_email;
+    private String req_topic;
 
     private Date date;
 
@@ -22,13 +23,16 @@ public class CallingRequestListModel {
         this.to_status = to_status;
     }
 
-    public CallingRequestListModel(String channel_id, boolean from_status, boolean to_status, String from_email, String to_email, Date date) {
+    public CallingRequestListModel(String channel_id, boolean from_status,
+                                   boolean to_status, String from_email, String to_email,
+                                   Date date, String req_topic) {
         this.channel_id = channel_id;
         this.from_status = from_status;
         this.to_status = to_status;
         this.from_email = from_email;
         this.to_email = to_email;
         this.date = date;
+        this.req_topic = req_topic;
     }
 
     public String getChannel_id() {
@@ -77,5 +81,13 @@ public class CallingRequestListModel {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String getReq_topic() {
+        return req_topic;
+    }
+
+    public void setReq_topic(String req_topic) {
+        this.req_topic = req_topic;
     }
 }

@@ -182,7 +182,7 @@
                 android:textStyle="bold" />
 
             <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/tv_pre_calling_request_topic"
+                android:id="@+id/tv_calling_request_topic"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
@@ -208,7 +208,6 @@
             android:layout_weight="1"
             android:text="@string/str_start"
             android:textColor="@color/color_white"
-            android:textAllCaps="true"
             android:background="@drawable/log_in_button_design"/>
 
     </LinearLayout>

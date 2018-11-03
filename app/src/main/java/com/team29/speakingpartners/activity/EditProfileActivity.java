@@ -15,6 +15,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.v4.widget.CircularProgressDrawable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -212,6 +214,16 @@ public class EditProfileActivity extends AppCompatActivity {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uriProfileImage);
                 profileImageBitmap = ImageProcessingHelper.scaleDownBitmapImage(bitmap, 300, true);
                 imgProfile.setImageBitmap(profileImageBitmap);
+
+                CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(getApplicationContext());
+                circularProgressDrawable.setStrokeWidth(5f);
+                circularProgressDrawable.setCenterRadius(30f);
+                circularProgressDrawable.start();
+
+                Glide.with(this)
+                        .load(profileImageBitmap)
+                        .apply(new RequestOptions().placeholder(circularProgressDrawable))
+                        .into(imgProfile);
 
                 storeImageToFirebase();
             } catch (FileNotFoundException e) {

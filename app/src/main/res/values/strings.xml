@@ -135,5 +135,10 @@
     <string name="str_sent_mail">We send verify mail!</string>
     <string name="str_review">Review</string>
     <string name="str_start">start</string>
+    <string name="str_connection_lost">Connection Lost!</string>
+    <string name="str_connection_interrupted">Connection Interrupted!</string>
+    <string name="str_something_wrong">Something went wrong!</string>
+    <string name="str_connection_success">Connection Success</string>
+    <string name="str_waiting_process">Waiting...</string>
 
 </resources>

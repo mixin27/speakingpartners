@@ -29,6 +29,7 @@ import com.team29.speakingpartners.model.CallingRequestListModel;
 import com.team29.speakingpartners.model.UserModel;
 
 import java.util.Date;
+import java.util.UUID;
 
 import javax.annotation.Nullable;
 
@@ -84,7 +85,7 @@ public class PreCallingDialogActivity extends AppCompatActivity {
 
                 if (!FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(USER_EMAIL)) {
                     CallingRequestListModel model = new CallingRequestListModel(
-                            FirebaseAuth.getInstance().getUid(),
+                            UUID.randomUUID().toString(),
                             true,
                             false,
                             FirebaseAuth.getInstance().getCurrentUser().getEmail(),
@@ -98,7 +99,7 @@ public class PreCallingDialogActivity extends AppCompatActivity {
                             .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
-                                    Log.d(TAG, "Join Channel Success");
+                                    Log.d(TAG, "Request Success");
                                     Toast.makeText(getApplicationContext(), "Request sent", Toast.LENGTH_SHORT).show();
                                     finish();
                                 }
@@ -106,7 +107,7 @@ public class PreCallingDialogActivity extends AppCompatActivity {
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Log.d(TAG, "Error at joining channel");
+                                    Log.d(TAG, "Request Error");
                                 }
                             });
                 } else {

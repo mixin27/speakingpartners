@@ -3,6 +3,7 @@ package com.team29.speakingpartners.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.CircularProgressDrawable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -282,9 +283,14 @@ public class ProfileDetailActivity extends AppCompatActivity {
 
                         tvUserGender.setText(change.getDocument().getString("gender"));
                         if (!change.getDocument().getString("url_photo").equals("")) {
+                            CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(getApplicationContext());
+                            circularProgressDrawable.setStrokeWidth(5f);
+                            circularProgressDrawable.setCenterRadius(30f);
+                            circularProgressDrawable.start();
                             Glide.with(getApplicationContext())
                                     .load(Uri.parse(change.getDocument().getString("url_photo")))
                                     .apply(RequestOptions.circleCropTransform())
+                                    .apply(new RequestOptions().placeholder(circularProgressDrawable))
                                     .into(imgProfile);
                         }
                     }

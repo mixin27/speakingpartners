@@ -2,7 +2,7 @@ package com.team29.speakingpartners.model;
 
 import java.util.Date;
 
-public class CallingRequestListModel {
+public class CallingRequestListModel extends Model {
 
     private String channel_id;
     private boolean from_status;

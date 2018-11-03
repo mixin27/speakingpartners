@@ -44,17 +44,24 @@
         <activity
             android:name=".MainActivity"
             android:theme="@style/Main.SpeakingPartner.BlueTheme" />
-        <activity android:name=".activity.voicecall.CallingViewActivity" />
+
+        <activity android:name=".activity.voicecall.CallingViewActivity"
+            android:theme="@style/Main.SpeakingPartner.BlueTheme.NoActionBar"
+            tools:targetApi="jelly_bean"/>
+
         <activity android:name=".activity.EachRecentListActivity" />
+
         <activity
             android:name=".activity.EditProfileActivity"
             android:parentActivityName=".activity.ProfileDetailActivity"
             android:theme="@style/Main.SpeakingPartner.BlueTheme.NoActionBar"
             tools:targetApi="jelly_bean" />
+
         <activity
             android:name=".activity.voicecall.PreCallingDialogActivity"
             android:theme="@style/Main.SpeakingPartner.DialogTheme"
             tools:targetApi="lollipop" />
+
         <activity android:name=".activity.voicecall.RequestReviewActivity"
             android:theme="@style/Main.SpeakingPartner.DialogTheme"
             tools:targetApi="lollipop"/>

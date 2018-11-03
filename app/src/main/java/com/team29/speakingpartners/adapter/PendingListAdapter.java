@@ -40,6 +40,8 @@ public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.
 
     private ButtonItemClickListener buttonItemClickListener;
 
+    private String mDocId;
+
     public PendingListAdapter(Context mContext) {
         this.mContext = mContext;
         mFirestore = FirebaseFirestore.getInstance();
@@ -53,6 +55,14 @@ public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.
     public void setItemLists(List<CallingRequestListModel> mLists) {
         this.mLists = mLists;
         notifyDataSetChanged();
+    }
+
+    public void setDocId(String id) {
+        this.mDocId = id;
+    }
+
+    public String getDocId() {
+        return mDocId;
     }
 
     public void setButtonClickListener(ButtonItemClickListener listener) {
@@ -145,7 +155,8 @@ public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.
                 @Override
                 public void onClick(View v) {
                     buttonItemClickListener.setOnAcceptButtonClick(mPendingUserModel.getReq_topic(),
-                            mPendingUserModel.getFrom_email(), mPendingUserModel.getChannel_id());
+                            mPendingUserModel.getFrom_email(), mPendingUserModel.getChannel_id(),
+                            mPendingUserModel.id);
                 }
             });
 
@@ -160,7 +171,7 @@ public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.
     }
 
     public interface ButtonItemClickListener {
-        void setOnAcceptButtonClick(String reqTopic, String fromEmail, String channelId);
+        void setOnAcceptButtonClick(String reqTopic, String fromEmail, String channelId, String docId);
 
         void setOnRejectButtonClick();
     }

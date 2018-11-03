@@ -3,6 +3,7 @@ package com.team29.speakingpartners.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.CircularProgressDrawable;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
@@ -72,9 +73,14 @@ public class ActiveUserListAdapter extends RecyclerView.Adapter<ActiveUserListAd
 
             if (!mActiveUserModel.getUrl_photo().equals("")) {
                 imgUserProfile.setBackgroundDrawable(null);
+                CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(mContext);
+                circularProgressDrawable.setStrokeWidth(5f);
+                circularProgressDrawable.setCenterRadius(30f);
+                circularProgressDrawable.start();
                 Glide.with(mContext)
                         .load(mActiveUserModel.getUrl_photo())
                         .apply(RequestOptions.circleCropTransform())
+                        .apply(new RequestOptions().placeholder(circularProgressDrawable))
                         .into(imgUserProfile);
             }
             imgUserProfile.setOnClickListener(new View.OnClickListener() {

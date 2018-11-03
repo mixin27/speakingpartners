@@ -82,6 +82,7 @@ public class PendingFragment extends Fragment implements PendingListAdapter.Butt
                 .whereEqualTo("to_email", FirebaseAuth.getInstance().getCurrentUser().getEmail())
                 .whereEqualTo("from_status", true)
                 .orderBy("date");
+
         callingQuery.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
@@ -92,7 +93,7 @@ public class PendingFragment extends Fragment implements PendingListAdapter.Butt
 
                 List<CallingRequestListModel> requestListModelList = new ArrayList<>();
                 for (QueryDocumentSnapshot change : snapshots) {
-                    CallingRequestListModel requestListModel = change.toObject(CallingRequestListModel.class);
+                    CallingRequestListModel requestListModel = change.toObject(CallingRequestListModel.class).withId(change.getId());
                     requestListModelList.add(requestListModel);
                 }
 
@@ -102,11 +103,12 @@ public class PendingFragment extends Fragment implements PendingListAdapter.Butt
     }
 
     @Override
-    public void setOnAcceptButtonClick(String reqTopic, String fromEmail, String channelId) {
+    public void setOnAcceptButtonClick(String reqTopic, String fromEmail, String channelId, String docId) {
         Intent i = new Intent(getActivity(), RequestReviewActivity.class);
         i.putExtra("FROM_EMAIL", fromEmail);
         i.putExtra("REQ_TOPIC", reqTopic);
         i.putExtra("CHANNEL_ID", channelId);
+        i.putExtra("DOC_ID", docId);
         startActivity(i);
     }
 

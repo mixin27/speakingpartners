@@ -1,5 +1,7 @@
 package com.team29.speakingpartners.model;
 
+import com.google.firebase.firestore.IgnoreExtraProperties;
+
 import java.util.Date;
 
 public class UserModel {

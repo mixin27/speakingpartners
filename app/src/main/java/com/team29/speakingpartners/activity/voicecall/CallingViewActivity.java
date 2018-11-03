@@ -2,6 +2,7 @@ package com.team29.speakingpartners.activity.voicecall;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -9,9 +10,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,11 +30,14 @@ public class CallingViewActivity extends AppCompatActivity {
 
     public static final String TAG = CallingViewActivity.class.getSimpleName();
 
-    private static final String CHANNEL_ID = "Channel1";
-
     private static final int PERMISSION_REQ_ID_RECORD_AUDIO = 22;
 
-    AppCompatTextView tvJoinChannel;
+    private static String CHANNEL_ID = "Channel1";
+    private static String FROM_EMAIL = "";
+    private static String REQ_TOPIC = "";
+
+    AppCompatImageButton btnSpeaker, btnLocalAudio, btnEndCall;
+    AppCompatTextView tvChannelId, tvFromEmail, tvSpeakingTopic, tvConnectionStatus;
 
     FirebaseAuth mAuth;
 
@@ -40,7 +47,7 @@ public class CallingViewActivity extends AppCompatActivity {
         @Override
         public void onConnectionLost() {
             super.onConnectionLost();
-            tvJoinChannel.setText("Connection Lost");
+            tvConnectionStatus.setText(getString(R.string.str_connection_lost));
         }
 
         @Override
@@ -57,6 +64,30 @@ public class CallingViewActivity extends AppCompatActivity {
         public void onUserMuteAudio(final int uid, final boolean muted) {
             onRemoteUserVoiceMuted(uid, muted);
         }
+
+        @Override
+        public void onConnectionInterrupted() {
+            super.onConnectionInterrupted();
+            tvConnectionStatus.setText(getString(R.string.str_connection_interrupted));
+        }
+
+        @Override
+        public void onError(int err) {
+            super.onError(err);
+            tvConnectionStatus.setText(getString(R.string.str_something_wrong));
+        }
+
+        /*@Override
+        public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
+            super.onJoinChannelSuccess(channel, uid, elapsed);
+            tvConnectionStatus.setText(getString(R.string.str_connection_success));
+        }*/
+
+        @Override
+        public void onLeaveChannel(RtcStats stats) {
+            super.onLeaveChannel(stats);
+        }
+
     };
 
     @Override
@@ -64,7 +95,7 @@ public class CallingViewActivity extends AppCompatActivity {
         Log.i(TAG, "onRequestPermissionsResult " + grantResults[0] + " " + requestCode);
 
         switch (requestCode) {
-            case PERMISSION_REQ_ID_RECORD_AUDIO: {
+            case PERMISSION_REQ_ID_RECORD_AUDIO : {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     initAgoraEngineAndJoinChannel();
@@ -97,6 +128,12 @@ public class CallingViewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Fullscreen
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_calling_view);
 
         mAuth = FirebaseAuth.getInstance();
@@ -107,9 +144,59 @@ public class CallingViewActivity extends AppCompatActivity {
             }
         }
 
-        tvJoinChannel = findViewById(R.id.tvJoinChannel);
-        tvJoinChannel.setText("From : " + mAuth.getCurrentUser().getEmail());
+        getIntentExtraData();
 
+        tvConnectionStatus = findViewById(R.id.connection_status);
+        tvConnectionStatus.setText(getString(R.string.str_waiting_process));
+
+        tvChannelId = findViewById(R.id.channel_id);
+        tvChannelId.setText("Channel ID : " + CHANNEL_ID);
+
+        tvFromEmail = findViewById(R.id.from_email);
+        tvFromEmail.setText("From : " + FROM_EMAIL);
+
+        tvSpeakingTopic = findViewById(R.id.speaking_topic);
+        tvSpeakingTopic.setText("Topic : " + REQ_TOPIC);
+
+        btnSpeaker = findViewById(R.id.btn_speaker);
+        btnSpeaker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                speakerOnOff(v);
+            }
+        });
+
+        btnLocalAudio = findViewById(R.id.btn_local_audio);
+        btnLocalAudio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                localAudioMuteUnMute(v);
+            }
+        });
+
+        btnEndCall = findViewById(R.id.btn_end_call);
+        btnEndCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+
+    }
+
+    private void getIntentExtraData() {
+        if (!getIntent().getExtras().getString("CHANNEL_ID").equals("")) {
+            CHANNEL_ID = getIntent().getExtras().getString("CHANNEL_ID");
+        }
+
+        if (!getIntent().getExtras().getString("FROM_EMAIL").equals("")) {
+            FROM_EMAIL = getIntent().getExtras().getString("FROM_EMAIL");
+        }
+
+        if (!getIntent().getExtras().getString("REQ_TOPIC").equals("")) {
+            REQ_TOPIC = getIntent().getExtras().getString("REQ_TOPIC");
+        }
     }
 
     private void initAgoraEngineAndJoinChannel() {
@@ -119,7 +206,7 @@ public class CallingViewActivity extends AppCompatActivity {
 
     private void joinChannel() {
         if (mAuth.getCurrentUser().getEmail() != null) {
-            mRtcEngine.joinChannel(null, CHANNEL_ID, "Extra optional data", 0);
+            mRtcEngine.joinChannel(null, CHANNEL_ID, "To : " + FROM_EMAIL, 0);
         }
     }
 
@@ -159,34 +246,30 @@ public class CallingViewActivity extends AppCompatActivity {
         mRtcEngine.leaveChannel();
     }
 
-    public void btnClickSpeaker(View view) {
-        AppCompatButton iv = (AppCompatButton) view;
+    public void speakerOnOff(View view) {
+        AppCompatImageButton iv = (AppCompatImageButton) view;
         if (iv.isSelected()) {
             iv.setSelected(false);
-            iv.setTextColor(getResources().getColor(R.color.color_black));
+            iv.clearColorFilter();
         } else {
             iv.setSelected(true);
-            iv.setTextColor(getResources().getColor(R.color.colorPrimary));
+            iv.setColorFilter(getResources().getColor(R.color.color_blue_500), PorterDuff.Mode.MULTIPLY);
         }
 
         mRtcEngine.setEnableSpeakerphone(view.isSelected());
     }
 
-    public void btnClickAudio(View view) {
-        AppCompatButton iv = (AppCompatButton) view;
+    public void localAudioMuteUnMute(View view) {
+        AppCompatImageButton iv = (AppCompatImageButton) view;
         if (iv.isSelected()) {
             iv.setSelected(false);
-            iv.setTextColor(getResources().getColor(R.color.color_black));
+            iv.clearColorFilter();
         } else {
             iv.setSelected(true);
-            iv.setTextColor(getResources().getColor(R.color.colorPrimary));
+            iv.setColorFilter(getResources().getColor(R.color.color_blue_500), PorterDuff.Mode.MULTIPLY);
         }
 
         mRtcEngine.muteLocalAudioStream(iv.isSelected());
-    }
-
-    public void btnClickEnd(View view) {
-        finish();
     }
 
 }

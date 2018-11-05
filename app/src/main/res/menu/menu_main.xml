@@ -8,9 +8,4 @@
         android:icon="@drawable/ic_person_white_24dp"
         app:showAsAction="always"/>
 
-    <item android:id="@+id/action_call"
-        android:title="Action Call"
-        android:orderInCategory="100"
-        app:showAsAction="never"/>
-
 </menu>

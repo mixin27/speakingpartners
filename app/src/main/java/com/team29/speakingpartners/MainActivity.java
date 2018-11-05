@@ -15,7 +15,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import com.team29.speakingpartners.activity.ProfileDetailActivity;
-import com.team29.speakingpartners.activity.voicecall.CallingViewActivity;
 import com.team29.speakingpartners.adapter.MyViewPagerAdapter;
 import com.team29.speakingpartners.fragment.ActiveUserFragment;
 import com.team29.speakingpartners.fragment.HomeFragment;
@@ -38,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
     MenuItem mPrevMenuItem;
 
     FirebaseAuth mAuth;
-    FirebaseFirestore mFirestore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
         setUpViewPager(actionBar);
 
         mAuth = FirebaseAuth.getInstance();
-
     }
 
     // ViewPager
@@ -103,8 +100,8 @@ public class MainActivity extends AppCompatActivity {
         MyViewPagerAdapter adapter = new MyViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(mHomeFragment);
         adapter.addFragment(mActiveUserFragment);
-        adapter.addFragment(mRecentFragment);
         adapter.addFragment(mPendingFragment);
+        adapter.addFragment(mRecentFragment);
         mViewPager.setAdapter(adapter);
     }
 
@@ -121,10 +118,10 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.bottom_nav_active_user:
                         mViewPager.setCurrentItem(1);
                         break;
-                    case R.id.bottom_nav_recent:
+                    case R.id.bottom_nav_pending:
                         mViewPager.setCurrentItem(2);
                         break;
-                    case R.id.bottom_nav_pending:
+                    case R.id.bottom_nav_recent:
                         mViewPager.setCurrentItem(3);
                         break;
                 }
@@ -155,9 +152,6 @@ public class MainActivity extends AppCompatActivity {
         switch (id) {
             case R.id.action_profile:
                 startActivity(new Intent(MainActivity.this, ProfileDetailActivity.class));
-                return true;
-            case R.id.action_call:
-                startActivity(new Intent(this, CallingViewActivity.class));
                 return true;
         }
         return super.onOptionsItemSelected(item);

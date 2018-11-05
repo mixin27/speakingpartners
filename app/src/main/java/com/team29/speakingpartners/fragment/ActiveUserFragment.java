@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -28,7 +27,6 @@ import com.team29.speakingpartners.R;
 import com.team29.speakingpartners.activity.voicecall.PreCallingDialogActivity;
 import com.team29.speakingpartners.adapter.ActiveUserListAdapter;
 import com.team29.speakingpartners.model.UserModel;
-import com.team29.speakingpartners.net.ConnectionChecking;
 import com.team29.speakingpartners.ui.DividerItemDecoration;
 
 /**

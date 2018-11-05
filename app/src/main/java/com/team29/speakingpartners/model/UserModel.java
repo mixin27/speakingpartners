@@ -1,10 +1,12 @@
 package com.team29.speakingpartners.model;
 
-import com.google.firebase.firestore.IgnoreExtraProperties;
+import android.annotation.SuppressLint;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class UserModel {
+public class UserModel extends Model{
 
     private String user_name;
     private String email;
@@ -152,5 +154,24 @@ public class UserModel {
 
     public void setActive_status(int active_status) {
         this.active_status = active_status;
+    }
+
+    public String getDateOfBirthString() {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        return sdf.format(getDate_of_birth());
+    }
+
+    public String getTimeOfBirthString() {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+        return sdf.format(getDate_of_birth());
+    }
+
+    public String getDateTimeOfBirthString() {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+        return sdf.format(getDate_of_birth());
+    }
+
+    private String getDateOfBirthFull() {
+        return DateFormat.getDateInstance(DateFormat.FULL).format(getDate_of_birth());
     }
 }

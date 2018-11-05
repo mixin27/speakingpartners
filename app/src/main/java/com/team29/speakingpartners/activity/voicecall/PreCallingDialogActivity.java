@@ -1,5 +1,6 @@
 package com.team29.speakingpartners.activity.voicecall;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -84,7 +85,7 @@ public class PreCallingDialogActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (!FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(USER_EMAIL)) {
-                    CallingRequestListModel model = new CallingRequestListModel(
+                    final CallingRequestListModel model = new CallingRequestListModel(
                             UUID.randomUUID().toString(),
                             true,
                             false,
@@ -101,6 +102,13 @@ public class PreCallingDialogActivity extends AppCompatActivity {
                                 public void onSuccess(DocumentReference documentReference) {
                                     Log.d(TAG, "Request Success");
                                     Toast.makeText(getApplicationContext(), "Request sent", Toast.LENGTH_SHORT).show();
+                                    Intent i = new Intent(PreCallingDialogActivity.this, CallingViewActivity.class);
+                                    i.putExtra("FROM_EMAIL", model.getFrom_email());
+                                    i.putExtra("TO_EMAIL", model.getTo_email());
+                                    i.putExtra("REQ_TOPIC", model.getReq_topic());
+                                    i.putExtra("CHANNEL_ID", model.getChannel_id());
+                                    i.putExtra("FLAG", "from");
+                                    startActivity(i);
                                     finish();
                                 }
                             })

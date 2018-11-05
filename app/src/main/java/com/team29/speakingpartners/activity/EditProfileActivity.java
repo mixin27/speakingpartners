@@ -1,20 +1,13 @@
 package com.team29.speakingpartners.activity;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.v4.widget.CircularProgressDrawable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -34,17 +27,14 @@ import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -54,15 +44,13 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.Objects;
 
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -70,7 +58,9 @@ import com.google.firebase.storage.UploadTask;
 import com.team29.speakingpartners.R;
 import com.team29.speakingpartners.helper.ImagePickerHelper;
 import com.team29.speakingpartners.helper.ImageProcessingHelper;
+import com.team29.speakingpartners.model.UserModel;
 import com.team29.speakingpartners.net.ConnectionChecking;
+import com.team29.speakingpartners.utils.GlideApp;
 
 public class EditProfileActivity extends AppCompatActivity {
 
@@ -146,6 +136,7 @@ public class EditProfileActivity extends AppCompatActivity {
         myCalendar = Calendar.getInstance();
         // DatePicker
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+            @SuppressLint("SimpleDateFormat")
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 Log.d(TAG, "");
@@ -154,7 +145,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
                 dateOfBirth = myCalendar.getTime();
-                txtDateOfBirth.setText(DateFormat.getDateInstance(DateFormat.FULL).format(dateOfBirth));
+                txtDateOfBirth.setText(new SimpleDateFormat("dd/MM/yyyy").format(myCalendar.getTime()));
             }
         };
 
@@ -326,6 +317,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void setUpCountryLists() {
         mFirestore.collection("countries")
+                .orderBy("name", Query.Direction.ASCENDING)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -391,31 +383,30 @@ public class EditProfileActivity extends AppCompatActivity {
                         return;
                     }
 
-                    if (snapshots != null) {
-                        for (QueryDocumentSnapshot snapshot : snapshots) {
-                            user_id = snapshot.getId();
+                    for (QueryDocumentSnapshot snapshot : snapshots) {
+                        UserModel model = snapshot.toObject(UserModel.class).withId(snapshot.getId());
+                        user_id = model.id;
 
-                            txtName.setText(snapshot.getString("user_name"));
+                        txtName.setText(model.getUser_name());
+                        txtDateOfBirth.setText(model.getDateOfBirthString());
 
-                            String dob = getDateOfBirth(snapshot.getDate("date_of_birth"));
-                            txtDateOfBirth.setText(dob);
+                        String gender = model.getGender();
+                        if (gender.equals("Male")) {
+                            radMale.setChecked(true);
+                        } else if (gender.equals("Female")) {
+                            radFemale.setChecked(true);
+                        }
 
-                            String gender = snapshot.getString("gender");
-                            if (gender.equals("Male")) {
-                                radMale.setChecked(true);
-                            } else if (gender.equals("Female")) {
-                                radFemale.setChecked(true);
-                            }
+                        currentLevel = model.getLevel();
+                        Log.d(TAG, "CurrentLevel => " + currentLevel);
+                        currentCountry = model.getCountry();
+                        Log.d(TAG, "CurrentCountry => " + currentCountry);
 
-                            currentLevel = snapshot.getString("level");
-                            Log.d(TAG, "CurrentLevel => " + currentLevel);
-                            currentCountry = snapshot.getString("country");
-                            Log.d(TAG, "CurrentCountry => " + currentCountry);
-
-                            String url_img = snapshot.getString("url_photo");
-                            if (!url_img.equals("")) {
-                                Glide.with(getApplicationContext()).load(Uri.parse(url_img)).into(imgProfile);
-                            }
+                        String url_img = model.getUrl_photo();
+                        if (!url_img.equals("")) {
+                            GlideApp.with(getApplicationContext())
+                                    .load(url_img)
+                                    .into(imgProfile);
                         }
                     }
                 }

@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/color_white"
-    android:padding="@dimen/general_padding_16"
     tools:context=".activity.EditProfileActivity">
 
     <ProgressBar
@@ -30,279 +30,314 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:gravity="center_horizontal">
-
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/img_edit_profile"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:scaleType="centerCrop"
-                    android:contentDescription="@string/str_profile"
-                    android:background="@drawable/rounded_rectangle_border_image_view"
-                    android:src="@drawable/ic_image_black_24dp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal">
-
-                <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/btn_edit_profile_img"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:text="@string/str_profile_upload"
-                    android:textAllCaps="false"
-                    android:padding="3dp"
-                    android:drawableTop="@drawable/ic_add_a_photo_black_24dp" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="wrap_content"
-                android:layout_height="1dp"
-                android:layout_marginTop="@dimen/general_padding_16"
-                android:background="@color/color_grey"/>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/general_padding_16">
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/lbl_edit_profile_user_name"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/str_user_name"
-                    android:textStyle="bold"
-                    android:textColor="@color/color_black"
-                    android:textSize="@dimen/general_text_size_16"/>
-
-                <android.support.v7.widget.AppCompatEditText
-                    android:id="@+id/edit_profile_user_name"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:inputType="text"
-                    android:textSize="@dimen/general_text_size_16"/>
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="wrap_content"
-                android:layout_height="1dp"
-                android:layout_marginTop="@dimen/general_padding_16"
-                android:background="@color/color_grey"/>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/general_padding_16">
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/lbl_edit_profile_gender"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/str_user_gender"
-                    android:textStyle="bold"
-                    android:textColor="@color/color_black"
-                    android:textSize="@dimen/general_text_size_16"/>
-
-                <RadioGroup
-                    android:id="@+id/edit_gender_gp"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:orientation="horizontal">
-
-                    <android.support.v7.widget.AppCompatRadioButton
-                        android:id="@+id/edit_rad_male"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/str_user_gender_male"/>
-
-                    <android.support.v7.widget.AppCompatRadioButton
-                        android:id="@+id/edit_rad_female"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/str_user_gender_female"/>
-
-                </RadioGroup>
-
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="wrap_content"
-                android:layout_height="1dp"
-                android:layout_marginTop="@dimen/general_padding_16"
-                android:background="@color/color_grey"/>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/general_padding_16">
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/lbl_edit_profile_dob"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/str_user_birthday"
-                    android:textStyle="bold"
-                    android:textColor="@color/color_black"
-                    android:textSize="@dimen/general_text_size_16"/>
-
-                <android.support.v7.widget.AppCompatEditText
-                    android:id="@+id/edit_profile_dob"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:focusable="true"
-                    android:clickable="true"
-                    android:editable="false"
-                    android:hint="@string/select_your_birthday"
-                    android:textSize="@dimen/general_text_size_16"/>
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="wrap_content"
-                android:layout_height="1dp"
-                android:layout_marginTop="@dimen/general_padding_16"
-                android:background="@color/color_grey"/>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/general_padding_16">
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/lbl_edit_profile_level"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/str_user_level"
-                    android:textStyle="bold"
-                    android:textColor="@color/color_black"
-                    android:textSize="@dimen/general_text_size_16"/>
-
-                <android.support.v7.widget.AppCompatSpinner
-                    android:id="@+id/sp_edit_profile_level"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:textSize="@dimen/general_text_size_16"/>
-
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="wrap_content"
-                android:layout_height="1dp"
-                android:layout_marginTop="@dimen/general_padding_16"
-                android:background="@color/color_grey"/>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/general_padding_16">
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/lbl_edit_profile_country"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/str_user_country"
-                    android:textStyle="bold"
-                    android:textColor="@color/color_black"
-                    android:textSize="@dimen/general_text_size_16"/>
-
-                <android.support.v7.widget.AppCompatSpinner
-                    android:id="@+id/sp_edit_profile_country"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:textSize="@dimen/general_text_size_16"/>
-
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="wrap_content"
-                android:layout_height="1dp"
-                android:layout_marginTop="@dimen/general_padding_16"
-                android:background="@color/color_grey"/>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:background="@drawable/click_event"
-                android:layout_marginTop="@dimen/general_padding_16"
-                android:focusable="true"
-                android:baselineAligned="false">
+                app:cardCornerRadius="4dp"
+                app:cardElevation="4dp"
+                android:layout_margin="@dimen/general_padding_16">
 
                 <LinearLayout
-                    android:id="@+id/layout_btn_cancel"
-                    android:orientation="horizontal"
-                    android:layout_width="0dp"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center">
+                    android:layout_margin="@dimen/general_padding_16">
 
                     <android.support.v7.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/str_cancel"
-                        android:textColor="@color/color_black"
+                        android:text="@string/str_edit_profile_header"
+                        android:textSize="@dimen/general_text_size_14"
+                        android:textStyle="normal"/>
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/img_edit_profile"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:scaleType="centerCrop"
+                        android:layout_marginTop="@dimen/general_padding_16"
+                        android:layout_gravity="bottom|center_horizontal"
+                        android:contentDescription="@string/str_profile"
+                        android:background="@drawable/rounded_rectangle_border_image_view"
+                        android:src="@drawable/ic_image_black_24dp" />
+
+                    <android.support.v7.widget.AppCompatButton
+                        android:id="@+id/btn_edit_profile_img"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|center_horizontal"
+                        android:background="@null"
+                        android:text="@string/str_profile_upload"
+                        android:textAllCaps="false"
+                        android:padding="3dp"
+                        android:drawableTop="@drawable/ic_add_a_photo_black_24dp" />
+
+                </LinearLayout>
+
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/general_padding_16"
+                app:cardCornerRadius="4dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/general_padding_16">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/action_about"
                         android:textSize="@dimen/general_text_size_16"
-                        android:gravity="center"/>
+                        android:textStyle="bold"/>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/general_padding_16">
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/lbl_edit_profile_user_name"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/str_user_name"
+                            android:textStyle="bold"
+                            android:textColor="@color/color_black"
+                            android:textSize="@dimen/general_text_size_14"/>
+
+                        <android.support.v7.widget.AppCompatEditText
+                            android:id="@+id/edit_profile_user_name"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:inputType="text"
+                            android:textSize="@dimen/general_text_size_14"/>
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="@dimen/general_padding_16"
+                        android:background="@color/color_grey"/>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/general_padding_16">
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/lbl_edit_profile_gender"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/str_user_gender"
+                            android:textStyle="bold"
+                            android:textColor="@color/color_black"
+                            android:textSize="@dimen/general_text_size_14"/>
+
+                        <RadioGroup
+                            android:id="@+id/edit_gender_gp"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:orientation="horizontal"
+                            android:theme="@style/CustomCheckBoxTheme">
+
+                            <android.support.v7.widget.AppCompatRadioButton
+                                android:id="@+id/edit_rad_male"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="true"
+                                android:text="@string/str_user_gender_male"
+                                android:textSize="@dimen/general_text_size_14"/>
+
+                            <android.support.v7.widget.AppCompatRadioButton
+                                android:id="@+id/edit_rad_female"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/str_user_gender_female"
+                                android:textSize="@dimen/general_text_size_14"/>
+
+                        </RadioGroup>
+
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="@dimen/general_padding_16"
+                        android:background="@color/color_grey"/>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/general_padding_16">
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/lbl_edit_profile_dob"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/str_user_birthday"
+                            android:textStyle="bold"
+                            android:textColor="@color/color_black"
+                            android:textSize="@dimen/general_text_size_14"/>
+
+                        <android.support.v7.widget.AppCompatEditText
+                            android:id="@+id/edit_profile_dob"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:focusable="true"
+                            android:clickable="true"
+                            android:editable="false"
+                            android:hint="@string/select_your_birthday"
+                            android:textSize="@dimen/general_text_size_14"/>
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="@dimen/general_padding_16"
+                        android:background="@color/color_grey"/>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/general_padding_16">
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/lbl_edit_profile_level"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/str_user_level"
+                            android:textStyle="bold"
+                            android:textColor="@color/color_black"
+                            android:textSize="@dimen/general_text_size_14"/>
+
+                        <android.support.v7.widget.AppCompatSpinner
+                            android:id="@+id/sp_edit_profile_level"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:textSize="@dimen/general_text_size_14"/>
+
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="@dimen/general_padding_16"
+                        android:background="@color/color_grey"/>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/general_padding_16">
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/lbl_edit_profile_country"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/str_user_country"
+                            android:textStyle="bold"
+                            android:textColor="@color/color_black"
+                            android:textSize="@dimen/general_text_size_14"/>
+
+                        <android.support.v7.widget.AppCompatSpinner
+                            android:id="@+id/sp_edit_profile_country"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:textSize="@dimen/general_text_size_14"/>
+
+
+                    </LinearLayout>
 
                 </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="4dp">
 
                 <LinearLayout
-                    android:id="@+id/layout_btn_save"
                     android:orientation="horizontal"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center">
+                    android:clickable="true"
+                    android:background="@drawable/click_event"
+                    android:layout_marginTop="@dimen/general_padding_16"
+                    android:focusable="true"
+                    android:baselineAligned="false">
 
-                    <android.support.v7.widget.AppCompatTextView
-                        android:id="@+id/btn_update"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:id="@+id/layout_btn_cancel"
+                        android:orientation="horizontal"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="@string/save"
-                        android:textColor="@color/color_black"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginStart="5dp"
-                        android:textSize="@dimen/general_text_size_16" />
+                        android:layout_weight="1"
+                        android:gravity="center">
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/str_cancel"
+                            android:textColor="@color/color_black"
+                            android:textSize="@dimen/general_text_size_16"
+                            android:gravity="center"/>
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/color_grey"/>
+
+                    <LinearLayout
+                        android:id="@+id/layout_btn_save"
+                        android:orientation="horizontal"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center">
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/btn_update"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/save"
+                            android:textColor="@color/color_black"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
+                            android:textSize="@dimen/general_text_size_16" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
-            </LinearLayout>
-
-            <View
-                android:layout_width="wrap_content"
-                android:layout_height="1dp"
-                android:layout_marginTop="@dimen/general_padding_16"
-                android:background="@color/color_grey"/>
+            </android.support.v7.widget.CardView>
 
         </LinearLayout>
 

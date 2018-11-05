@@ -1,5 +1,8 @@
 package com.team29.speakingpartners.model;
 
+import android.annotation.SuppressLint;
+
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class CallingRequestListModel extends Model {
@@ -89,5 +92,20 @@ public class CallingRequestListModel extends Model {
 
     public void setReq_topic(String req_topic) {
         this.req_topic = req_topic;
+    }
+
+    public String getDateString() {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        return sdf.format(getDate());
+    }
+
+    public String getTimeString() {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+        return sdf.format(getDate());
+    }
+
+    public String getDateTimeString() {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+        return sdf.format(getDate());
     }
 }

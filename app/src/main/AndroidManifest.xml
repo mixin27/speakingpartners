@@ -49,8 +49,6 @@
             android:theme="@style/Main.SpeakingPartner.BlueTheme.NoActionBar"
             tools:targetApi="jelly_bean"/>
 
-        <activity android:name=".activity.EachRecentListActivity" />
-
         <activity
             android:name=".activity.EditProfileActivity"
             android:parentActivityName=".activity.ProfileDetailActivity"

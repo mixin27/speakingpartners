@@ -78,7 +78,7 @@
     <string name="str_offline">Offline</string>
     <string name="save">Save</string>
     <string name="select_your_birthday">Select Your Birthday</string>
-    <string name="str_profile_upload">Set a new profile picture</string>
+    <string name="str_profile_upload">Choose Picture</string>
 
     <string name="str_user_photo">Photo</string>
 
@@ -118,7 +118,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <string name="empty_fragment_text">NO RECENT DATA</string>
+    <string name="empty_fragment_pending_text">You have no pending request</string>
+    <string name="empty_fragment_active_text">No active contact</string>
+    <string name="empty_fragment_recent_text">You have no recent</string>
 
     <!-- Voice Call -->
     <!-- Agora -->
@@ -139,6 +141,8 @@
     <string name="str_connection_interrupted">Connection Interrupted!</string>
     <string name="str_something_wrong">Something went wrong!</string>
     <string name="str_connection_success">Connection Success</string>
-    <string name="str_waiting_process">Waiting...</string>
+    <string name="str_waiting_process">Waiting…</string>
+    <string name="str_connected_process">Connected</string>
+    <string name="str_edit_profile_header">Profile picture is required to know who you are.</string>
 
 </resources>

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,7 +29,6 @@ import com.team29.speakingpartners.R;
 import com.team29.speakingpartners.activity.voicecall.RequestReviewActivity;
 import com.team29.speakingpartners.adapter.PendingListAdapter;
 import com.team29.speakingpartners.model.CallingRequestListModel;
-import com.team29.speakingpartners.model.UserModel;
 import com.team29.speakingpartners.ui.DividerItemDecoration;
 
 import javax.annotation.Nullable;
@@ -42,10 +42,12 @@ public class PendingFragment extends Fragment implements PendingListAdapter.Butt
 
     // Firebase
     private FirebaseFirestore mFirestore;
-
-    private List<UserModel> mLists = new ArrayList<>();
     private PendingListAdapter mAdapter;
+
+    private List<CallingRequestListModel> requestListModelList = new ArrayList<>();
     RecyclerView mPendingListView;
+
+    AppCompatTextView emptyTextView;
 
     public PendingFragment() {
         // Required empty public constructor
@@ -59,6 +61,8 @@ public class PendingFragment extends Fragment implements PendingListAdapter.Butt
         View root = inflater.inflate(R.layout.fragment_pending, container, false);
 
         mFirestore = FirebaseFirestore.getInstance();
+
+        emptyTextView = root.findViewById(R.id.empty_pending_view);
 
         mAdapter = new PendingListAdapter(getContext());
         mAdapter.setItemLists(new ArrayList<CallingRequestListModel>());
@@ -81,6 +85,7 @@ public class PendingFragment extends Fragment implements PendingListAdapter.Butt
                 .collection("calling")
                 .whereEqualTo("to_email", FirebaseAuth.getInstance().getCurrentUser().getEmail())
                 .whereEqualTo("from_status", true)
+                .whereEqualTo("to_status", false)
                 .orderBy("date");
 
         callingQuery.addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -91,7 +96,9 @@ public class PendingFragment extends Fragment implements PendingListAdapter.Butt
                     return;
                 }
 
-                List<CallingRequestListModel> requestListModelList = new ArrayList<>();
+                checkEmptyData(snapshots);
+
+                requestListModelList.clear();
                 for (QueryDocumentSnapshot change : snapshots) {
                     CallingRequestListModel requestListModel = change.toObject(CallingRequestListModel.class).withId(change.getId());
                     requestListModelList.add(requestListModel);
@@ -102,18 +109,40 @@ public class PendingFragment extends Fragment implements PendingListAdapter.Butt
         });
     }
 
+    private void checkEmptyData(QuerySnapshot snapshots) {
+        if (snapshots.getDocuments().size() == 0) {
+            mPendingListView.setVisibility(View.GONE);
+            Log.d(TAG, "ListView : GONE");
+            emptyTextView.setVisibility(View.VISIBLE);
+            Log.d(TAG, "EmptyView : VISIBLE");
+        } else {
+            emptyTextView.setVisibility(View.GONE);
+            Log.d(TAG, "EmptyView : GONE");
+            mPendingListView.setVisibility(View.VISIBLE);
+            Log.d(TAG, "ListView : VISIBLE");
+        }
+    }
+
     @Override
-    public void setOnAcceptButtonClick(String reqTopic, String fromEmail, String channelId, String docId) {
+    public void setOnAcceptButtonClick(CallingRequestListModel model, String docId) {
         Intent i = new Intent(getActivity(), RequestReviewActivity.class);
-        i.putExtra("FROM_EMAIL", fromEmail);
-        i.putExtra("REQ_TOPIC", reqTopic);
-        i.putExtra("CHANNEL_ID", channelId);
+        i.putExtra("FROM_EMAIL", model.getFrom_email());
+        i.putExtra("TO_EMAIL", model.getTo_email());
+        i.putExtra("REQ_TOPIC", model.getReq_topic());
+        i.putExtra("CHANNEL_ID", model.getChannel_id());
         i.putExtra("DOC_ID", docId);
+        i.putExtra("FLAG", "to");
         startActivity(i);
     }
 
     @Override
     public void setOnRejectButtonClick() {
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //checkEmptyData();
     }
 }

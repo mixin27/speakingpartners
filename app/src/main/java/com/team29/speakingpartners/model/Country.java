@@ -1,6 +1,6 @@
 package com.team29.speakingpartners.model;
 
-public class Country {
+public class Country extends Model {
 
     private String name;
     private String short_notation;

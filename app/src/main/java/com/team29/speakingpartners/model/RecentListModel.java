@@ -1,99 +1,83 @@
 package com.team29.speakingpartners.model;
 
+import android.annotation.SuppressLint;
+
+import com.google.firebase.firestore.IgnoreExtraProperties;
+
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class RecentListModel {
+public class RecentListModel extends Model {
 
-    private String user_name;
-    private String record_title;
-    private String call_type;
-    private Date record_date;
-    private String record_duration;
-    private String toEmail;
-    private String fromEmail;
-    private String record_file_url;
+    private String channel_id;
+    private String req_topic;
+    private String from_email;
+    private String to_email;
+    private Date date_time;
 
     public RecentListModel() {
     }
 
-    public RecentListModel(String user_name, String record_title, String call_type,
-                           Date record_date, String record_duration, String toEmail,
-                           String fromEmail, String record_file_url) {
-        this.user_name = user_name;
-        this.record_title = record_title;
-        this.call_type = call_type;
-        this.record_date = record_date;
-        this.record_duration = record_duration;
-        this.toEmail = toEmail;
-        this.fromEmail = fromEmail;
-        this.record_file_url = record_file_url;
+    public RecentListModel(String channel_id, String req_topic, String from_email, String to_email, Date date_time) {
+        this.channel_id = channel_id;
+        this.req_topic = req_topic;
+        this.from_email = from_email;
+        this.to_email = to_email;
+        this.date_time = date_time;
     }
 
-    public RecentListModel(String user_name) {
-        this.user_name = user_name;
+    public String getChannel_id() {
+        return channel_id;
     }
 
-    public String getUser_name() {
-        return user_name;
+    public void setChannel_id(String channel_id) {
+        this.channel_id = channel_id;
     }
 
-    public void setUser_name(String user_name) {
-        this.user_name = user_name;
+    public String getReq_topic() {
+        return req_topic;
     }
 
-    public String getRecord_title() {
-        return record_title;
+    public void setReq_topic(String req_topic) {
+        this.req_topic = req_topic;
     }
 
-    public void setRecord_title(String record_title) {
-        this.record_title = record_title;
+    public String getFrom_email() {
+        return from_email;
     }
 
-    public String getCall_type() {
-        return call_type;
+    public void setFrom_email(String from_email) {
+        this.from_email = from_email;
     }
 
-    public void setCall_type(String call_type) {
-        this.call_type = call_type;
+    public String getTo_email() {
+        return to_email;
     }
 
-    public Date getRecord_date() {
-        return record_date;
+    public void setTo_email(String to_email) {
+        this.to_email = to_email;
     }
 
-    public void setRecord_date(Date record_date) {
-        this.record_date = record_date;
+    public Date getDate_time() {
+        return date_time;
     }
 
-    public String getRecord_duration() {
-        return record_duration;
+    public void setDate_time(Date date_time) {
+        this.date_time = date_time;
     }
 
-    public void setRecord_duration(String record_duration) {
-        this.record_duration = record_duration;
+    public String getDateString() {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        return sdf.format(getDate_time());
     }
 
-    public String getToEmail() {
-        return toEmail;
+    public String getTimeString() {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+        return sdf.format(getDate_time());
     }
 
-    public void setToEmail(String toEmail) {
-        this.toEmail = toEmail;
-    }
-
-    public String getFromEmail() {
-        return fromEmail;
-    }
-
-    public void setFromEmail(String fromEmail) {
-        this.fromEmail = fromEmail;
-    }
-
-    public String getRecord_file_url() {
-        return record_file_url;
-    }
-
-    public void setRecord_file_url(String record_file_url) {
-        this.record_file_url = record_file_url;
+    public String getDateTimeString() {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+        return sdf.format(getDate_time());
     }
 }

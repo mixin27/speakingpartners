@@ -14,11 +14,11 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.team29.speakingpartners.R;
 import com.team29.speakingpartners.model.UserModel;
+import com.team29.speakingpartners.utils.GlideApp;
 
 public class ActiveUserListAdapter extends RecyclerView.Adapter<ActiveUserListAdapter.ActiveUserViewHolder> {
 
@@ -77,10 +77,10 @@ public class ActiveUserListAdapter extends RecyclerView.Adapter<ActiveUserListAd
                 circularProgressDrawable.setStrokeWidth(5f);
                 circularProgressDrawable.setCenterRadius(30f);
                 circularProgressDrawable.start();
-                Glide.with(mContext)
+                GlideApp.with(mContext)
                         .load(mActiveUserModel.getUrl_photo())
                         .apply(RequestOptions.circleCropTransform())
-                        .apply(new RequestOptions().placeholder(circularProgressDrawable))
+                        .placeholder(circularProgressDrawable)
                         .into(imgUserProfile);
             }
             imgUserProfile.setOnClickListener(new View.OnClickListener() {

@@ -13,26 +13,20 @@ import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.DateFormat;
@@ -41,7 +35,10 @@ import java.util.Date;
 import javax.annotation.Nullable;
 
 import com.team29.speakingpartners.R;
+import com.team29.speakingpartners.model.UserModel;
 import com.team29.speakingpartners.net.ConnectionChecking;
+import com.team29.speakingpartners.utils.GlideApp;
+import com.team29.speakingpartners.utils.GlideOptions;
 
 public class ProfileDetailActivity extends AppCompatActivity {
 
@@ -68,9 +65,9 @@ public class ProfileDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // Fullscreen
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        /*requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
 
         setContentView(R.layout.activity_profile_detail);
 
@@ -96,11 +93,11 @@ public class ProfileDetailActivity extends AppCompatActivity {
 
         switchOnlineOffline = findViewById(R.id.btn_switch_active);
 
-        layoutVerifyEmail = findViewById(R.id.verified_layout);
+        /*layoutVerifyEmail = findViewById(R.id.verified_layout);
 
-        tvVerifiedEmailStatus = findViewById(R.id.email_verified);
+        tvVerifiedEmailStatus = findViewById(R.id.email_verified);*/
 
-        progressVerify = findViewById(R.id.progress_verify);
+        /*progressVerify = findViewById(R.id.progress_verify);
 
         btnVerify = findViewById(R.id.btn_send_me);
         btnVerify.setOnClickListener(new View.OnClickListener() {
@@ -118,7 +115,7 @@ public class ProfileDetailActivity extends AppCompatActivity {
                             }
                         });
             }
-        });
+        });*/
 
         // FetchInformation
         if (ConnectionChecking.checkConnection(this)) {
@@ -252,50 +249,42 @@ public class ProfileDetailActivity extends AppCompatActivity {
                         return;
                     }
 
-                    for (DocumentChange change : queryDocumentSnapshots.getDocumentChanges()) {
-                        if (change.getType() == DocumentChange.Type.ADDED) {
-                            Log.d(TAG, "New city:" + change.getDocument().getData());
-                        }
+                    for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
+                        UserModel model = snapshot.toObject(UserModel.class).withId(snapshot.getId());
+                        user_id = model.id;
 
-                        String source = queryDocumentSnapshots.getMetadata().isFromCache() ?
-                                "local cache" : "server";
-                        Log.d(TAG, "Data fetched from " + source);
-
-                        user_id = change.getDocument().getId();
-                        Log.d(TAG, "CurrentUserId: " + user_id);
-
-                        active_status = (long) change.getDocument().get("active_status");
-                        Log.d(TAG, "CurrentUserStatus: " + active_status);
-
+                        active_status = model.getActive_status();
                         if (active_status == 1) {
                             switchOnlineOffline.setChecked(true);
                         } else {
                             switchOnlineOffline.setChecked(false);
                         }
 
-                        tvUserName.setText(change.getDocument().getString("user_name"));
-                        tvUserEmail.setText(change.getDocument().getString("email"));
-                        tvUserLevel.setText(change.getDocument().getString("level"));
-                        tvUserCountry.setText(change.getDocument().getString("country"));
+                        tvUserName.setText(model.getUser_name());
+                        tvUserEmail.setText(model.getEmail());
+                        tvUserLevel.setText(model.getLevel());
+                        tvUserCountry.setText(model.getCountry());
+                        tvUserDOB.setText(model.getDateOfBirthString());
+                        tvUserGender.setText(model.getGender());
 
-                        String dob = getDateOfBirth(change.getDocument().getDate("date_of_birth"));
-                        tvUserDOB.setText(dob);
-
-                        tvUserGender.setText(change.getDocument().getString("gender"));
-                        if (!change.getDocument().getString("url_photo").equals("")) {
+                        if (!model.getUrl_photo().equals("")) {
                             CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(getApplicationContext());
                             circularProgressDrawable.setStrokeWidth(5f);
                             circularProgressDrawable.setCenterRadius(30f);
                             circularProgressDrawable.start();
-                            Glide.with(getApplicationContext())
-                                    .load(Uri.parse(change.getDocument().getString("url_photo")))
-                                    .apply(RequestOptions.circleCropTransform())
-                                    .apply(new RequestOptions().placeholder(circularProgressDrawable))
+                            GlideApp.with(getApplicationContext())
+                                    .load(Uri.parse(model.getUrl_photo()))
+                                    /*.apply(GlideOptions.circleCropTransform())*/
+                                    .placeholder(circularProgressDrawable)
                                     .into(imgProfile);
                         }
                     }
                 }
             });
         }
+    }
+
+    public void btnBack(View view) {
+        finish();
     }
 }

@@ -2,6 +2,7 @@ package com.team29.speakingpartners.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.CircularProgressDrawable;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
@@ -12,11 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import java.util.Date;
 import java.util.List;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -26,6 +24,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.team29.speakingpartners.R;
 import com.team29.speakingpartners.model.CallingRequestListModel;
 import com.team29.speakingpartners.model.UserModel;
+import com.team29.speakingpartners.utils.GlideApp;
+import com.team29.speakingpartners.utils.GlideOptions;
 
 import javax.annotation.Nullable;
 
@@ -40,8 +40,6 @@ public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.
 
     private ButtonItemClickListener buttonItemClickListener;
 
-    private String mDocId;
-
     public PendingListAdapter(Context mContext) {
         this.mContext = mContext;
         mFirestore = FirebaseFirestore.getInstance();
@@ -55,14 +53,6 @@ public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.
     public void setItemLists(List<CallingRequestListModel> mLists) {
         this.mLists = mLists;
         notifyDataSetChanged();
-    }
-
-    public void setDocId(String id) {
-        this.mDocId = id;
-    }
-
-    public String getDocId() {
-        return mDocId;
     }
 
     public void setButtonClickListener(ButtonItemClickListener listener) {
@@ -123,20 +113,27 @@ public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.
 
                     for (QueryDocumentSnapshot snapshot : snapshots) {
 
-                        pendingUserName.setText(snapshot.getString("user_name"));
+                        UserModel userModel = snapshot.toObject(UserModel.class).withId(snapshot.getId());
 
-                        if (!snapshot.getString("url_photo").equals("")) {
+                        pendingUserName.setText(userModel.getUser_name());
+
+                        if (!userModel.getUrl_photo().equals("")) {
                             imgProfile.setBackgroundDrawable(null);
-                            Glide.with(mContext)
-                                    .load(snapshot.getString("url_photo"))
-                                    .apply(RequestOptions.circleCropTransform())
+                            CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(mContext);
+                            circularProgressDrawable.setStrokeWidth(5f);
+                            circularProgressDrawable.setCenterRadius(30f);
+                            circularProgressDrawable.start();
+                            GlideApp.with(mContext)
+                                    .load(userModel.getUrl_photo())
+                                    .apply(GlideOptions.circleCropTransform())
+                                    .placeholder(circularProgressDrawable)
                                     .into(imgProfile);
                         }
 
-                        if (Integer.parseInt(snapshot.get("active_status").toString()) == 0) {
+                        if (userModel.getActive_status() == 0) {
                             pendingUserActiveStatus.setText(mContext.getResources().getString(R.string.str_offline));
                             pendingUserActiveStatus.setTextColor(mContext.getResources().getColor(R.color.color_grey));
-                        } else if (Integer.parseInt(snapshot.get("active_status").toString()) == 1) {
+                        } else if (userModel.getActive_status() == 1) {
                             pendingUserActiveStatus.setText(mContext.getResources().getString(R.string.str_user_active_now));
                             pendingUserActiveStatus.setTextColor(mContext.getResources().getColor(R.color.color_green));
                         }
@@ -154,8 +151,7 @@ public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.
             btnPendingAccept.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    buttonItemClickListener.setOnAcceptButtonClick(mPendingUserModel.getReq_topic(),
-                            mPendingUserModel.getFrom_email(), mPendingUserModel.getChannel_id(),
+                    buttonItemClickListener.setOnAcceptButtonClick(mPendingUserModel,
                             mPendingUserModel.id);
                 }
             });
@@ -171,7 +167,7 @@ public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.
     }
 
     public interface ButtonItemClickListener {
-        void setOnAcceptButtonClick(String reqTopic, String fromEmail, String channelId, String docId);
+        void setOnAcceptButtonClick(CallingRequestListModel model, String docId);
 
         void setOnRejectButtonClick();
     }

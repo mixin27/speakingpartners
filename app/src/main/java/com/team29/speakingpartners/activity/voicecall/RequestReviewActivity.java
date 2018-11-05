@@ -30,6 +30,7 @@ public class RequestReviewActivity extends AppCompatActivity {
     public static final String TAG = RequestReviewActivity.class.getSimpleName();
 
     String fromEmail = "";
+    String toEmail = "";
     String requestTopic = "";
     String channelId = "";
     String docId = "";
@@ -46,7 +47,6 @@ public class RequestReviewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_request_review);
 
         mFirestore = FirebaseFirestore.getInstance();
-        //mFirestore.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(true).build());
 
         getIntentExtraData();
 
@@ -81,9 +81,13 @@ public class RequestReviewActivity extends AppCompatActivity {
 
                 Intent i = new Intent(RequestReviewActivity.this, CallingViewActivity.class);
                 i.putExtra("CHANNEL_ID", channelId);
+                i.putExtra("TO_EMAIL", toEmail);
                 i.putExtra("FROM_EMAIL", fromEmail);
                 i.putExtra("REQ_TOPIC", requestTopic);
+                i.putExtra("DOC_ID", docId);
+                i.putExtra("FLAG", "to");
                 startActivity(i);
+                finish();
             }
         });
 
@@ -93,6 +97,11 @@ public class RequestReviewActivity extends AppCompatActivity {
         if (!getIntent().getExtras().getString("FROM_EMAIL").equals("")) {
             fromEmail = getIntent().getExtras().getString("FROM_EMAIL");
             Log.d(TAG, "From : " + fromEmail);
+        }
+
+        if (!getIntent().getExtras().getString("TO_EMAIL").equals("")) {
+            fromEmail = getIntent().getExtras().getString("TO_EMAIL");
+            Log.d(TAG, "To : " + toEmail);
         }
 
         if (!getIntent().getExtras().getString("REQ_TOPIC").equals("")) {

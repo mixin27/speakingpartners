@@ -7,10 +7,11 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.CircularProgressDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageButton;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.View;
@@ -18,13 +19,30 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.Date;
 import java.util.Locale;
 
 import io.agora.rtc.IRtcEngineEventHandler;
 import io.agora.rtc.RtcEngine;
+
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.team29.speakingpartners.R;
+import com.team29.speakingpartners.model.RecentListModel;
+import com.team29.speakingpartners.utils.GlideApp;
+import com.team29.speakingpartners.utils.GlideOptions;
+
+import javax.annotation.Nullable;
 
 public class CallingViewActivity extends AppCompatActivity {
 
@@ -34,12 +52,17 @@ public class CallingViewActivity extends AppCompatActivity {
 
     private static String CHANNEL_ID = "Channel1";
     private static String FROM_EMAIL = "";
+    private static String TO_EMAIL = "";
     private static String REQ_TOPIC = "";
+    private static String DOC_ID = "";
+    private static String FLAG = "";
 
     AppCompatImageButton btnSpeaker, btnLocalAudio, btnEndCall;
     AppCompatTextView tvChannelId, tvFromEmail, tvSpeakingTopic, tvConnectionStatus;
+    AppCompatImageView imgProfile;
 
     FirebaseAuth mAuth;
+    FirebaseFirestore mFirestore;
 
     private RtcEngine mRtcEngine;
     private final IRtcEngineEventHandler mRtcEventHandler = new IRtcEngineEventHandler() {
@@ -137,6 +160,7 @@ public class CallingViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_calling_view);
 
         mAuth = FirebaseAuth.getInstance();
+        mFirestore = FirebaseFirestore.getInstance();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.RECORD_AUDIO, PERMISSION_REQ_ID_RECORD_AUDIO)) {
@@ -147,13 +171,18 @@ public class CallingViewActivity extends AppCompatActivity {
         getIntentExtraData();
 
         tvConnectionStatus = findViewById(R.id.connection_status);
-        tvConnectionStatus.setText(getString(R.string.str_waiting_process));
+
+        imgProfile = findViewById(R.id.profile_image);
 
         tvChannelId = findViewById(R.id.channel_id);
         tvChannelId.setText("Channel ID : " + CHANNEL_ID);
 
         tvFromEmail = findViewById(R.id.from_email);
-        tvFromEmail.setText("From : " + FROM_EMAIL);
+        if (FLAG.equals("from")) {
+            tvFromEmail.setText("With " + TO_EMAIL);
+        } else if (FLAG.equals("to")) {
+            tvFromEmail.setText("With " + FROM_EMAIL);
+        }
 
         tvSpeakingTopic = findViewById(R.id.speaking_topic);
         tvSpeakingTopic.setText("Topic : " + REQ_TOPIC);
@@ -178,11 +207,97 @@ public class CallingViewActivity extends AppCompatActivity {
         btnEndCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /* Have to store for recent data */
+                storeRecentData();
                 finish();
+                /* Have to delete recent calling data */
+                // deleteCallingData();
             }
         });
+    }
 
+    private void fetchJoiningStatus(final String s) {
 
+        if (s.equals("from")) {
+            setUserData(TO_EMAIL);
+            tvFromEmail.setText("With " + TO_EMAIL);
+            tvConnectionStatus.setText(getResources().getString(R.string.str_connected_process));
+        } else if (s.equals("to")) {
+            setUserData(FROM_EMAIL);
+            tvFromEmail.setText("With " + FROM_EMAIL);
+            tvConnectionStatus.setText(getResources().getString(R.string.str_connected_process));
+        }
+    }
+
+    private void setUserData(String email) {
+        mFirestore.collection("users")
+                .whereEqualTo("email", email)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.d(TAG, "Listen Error");
+                            return;
+                        }
+
+                        for (QueryDocumentSnapshot snapshot : snapshots) {
+                            CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(getApplicationContext());
+                            circularProgressDrawable.setCenterRadius(30f);
+                            circularProgressDrawable.setStrokeWidth(5f);
+                            imgProfile.setBackgroundDrawable(null);
+                            GlideApp.with(getApplicationContext())
+                                    .load(snapshot.getString("url_photo"))
+                                    .apply(GlideOptions.centerCropTransform())
+                                    .placeholder(circularProgressDrawable)
+                                    .into(imgProfile);
+                        }
+
+                    }
+                });
+    }
+
+    private void deleteCallingData() {
+        DocumentReference delete = mFirestore.collection("calling").document(DOC_ID);
+        delete.delete()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Log.d(TAG, "Delete successful");
+                        finish();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "Failed to delete");
+                        finish();
+                    }
+                });
+    }
+
+    private void storeRecentData() {
+        RecentListModel recentModel = new RecentListModel(
+                CHANNEL_ID,
+                REQ_TOPIC,
+                FROM_EMAIL,
+                FirebaseAuth.getInstance().getCurrentUser().getEmail(),
+                new Date()
+        );
+        mFirestore.collection("recent")
+                .add(recentModel)
+                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        Log.d(TAG, "Recent add successful!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "Recent add failed!");
+                        Toast.makeText(getApplicationContext(), "Storing recent data failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void getIntentExtraData() {
@@ -194,8 +309,16 @@ public class CallingViewActivity extends AppCompatActivity {
             FROM_EMAIL = getIntent().getExtras().getString("FROM_EMAIL");
         }
 
+        if (!getIntent().getExtras().getString("TO_EMAIL").equals("")) {
+            TO_EMAIL = getIntent().getExtras().getString("TO_EMAIL");
+        }
+
         if (!getIntent().getExtras().getString("REQ_TOPIC").equals("")) {
             REQ_TOPIC = getIntent().getExtras().getString("REQ_TOPIC");
+        }
+
+        if (!getIntent().getExtras().getString("FLAG").equals("")) {
+            FLAG = getIntent().getExtras().getString("FLAG");
         }
     }
 
@@ -240,6 +363,12 @@ public class CallingViewActivity extends AppCompatActivity {
         leaveChannel();
         RtcEngine.destroy();
         mRtcEngine = null;
+    }
+
+    @Override
+    public void onBackPressed() {
+        /*storeRecentData();
+        super.onBackPressed();*/
     }
 
     private void leaveChannel() {

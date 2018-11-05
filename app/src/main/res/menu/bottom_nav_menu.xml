@@ -9,12 +9,12 @@
         android:icon="@drawable/ic_people_white_24dp"
         android:title="@string/bottom_nav_active" />
 
-    <item android:id="@+id/bottom_nav_recent"
-        android:icon="@drawable/ic_history"
-        android:title="@string/bottom_nav_recent" />
-
     <item android:id="@+id/bottom_nav_pending"
         android:icon="@drawable/ic_format_list_bulleted"
         android:title="@string/bottom_nav_pending" />
+
+    <item android:id="@+id/bottom_nav_recent"
+        android:icon="@drawable/ic_history"
+        android:title="@string/bottom_nav_recent" />
 
 </menu>

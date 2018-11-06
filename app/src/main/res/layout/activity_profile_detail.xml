@@ -370,6 +370,37 @@
                         android:background="@color/color_grey"/>
 
                     <LinearLayout
+                        android:id="@+id/btn_about_app_layout"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:clickable="true"
+                        android:background="@drawable/click_event"
+                        android:focusable="true">
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:src="@drawable/ic_info_outline_white_24dp"
+                            app:tint="@color/color_more_grey"/>
+
+                        <android.support.v7.widget.AppCompatButton
+                            android:id="@+id/btn_about_app"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:text="@string/action_about"
+                            android:textAllCaps="false" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="1dp"
+                        android:background="@color/color_grey"/>
+
+                    <LinearLayout
                         android:id="@+id/btn_log_out_layout"
                         android:orientation="horizontal"
                         android:layout_width="match_parent"

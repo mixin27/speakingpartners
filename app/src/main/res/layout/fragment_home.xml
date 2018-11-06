@@ -1,14 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/general_padding_16"
     tools:context=".fragment.HomeFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
 
-</FrameLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Guides For You"
+                android:textSize="@dimen/general_text_size_16"
+                android:textStyle="bold"
+                android:layout_gravity="center_horizontal"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/guide_header_elementary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Elementary"
+                android:textStyle="bold"
+                android:textSize="@dimen/general_text_size_16"/>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="@dimen/general_padding_4"
+                app:cardElevation="@dimen/general_padding_4"
+                android:padding="@dimen/general_padding_4"
+                android:layout_marginTop="@dimen/general_padding_16">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/elementary_topic_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/guide_header_intermediate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/general_padding_16"
+                android:text="Intermediate"
+                android:textStyle="bold"
+                android:textSize="@dimen/general_text_size_16"/>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="@dimen/general_padding_4"
+                app:cardElevation="@dimen/general_padding_4"
+                android:padding="@dimen/general_padding_4"
+                android:layout_marginTop="@dimen/general_padding_16">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/intermediate_topic_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/guide_header_upper_intermediate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/general_padding_16"
+                android:text="Upper-Intermediate"
+                android:textStyle="bold"
+                android:textSize="@dimen/general_text_size_16"/>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="@dimen/general_padding_4"
+                app:cardElevation="@dimen/general_padding_4"
+                android:padding="@dimen/general_padding_4"
+                android:layout_marginTop="@dimen/general_padding_16">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/upper_intermediate_topic_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/guide_header_advance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/general_padding_16"
+                android:text="Advance"
+                android:textStyle="bold"
+                android:textSize="@dimen/general_text_size_16"/>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="@dimen/general_padding_4"
+                app:cardElevation="@dimen/general_padding_4"
+                android:padding="@dimen/general_padding_4"
+                android:layout_marginTop="@dimen/general_padding_16">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/advance_topic_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
+
+    </android.support.v4.widget.NestedScrollView>
+
+
+</RelativeLayout>

@@ -32,7 +32,7 @@
         <!--<item name="windowNoTitle">true</item>-->
     </style>
 
-    <style name="Main.SpeakingPartner.BlueTheme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Main.SpeakingPartner.BlueTheme.NoActionBar" parent="Theme.AppCompat.Light">
         <item name="colorPrimary">@color/color_blue_500</item>
         <item name="colorPrimaryDark">@color/color_blue_700</item>
         <item name="colorAccent">@color/color_accent_blue_500</item>

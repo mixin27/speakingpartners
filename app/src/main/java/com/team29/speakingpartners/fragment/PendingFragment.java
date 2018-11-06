@@ -14,7 +14,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -136,8 +140,21 @@ public class PendingFragment extends Fragment implements PendingListAdapter.Butt
     }
 
     @Override
-    public void setOnRejectButtonClick() {
-
+    public void setOnRejectButtonClick(String docId) {
+        DocumentReference docRef = mFirestore.collection("calling").document(docId);
+        docRef.delete()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Log.d(TAG, "Delete Success");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "Failed to delete");
+                    }
+                });
     }
 
     @Override

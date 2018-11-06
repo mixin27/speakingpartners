@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/general_padding_16"
+    android:orientation="vertical"
+    tools:context=".activity.TopicGuideDetailActivity">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/topic_detail_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textSize="@dimen/general_text_size_16"
+        android:textStyle="bold"
+        android:text="Work"/>
+
+    <android.support.v4.widget.NestedScrollView
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="@dimen/general_padding_4"
+            app:cardElevation="@dimen/general_padding_4"
+            android:padding="@dimen/general_padding_16"
+            android:layout_marginTop="@dimen/general_padding_16">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tv_topic_guide_lines"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:editable="false"
+                tools:ignore="Deprecated"
+                android:textSize="@dimen/general_text_size_14"/>
+
+        </android.support.v7.widget.CardView>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</LinearLayout>

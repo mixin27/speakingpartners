@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="@dimen/general_padding_4">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tv_topic_name"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_weight="5"
+        android:gravity="center_vertical"
+        android:text="@string/pre_calling_topic"
+        android:textColor="@color/color_black"
+        android:textStyle="normal"
+        android:textSize="@dimen/general_text_size_14" />
+
+    <android.support.v7.widget.AppCompatImageButton
+        android:id="@+id/btn_topic_detail"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:src="@drawable/ic_chevron_right_black_24dp"/>
+
+</LinearLayout>

@@ -79,13 +79,10 @@ public class RequestReviewActivity extends AppCompatActivity {
                             }
                         });
 
-                Intent i = new Intent(RequestReviewActivity.this, CallingViewActivity.class);
+                Intent i = new Intent(RequestReviewActivity.this, ToCallingViewActivity.class);
                 i.putExtra("CHANNEL_ID", channelId);
-                i.putExtra("TO_EMAIL", toEmail);
                 i.putExtra("FROM_EMAIL", fromEmail);
                 i.putExtra("REQ_TOPIC", requestTopic);
-                i.putExtra("DOC_ID", docId);
-                i.putExtra("FLAG", "to");
                 startActivity(i);
                 finish();
             }
@@ -100,7 +97,7 @@ public class RequestReviewActivity extends AppCompatActivity {
         }
 
         if (!getIntent().getExtras().getString("TO_EMAIL").equals("")) {
-            fromEmail = getIntent().getExtras().getString("TO_EMAIL");
+            toEmail = getIntent().getExtras().getString("TO_EMAIL");
             Log.d(TAG, "To : " + toEmail);
         }
 

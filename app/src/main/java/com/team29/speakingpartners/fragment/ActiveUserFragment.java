@@ -67,6 +67,7 @@ public class ActiveUserFragment extends Fragment implements ActiveUserListAdapte
         mActiveUserList.setItemAnimator(new DefaultItemAnimator());
         mActiveUserList.setAdapter(mAdapter);
 
+
         prepareData();
 
         return root;
@@ -82,10 +83,11 @@ public class ActiveUserFragment extends Fragment implements ActiveUserListAdapte
                     Log.w(TAG, "Listen failed.", e);
                     return;
                 }
+
                 List<UserModel> data = new ArrayList<>();
                 for (QueryDocumentSnapshot change : queryDocumentSnapshots) {
 
-                    UserModel userModel = change.toObject(UserModel.class);
+                    UserModel userModel = change.toObject(UserModel.class).withId(change.getId());
                     Log.d(TAG, "Model" + userModel.getEmail());
                     data.add(userModel);
                 }

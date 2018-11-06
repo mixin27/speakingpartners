@@ -15,7 +15,6 @@
         android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Main.SpeakingPartner.LightBlueTheme"
         tools:ignore="GoogleAppIndexingWarning">
@@ -44,25 +43,31 @@
         <activity
             android:name=".MainActivity"
             android:theme="@style/Main.SpeakingPartner.BlueTheme" />
-
-        <activity android:name=".activity.voicecall.CallingViewActivity"
+        <activity
+            android:name=".activity.voicecall.FromCallingViewActivity"
             android:theme="@style/Main.SpeakingPartner.BlueTheme.NoActionBar"
-            tools:targetApi="jelly_bean"/>
-
+            tools:targetApi="jelly_bean" />
         <activity
             android:name=".activity.EditProfileActivity"
             android:parentActivityName=".activity.ProfileDetailActivity"
             android:theme="@style/Main.SpeakingPartner.BlueTheme.NoActionBar"
             tools:targetApi="jelly_bean" />
-
         <activity
             android:name=".activity.voicecall.PreCallingDialogActivity"
             android:theme="@style/Main.SpeakingPartner.DialogTheme"
             tools:targetApi="lollipop" />
-
-        <activity android:name=".activity.voicecall.RequestReviewActivity"
+        <activity
+            android:name=".activity.voicecall.RequestReviewActivity"
             android:theme="@style/Main.SpeakingPartner.DialogTheme"
-            tools:targetApi="lollipop"/>
+            tools:targetApi="lollipop" />
+        <activity
+            android:name=".activity.voicecall.ToCallingViewActivity"
+            android:theme="@style/Main.SpeakingPartner.BlueTheme.NoActionBar"
+            tools:targetApi="jelly_bean" />
+
+        <activity android:name=".activity.TopicGuideDetailActivity"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Main.SpeakingPartner.LightBlueTheme"/>
     </application>
 
 </manifest>

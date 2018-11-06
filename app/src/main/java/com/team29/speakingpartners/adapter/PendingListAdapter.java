@@ -159,7 +159,7 @@ public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.
             btnPendingReject.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    buttonItemClickListener.setOnRejectButtonClick();
+                    buttonItemClickListener.setOnRejectButtonClick(mPendingUserModel.id);
                 }
             });
         }
@@ -169,7 +169,7 @@ public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.
     public interface ButtonItemClickListener {
         void setOnAcceptButtonClick(CallingRequestListModel model, String docId);
 
-        void setOnRejectButtonClick();
+        void setOnRejectButtonClick(String docId);
     }
 
 }

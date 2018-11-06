@@ -102,9 +102,9 @@ public class RecentListAdapter extends RecyclerView.Adapter<RecentListAdapter.Re
         private void bindView(RecentListModel model) {
             this.mRecentListModel = model;
 
-            if (mRecentListModel.getFrom_email().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+            if (FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(mRecentListModel.getFrom_email())) {
                 fetchUserData(mRecentListModel.getFrom_email());
-            } else {
+            } else if (FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(mRecentListModel.getTo_email())){
                 fetchUserData(mRecentListModel.getTo_email());
             }
 

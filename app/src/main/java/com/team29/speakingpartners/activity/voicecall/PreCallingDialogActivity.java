@@ -84,6 +84,8 @@ public class PreCallingDialogActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                btnRequest.setEnabled(false);
+
                 if (!FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(USER_EMAIL)) {
                     final CallingRequestListModel model = new CallingRequestListModel(
                             UUID.randomUUID().toString(),
@@ -102,12 +104,11 @@ public class PreCallingDialogActivity extends AppCompatActivity {
                                 public void onSuccess(DocumentReference documentReference) {
                                     Log.d(TAG, "Request Success");
                                     Toast.makeText(getApplicationContext(), "Request sent", Toast.LENGTH_SHORT).show();
-                                    Intent i = new Intent(PreCallingDialogActivity.this, CallingViewActivity.class);
+                                    Intent i = new Intent(PreCallingDialogActivity.this, FromCallingViewActivity.class);
                                     i.putExtra("FROM_EMAIL", model.getFrom_email());
                                     i.putExtra("TO_EMAIL", model.getTo_email());
                                     i.putExtra("REQ_TOPIC", model.getReq_topic());
                                     i.putExtra("CHANNEL_ID", model.getChannel_id());
-                                    i.putExtra("FLAG", "from");
                                     startActivity(i);
                                     finish();
                                 }

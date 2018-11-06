@@ -1,10 +1,12 @@
 package com.team29.speakingpartners.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.CircularProgressDrawable;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
@@ -38,7 +40,6 @@ import com.team29.speakingpartners.R;
 import com.team29.speakingpartners.model.UserModel;
 import com.team29.speakingpartners.net.ConnectionChecking;
 import com.team29.speakingpartners.utils.GlideApp;
-import com.team29.speakingpartners.utils.GlideOptions;
 
 public class ProfileDetailActivity extends AppCompatActivity {
 
@@ -141,14 +142,29 @@ public class ProfileDetailActivity extends AppCompatActivity {
         btnLogOutLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mAuth.getCurrentUser() != null) {
-                    mAuth.signOut();
-                    Log.d(TAG, "Log out successful!");
 
-                    finish();
-                    startActivity(new Intent(ProfileDetailActivity.this, LoginActivity.class));
-                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                }
+                new AlertDialog.Builder(ProfileDetailActivity.this)
+                        .setTitle("")
+                        .setMessage("Are you sure want to log out?")
+                        .setNegativeButton(getString(R.string.str_cancel), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setPositiveButton(getString(R.string.str_ok), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (mAuth.getCurrentUser() != null) {
+                                    mAuth.signOut();
+                                    Log.d(TAG, "Log out successful!");
+
+                                    finish();
+                                    startActivity(new Intent(ProfileDetailActivity.this, LoginActivity.class));
+                                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                }
+                            }
+                        }).show();
             }
         });
 
@@ -156,7 +172,7 @@ public class ProfileDetailActivity extends AppCompatActivity {
         btnChangePasswordLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Change Password", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Coming soon", Toast.LENGTH_SHORT).show();
             }
         });
 

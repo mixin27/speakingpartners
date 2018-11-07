@@ -7,15 +7,6 @@
     android:padding="@dimen/general_padding_16"
     tools:context=".activity.LoginActivity">
 
-    <ProgressBar
-        android:id="@+id/progress_login"
-        style="@style/Widget.AppCompat.ProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:theme="@style/CircularProgress"
-        android:visibility="gone"/>
-
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -24,7 +15,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center_vertical">
+            android:layout_gravity="center">
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -66,14 +57,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="@dimen/general_padding_16"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/app_logo"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
-                    android:src="@drawable/ic_person_white_24dp"
-                    android:background="@drawable/circular_border_image_view"
+                    android:src="@mipmap/ic_launcher"
                     android:contentDescription="@string/app_name"/>
 
             </LinearLayout>
@@ -82,7 +73,7 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="@dimen/general_padding_16">
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/subtitle"
@@ -99,7 +90,7 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/general_padding_16"
                 android:padding="5dp">
 
                 <android.support.v7.widget.AppCompatEditText
@@ -108,7 +99,7 @@
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress"
                     android:drawableRight="@drawable/ic_person_white_24dp"
-                    android:drawableTint="@color/color_grey"
+                    android:drawableTint="@color/color_blue_500"
                     android:hint="@string/str_user_email"
                     android:drawableEnd="@drawable/ic_person_white_24dp"
                     tools:targetApi="m" />
@@ -139,7 +130,7 @@
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
                     android:drawableRight="@drawable/ic_lock_black_24dp"
-                    android:drawableTint="@color/color_grey"
+                    android:drawableTint="@color/color_blue_500"
                     android:hint="@string/str_user_password"
                     android:drawableEnd="@drawable/ic_lock_black_24dp"
                     tools:targetApi="m" />
@@ -147,7 +138,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp">
@@ -160,6 +151,15 @@
                     android:text="@string/str_log_in"
                     android:textColor="@color/color_white"/>
 
+                <ProgressBar
+                    android:id="@+id/progress_login"
+                    style="@style/Widget.AppCompat.ProgressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:theme="@style/CircularProgress"
+                    android:visibility="gone"/>
+
             </LinearLayout>
 
             <LinearLayout
@@ -167,7 +167,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="@dimen/general_padding_16">
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/tv_forgot_password"
@@ -175,7 +175,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/str_forgot_password"
                     android:textSize="@dimen/general_text_size_14"
-                    android:textStyle="bold"
+                    android:textStyle="normal"
                     android:textColor="@color/design_default_color_primary_dark"/>
 
             </LinearLayout>
@@ -185,7 +185,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="@dimen/general_padding_16">
 
                 <android.support.v7.widget.AppCompatTextView
                     android:layout_width="wrap_content"
@@ -207,9 +207,9 @@
                     android:id="@+id/btn_create_new_account"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/sign_up_button_design"
+                    android:background="@android:color/transparent"
                     android:text="@string/str_create_new_account"
-                    android:textColor="@color/color_white"/>
+                    android:textColor="@color/color_blue_700"/>
 
             </LinearLayout>
 

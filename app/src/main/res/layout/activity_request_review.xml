@@ -130,7 +130,8 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp">
+            android:layout_marginTop="6dp"
+            android:visibility="gone">
 
             <android.support.v7.widget.AppCompatTextView
                 android:layout_width="0dp"

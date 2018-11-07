@@ -105,10 +105,7 @@ public class PreCallingDialogActivity extends AppCompatActivity {
                                     Log.d(TAG, "Request Success");
                                     Toast.makeText(getApplicationContext(), "Request sent", Toast.LENGTH_SHORT).show();
                                     Intent i = new Intent(PreCallingDialogActivity.this, FromCallingViewActivity.class);
-                                    i.putExtra("FROM_EMAIL", model.getFrom_email());
-                                    i.putExtra("TO_EMAIL", model.getTo_email());
-                                    i.putExtra("REQ_TOPIC", model.getReq_topic());
-                                    i.putExtra("CHANNEL_ID", model.getChannel_id());
+                                    i.putExtra("REQ_MODEL", model);
                                     startActivity(i);
                                     finish();
                                 }

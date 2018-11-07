@@ -2,11 +2,12 @@ package com.team29.speakingpartners.model;
 
 import android.annotation.SuppressLint;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class UserModel extends Model{
+public class UserModel extends Model implements Serializable {
 
     private String user_name;
     private String email;
@@ -158,20 +159,20 @@ public class UserModel extends Model{
 
     public String getDateOfBirthString() {
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        return sdf.format(getDate_of_birth());
+        return getDate_of_birth() == null ? null : sdf.format(getDate_of_birth());
     }
 
     public String getTimeOfBirthString() {
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-        return sdf.format(getDate_of_birth());
+        return getDate_of_birth() == null ? null : sdf.format(getDate_of_birth());
     }
 
     public String getDateTimeOfBirthString() {
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
-        return sdf.format(getDate_of_birth());
+        return getDate_of_birth() == null ? null : sdf.format(getDate_of_birth());
     }
 
-    private String getDateOfBirthFull() {
+    /*private String getDateOfBirthFull() {
         return DateFormat.getDateInstance(DateFormat.FULL).format(getDate_of_birth());
-    }
+    }*/
 }

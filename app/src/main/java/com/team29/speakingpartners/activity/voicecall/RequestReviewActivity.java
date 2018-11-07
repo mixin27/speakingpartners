@@ -22,6 +22,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.team29.speakingpartners.R;
+import com.team29.speakingpartners.model.CallingRequestListModel;
 
 import javax.annotation.Nullable;
 
@@ -29,11 +30,8 @@ public class RequestReviewActivity extends AppCompatActivity {
 
     public static final String TAG = RequestReviewActivity.class.getSimpleName();
 
-    String fromEmail = "";
-    String toEmail = "";
-    String requestTopic = "";
-    String channelId = "";
-    String docId = "";
+    CallingRequestListModel requestListModel;
+    String id;
 
     FirebaseFirestore mFirestore;
 
@@ -59,10 +57,10 @@ public class RequestReviewActivity extends AppCompatActivity {
         fetchRequestUserInformation();
 
         tvUserEmail = findViewById(R.id.tv_calling_request_email);
-        tvUserEmail.setText(fromEmail);
+        tvUserEmail.setText(requestListModel.getFrom_email());
 
         tvRequestTopic = findViewById(R.id.tv_calling_request_topic);
-        tvRequestTopic.setText(requestTopic);
+        tvRequestTopic.setText(requestListModel.getReq_topic());
 
         btnStart = findViewById(R.id.calling_request_start);
         btnStart.setOnClickListener(new View.OnClickListener() {
@@ -70,7 +68,7 @@ public class RequestReviewActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 DocumentReference docRef = mFirestore.collection("calling")
-                        .document(docId);
+                        .document(id);
                 docRef.update("to_status", true)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
@@ -80,9 +78,7 @@ public class RequestReviewActivity extends AppCompatActivity {
                         });
 
                 Intent i = new Intent(RequestReviewActivity.this, ToCallingViewActivity.class);
-                i.putExtra("CHANNEL_ID", channelId);
-                i.putExtra("FROM_EMAIL", fromEmail);
-                i.putExtra("REQ_TOPIC", requestTopic);
+                i.putExtra("REQ_MODEL", requestListModel);
                 startActivity(i);
                 finish();
             }
@@ -91,35 +87,19 @@ public class RequestReviewActivity extends AppCompatActivity {
     }
 
     private void getIntentExtraData() {
-        if (!getIntent().getExtras().getString("FROM_EMAIL").equals("")) {
-            fromEmail = getIntent().getExtras().getString("FROM_EMAIL");
-            Log.d(TAG, "From : " + fromEmail);
+        if (getIntent().getSerializableExtra("REQ_MODEL") != null) {
+            requestListModel = (CallingRequestListModel) getIntent().getSerializableExtra("REQ_MODEL");
+            Log.d(TAG, "From : " + requestListModel.getFrom_email());
         }
 
-        if (!getIntent().getExtras().getString("TO_EMAIL").equals("")) {
-            toEmail = getIntent().getExtras().getString("TO_EMAIL");
-            Log.d(TAG, "To : " + toEmail);
-        }
-
-        if (!getIntent().getExtras().getString("REQ_TOPIC").equals("")) {
-            requestTopic = getIntent().getExtras().getString("REQ_TOPIC");
-            Log.d(TAG, "Topic : " + requestTopic);
-        }
-
-        if (!getIntent().getExtras().getString("CHANNEL_ID").equals("")) {
-            channelId = getIntent().getExtras().getString("CHANNEL_ID");
-            Log.d(TAG, "ChannelID : " + channelId);
-        }
-
-        if (!getIntent().getExtras().getString("DOC_ID").equals("")) {
-            docId = getIntent().getExtras().getString("DOC_ID");
-            Log.d(TAG, "DocId : " + docId);
+        if (getIntent().getStringExtra("ID") != null) {
+            id = getIntent().getStringExtra("ID");
         }
     }
 
     private void fetchRequestUserInformation() {
         Query query = mFirestore.collection("users")
-                .whereEqualTo("email", fromEmail);
+                .whereEqualTo("email", requestListModel.getFrom_email());
         query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {

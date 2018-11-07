@@ -42,11 +42,26 @@
                             <entry key="launcherLegacy">
                               <value>
                                 <PersistentState>
+                                  <option name="children">
+                                    <map>
+                                      <entry key="image">
+                                        <value>
+                                          <PersistentState>
+                                            <option name="values">
+                                              <map>
+                                                <entry key="paddingPercent" value="5" />
+                                              </map>
+                                            </option>
+                                          </PersistentState>
+                                        </value>
+                                      </entry>
+                                    </map>
+                                  </option>
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
                                       <entry key="iconShape" value="NONE" />
-                                      <entry key="imageAsset" value="E:\SAMSUNG-TECH-INSTITUTE\ic_launcher\drawable-xxxhdpi\Rectangle 2.png" />
+                                      <entry key="imageAsset" value="E:\SAMSUNG-TECH-INSTITUTE\logo\drawable-xxxhdpi\ic_launcher.png" />
                                     </map>
                                   </option>
                                 </PersistentState>

@@ -133,7 +133,7 @@ public class HomeFragment extends Fragment implements TopicGuideListAdapter.Topi
     // Intermediate
     private void prepareIntermediateData() {
         mFirestore.collection("skills")
-                .document("2")
+                .document("3")
                 .collection("topics")
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -153,7 +153,7 @@ public class HomeFragment extends Fragment implements TopicGuideListAdapter.Topi
     // Upper-intermediate
     private void prepareUpperIntermediateData() {
         mFirestore.collection("skills")
-                .document("3")
+                .document("2")
                 .collection("topics")
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {

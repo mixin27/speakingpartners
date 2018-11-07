@@ -2,10 +2,11 @@ package com.team29.speakingpartners.model;
 
 import android.annotation.SuppressLint;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class CallingRequestListModel extends Model {
+public class CallingRequestListModel extends Model implements Serializable {
 
     private String channel_id;
     private boolean from_status;

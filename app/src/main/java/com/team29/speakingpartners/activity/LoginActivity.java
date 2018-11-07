@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
@@ -35,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public static final String TAG = LoginActivity.class.getSimpleName();
 
+    AppCompatTextView btnForgotPassword;
     AppCompatButton btnCreateNewAccount, btnLogin;
     AppCompatEditText txtEmail, txtPassword;
     AppCompatImageView btnShowPassword;
@@ -86,6 +88,14 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
 
+            }
+        });
+
+        btnForgotPassword = findViewById(R.id.tv_forgot_password);
+        btnForgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "Forgot password is not available now.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -178,37 +188,41 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        txtEmail.setEnabled(false);
-        txtPassword.setEnabled(false);
-        btnLogin.setEnabled(false);
-        progressLogin.setVisibility(View.VISIBLE);
+        enableDisableField(false);
 
         if (ConnectionChecking.checkConnection(getApplicationContext())) {
             doSignIn(email, password);
         } else {
             progressLogin.setVisibility(View.GONE);
-            btnLogin.setEnabled(true);
-            txtEmail.setEnabled(true);
-            txtPassword.setEnabled(true);
+            btnLogin.setVisibility(View.VISIBLE);
+            enableDisableField(true);
             txtPassword.requestFocus();
             Toast.makeText(getApplicationContext(), "No internet access!", Toast.LENGTH_SHORT).show();
         }
 
     }
 
+    private void enableDisableField(boolean flag) {
+        txtEmail.setEnabled(flag);
+        txtPassword.setEnabled(flag);
+        btnLogin.setEnabled(flag);
+    }
+
     private void doSignIn(String email, String password) {
+        progressLogin.setVisibility(View.VISIBLE);
+        btnLogin.setVisibility(View.GONE);
+
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    progressLogin.setVisibility(View.GONE);
-
                     Log.d(TAG, "Login Successful");
                     finish();
                     Intent i = new Intent(LoginActivity.this, MainActivity.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(i);
                 } else {
+                    btnLogin.setVisibility(View.VISIBLE);
                     progressLogin.setVisibility(View.GONE);
                     txtPassword.requestFocus();
                 }
@@ -218,14 +232,11 @@ public class LoginActivity extends AppCompatActivity {
             public void onFailure(@NonNull Exception e) {
                 Log.d(TAG, "Login Failed!");
                 progressLogin.setVisibility(View.GONE);
+                btnLogin.setVisibility(View.VISIBLE);
                 Toast.makeText(getApplicationContext(), "Login Falied", Toast.LENGTH_SHORT).show();
-                txtEmail.setEnabled(true);
-                txtPassword.setEnabled(true);
-                txtPassword.requestFocus();
-                btnLogin.setEnabled(true);
+                enableDisableField(true);
             }
         });
-
     }
 
     @Override

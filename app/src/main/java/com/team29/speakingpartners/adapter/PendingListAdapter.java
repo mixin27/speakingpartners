@@ -79,7 +79,7 @@ public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.
 
     public class PendingListViewHolder extends RecyclerView.ViewHolder {
 
-        CallingRequestListModel mPendingUserModel;
+        CallingRequestListModel callingRequestListModel;
 
         AppCompatTextView pendingUserName, pendingUserActiveStatus;
         AppCompatButton btnPendingReject, btnPendingAccept;
@@ -99,10 +99,24 @@ public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.
         }
 
         private void bindView(final CallingRequestListModel model) {
-            this.mPendingUserModel = model;
+            this.callingRequestListModel = model;
+
+            btnPendingAccept.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    buttonItemClickListener.setOnAcceptButtonClick(callingRequestListModel, callingRequestListModel.id);
+                }
+            });
+
+            btnPendingReject.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    buttonItemClickListener.setOnRejectButtonClick(callingRequestListModel.id);
+                }
+            });
 
             Query userQuery = mFirestore.collection("users")
-                    .whereEqualTo("email", mPendingUserModel.getFrom_email());
+                    .whereEqualTo("email", callingRequestListModel.getFrom_email());
             userQuery.addSnapshotListener(new EventListener<QuerySnapshot>() {
                 @Override
                 public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
@@ -147,27 +161,12 @@ public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.
                     Toast.makeText(mContext.getApplicationContext(), pendingUserName.getText(), Toast.LENGTH_SHORT).show();
                 }
             });
-
-            btnPendingAccept.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    buttonItemClickListener.setOnAcceptButtonClick(mPendingUserModel,
-                            mPendingUserModel.id);
-                }
-            });
-
-            btnPendingReject.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    buttonItemClickListener.setOnRejectButtonClick(mPendingUserModel.id);
-                }
-            });
         }
 
     }
 
     public interface ButtonItemClickListener {
-        void setOnAcceptButtonClick(CallingRequestListModel model, String docId);
+        void setOnAcceptButtonClick(CallingRequestListModel model, String id);
 
         void setOnRejectButtonClick(String docId);
     }

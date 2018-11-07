@@ -47,6 +47,7 @@ import java.util.Date;
 import com.team29.speakingpartners.MainActivity;
 import com.team29.speakingpartners.R;
 import com.team29.speakingpartners.model.UserModel;
+import com.team29.speakingpartners.net.ConnectionChecking;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -63,7 +64,7 @@ public class SignUpActivity extends AppCompatActivity {
     AppCompatSpinner spCountries, spLevel;
     ArrayList<String> countryNameList, levelList;
 
-    AppCompatCheckBox chkAgree;
+    /*AppCompatCheckBox chkAgree;*/
 
     ProgressBar progressSignUp;
 
@@ -72,8 +73,6 @@ public class SignUpActivity extends AppCompatActivity {
 
     private boolean isShowingPassword = false;
     AppCompatImageView btnShowPassword;
-
-    private String user_name, email, password, gender, level, country;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -156,7 +155,7 @@ public class SignUpActivity extends AppCompatActivity {
         });
 
         // Agreement CheckBox
-        chkAgree = findViewById(R.id.chk_agree);
+        /*chkAgree = findViewById(R.id.chk_agree);
         chkAgree.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -169,22 +168,34 @@ public class SignUpActivity extends AppCompatActivity {
                     btnSignUp.setTextColor(getResources().getColor(R.color.color_grey));
                 }
             }
-        });
+        });*/
 
         // ProgressBar
         progressSignUp = findViewById(R.id.progress_sign_up);
 
         // Complete Sign Up
         btnSignUp = findViewById(R.id.btn_sign_up);
-        btnSignUp.setEnabled(false);
-        btnSignUp.setTextColor(getResources().getColor(R.color.color_grey));
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                registerUser();
+                if (ConnectionChecking.checkConnection(getApplicationContext())) {
+                    checkUserDataCreatingAnAccount();
+                } else {
+                    Log.d(TAG, "No connection");
+                    Toast.makeText(getApplicationContext(), "No internet connection", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
+    }
+
+    private void enableDisableField(boolean flag) {
+        txtUsername.setEnabled(flag);
+        txtPassword.setEnabled(flag);
+        txtEmail.setEnabled(flag);
+        spCountries.setEnabled(flag);
+        spLevel.setEnabled(flag);
+        radioGroup.setEnabled(flag);
     }
 
     private void togglePasswordVisibility() {
@@ -214,77 +225,6 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 
-    private void registerUser() {
-        user_name = txtUsername.getText().toString();
-        email = txtEmail.getText().toString().toLowerCase().trim();
-        password = txtPassword.getText().toString().trim();
-        gender = radMale.isChecked() ? getString(R.string.str_user_gender_male): getString(R.string.str_user_gender_female);
-        level = spLevel.getSelectedItem().toString();
-        country = spCountries.getSelectedItem().toString();
-
-        checkUserDataCreatingAnAccount();
-
-    }
-
-    private void doUserSignUp() {
-        progressSignUp.setVisibility(View.VISIBLE);
-
-        // FirebaseAuth registering
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "Sign Up Successful");
-
-                            storeUserDataToFirestore();
-
-                            finish();
-                            startActivity(new Intent(SignUpActivity.this, MainActivity.class));
-                            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                        } else {
-                            Log.d(TAG, "Sign Up Failed");
-
-                            if (task.getException() instanceof FirebaseAuthUserCollisionException) {
-                                Log.d(TAG, "Already registered");
-                                Toast.makeText(getApplicationContext(), "You have already registered!", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Log.d(TAG, "FirebaseAuthError => " + task.getException().getMessage());
-                                Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-
-                    }
-                });
-
-    }
-
-    private void storeUserDataToFirestore() {
-        // Store user data in FirebaseFirestore
-        UserModel user = new UserModel(user_name, email, gender,
-                level, country, "", new Date(), new Date(), null, 1);
-        mFirestore.collection("users")
-                .add(user)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "Store user data successful!");
-                        progressSignUp.setVisibility(View.GONE);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "StoreUserDataError => " + e.getMessage());
-                    }
-                });
-    }
-
     private void clearFieldFocus() {
         txtUsername.clearFocus();
         txtEmail.clearFocus();
@@ -292,6 +232,13 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void checkUserDataCreatingAnAccount() {
+        String user_name = txtUsername.getText().toString();
+        String email = txtEmail.getText().toString().toLowerCase().trim();
+        String password = txtPassword.getText().toString().trim();
+        String gender = radMale.isChecked() ? getString(R.string.str_user_gender_male): getString(R.string.str_user_gender_female);
+        String level = spLevel.getSelectedItem().toString();
+        String country = spCountries.getSelectedItem().toString();
+
         if (user_name.isEmpty()) {
             txtUsername.setError("User name is required");
             txtUsername.requestFocus();
@@ -321,7 +268,73 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
         clearFieldFocus();
-        doUserSignUp();
+        enableDisableField(false);
+        btnSignUp.setVisibility(View.GONE);
+        progressSignUp.setVisibility(View.VISIBLE);
+        doUserSignUp(email, password, user_name, gender, level, country);
+    }
+
+    private void doUserSignUp(final String email, String password, final String user_name, final String gender, final String level, final String country) {
+
+        // FirebaseAuth registering
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "Sign Up Successful");
+
+                            storeUserDataToFirestore(email, user_name, gender, level, country);
+
+                            finish();
+                            startActivity(new Intent(SignUpActivity.this, MainActivity.class));
+                            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                        } else {
+                            Log.d(TAG, "Sign Up Failed");
+                            enableDisableField(true);
+                            btnSignUp.setVisibility(View.VISIBLE);
+                            progressSignUp.setVisibility(View.GONE);
+
+                            if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                                Log.d(TAG, "Already registered");
+                                Toast.makeText(getApplicationContext(), "You have already registered!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Log.d(TAG, "FirebaseAuthError => " + task.getException().getMessage());
+                                Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+
+    }
+
+    private void storeUserDataToFirestore(String email, String user_name, String gender, String level, String country) {
+        // Store user data in FirebaseFirestore
+        UserModel user = new UserModel(user_name, email, gender,
+                level, country, "", new Date(), new Date(), null, 1);
+        mFirestore.collection("users")
+                .add(user)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG, "Store user data successful!");
+                        progressSignUp.setVisibility(View.GONE);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "StoreUserDataError => " + e.getMessage());
+                        enableDisableField(true);
+                    }
+                });
     }
 
     private void setUpLevelList() {

@@ -4,10 +4,11 @@ import android.annotation.SuppressLint;
 
 import com.google.firebase.firestore.IgnoreExtraProperties;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class RecentListModel extends Model {
+public class RecentListModel extends Model implements Serializable {
 
     private String channel_id;
     private String req_topic;

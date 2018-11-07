@@ -1,19 +1,29 @@
 package com.team29.speakingpartners;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.team29.speakingpartners.activity.ProfileDetailActivity;
 import com.team29.speakingpartners.adapter.MyViewPagerAdapter;
 import com.team29.speakingpartners.fragment.ActiveUserFragment;
@@ -21,6 +31,10 @@ import com.team29.speakingpartners.fragment.HomeFragment;
 import com.team29.speakingpartners.fragment.PendingFragment;
 import com.team29.speakingpartners.fragment.RecentFragment;
 import com.team29.speakingpartners.net.ConnectionChecking;
+import com.team29.speakingpartners.utils.GlideApp;
+import com.team29.speakingpartners.utils.GlideOptions;
+
+import javax.annotation.Nullable;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView mBottomNavView;
     private ViewPager mViewPager;
+
+    AppCompatTextView toolBarTitle;
+    AppCompatImageView toolBarProfileButton;
 
     HomeFragment mHomeFragment;
     ActiveUserFragment mActiveUserFragment;
@@ -44,22 +61,22 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, "Activity created");
         setContentView(R.layout.activity_main);
 
-        final ActionBar actionBar = getSupportActionBar();
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
         // ActionBar
-        setUpTooBar(actionBar);
+        setUpTooBar(toolbar);
 
         // BottomNavigationView
         setUpBottomNavView();
 
         // ViewPager
-        setUpViewPager(actionBar);
+        setUpViewPager();
 
         mAuth = FirebaseAuth.getInstance();
     }
 
     // ViewPager
-    private void setUpViewPager(final ActionBar actionBar) {
+    private void setUpViewPager() {
         mViewPager = findViewById(R.id.view_pager);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -78,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "Fragment " + i);
                 mBottomNavView.getMenu().getItem(i).setChecked(true);
                 mPrevMenuItem = mBottomNavView.getMenu().getItem(i);
-                actionBar.setTitle(mPrevMenuItem.getTitle());
+                toolBarTitle.setText(mPrevMenuItem.getTitle());
             }
 
             @Override
@@ -131,10 +148,43 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // ActionBar
-    private void setUpTooBar(ActionBar actionBar) {
-        if (actionBar != null) {
-            actionBar.setTitle(getResources().getString(R.string.bottom_nav_home));
-//            actionBar.setDisplayHomeAsUpEnabled(true);
+    private void setUpTooBar(Toolbar tooBar) {
+        toolBarTitle = findViewById(R.id.toolbar_title);
+        toolBarProfileButton = findViewById(R.id.toolbar_btn_proile);
+
+        if (tooBar != null) {
+            toolBarTitle.setText(getResources().getString(R.string.bottom_nav_home));
+            FirebaseFirestore.getInstance()
+                    .collection("users")
+                    .whereEqualTo("email", FirebaseAuth.getInstance().getCurrentUser().getEmail())
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
+                            if (e != null) {
+                                Log.d(TAG, "Listen Error");
+                                return;
+                            }
+
+                            if (snapshots != null) {
+                                for (QueryDocumentSnapshot snapshot : snapshots) {
+                                    if (!snapshot.getString("url_photo").equals("")) {
+                                        toolBarProfileButton.setBackgroundDrawable(null);
+                                        GlideApp.with(MainActivity.this)
+                                                .load(snapshot.getString("url_photo"))
+                                                .apply(GlideOptions.circleCropTransform())
+                                                .into(toolBarProfileButton);
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+            toolBarProfileButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(MainActivity.this, ProfileDetailActivity.class));
+                }
+            });
         }
     }
 
@@ -151,7 +201,6 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.action_profile:
-                startActivity(new Intent(MainActivity.this, ProfileDetailActivity.class));
                 return true;
         }
         return super.onOptionsItemSelected(item);

@@ -5,8 +5,6 @@ import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.CircularProgressDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -35,13 +33,13 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.team29.speakingpartners.R;
+import com.team29.speakingpartners.helper.CheckPermissionForApp;
+import com.team29.speakingpartners.model.CallingRequestListModel;
 import com.team29.speakingpartners.model.RecentListModel;
 import com.team29.speakingpartners.utils.GlideApp;
-import com.team29.speakingpartners.utils.GlideOptions;
 
 import javax.annotation.Nullable;
 
@@ -51,13 +49,10 @@ public class FromCallingViewActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQ_ID_RECORD_AUDIO = 22;
 
-    private static String CHANNEL_ID = "";
-    private static String TO_EMAIL = "";
-    private static String REQ_TOPIC = "";
-    String DOC_ID = "";
+    CallingRequestListModel requestListModel;
 
     AppCompatImageButton btnSpeaker, btnLocalAudio, btnEndCall;
-    AppCompatTextView tvChannelId, tvFromEmail, tvSpeakingTopic, tvConnectionStatus;
+    AppCompatTextView tvChannelId, tvUSerName, tvFromEmail, tvSpeakingTopic, tvConnectionStatus;
     AppCompatImageView imgProfile;
 
     FirebaseAuth mAuth;
@@ -69,11 +64,7 @@ public class FromCallingViewActivity extends AppCompatActivity {
         @Override
         public void onUserJoined(int uid, int elapsed) {
             super.onUserJoined(uid, elapsed);
-        }
-
-        @Override
-        public void onConnectionLost() {
-            super.onConnectionLost();
+            Toast.makeText(getApplicationContext(), "User Joined", Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -86,35 +77,6 @@ public class FromCallingViewActivity extends AppCompatActivity {
                 }
             });
         }
-
-        @Override
-        public void onUserMuteAudio(final int uid, final boolean muted) {
-            onRemoteUserVoiceMuted(uid, muted);
-        }
-
-        @Override
-        public void onConnectionInterrupted() {
-            super.onConnectionInterrupted();
-            tvConnectionStatus.setText(getString(R.string.str_connection_interrupted));
-        }
-
-        @Override
-        public void onError(int err) {
-            super.onError(err);
-            tvConnectionStatus.setText(getString(R.string.str_something_wrong));
-        }
-
-        /*@Override
-        public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
-            super.onJoinChannelSuccess(channel, uid, elapsed);
-            tvConnectionStatus.setText(getString(R.string.str_connection_success));
-        }*/
-
-        @Override
-        public void onLeaveChannel(RtcStats stats) {
-            super.onLeaveChannel(stats);
-        }
-
     };
 
     @Override
@@ -169,7 +131,8 @@ public class FromCallingViewActivity extends AppCompatActivity {
         getIntentExtraData();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.RECORD_AUDIO, PERMISSION_REQ_ID_RECORD_AUDIO)) {
+            if (CheckPermissionForApp.checkSelfPermission(
+                    FromCallingViewActivity.this, Manifest.permission.RECORD_AUDIO, PERMISSION_REQ_ID_RECORD_AUDIO)) {
                 initAgoraEngineAndJoinChannel();
             }
         }
@@ -177,6 +140,7 @@ public class FromCallingViewActivity extends AppCompatActivity {
         tvConnectionStatus = findViewById(R.id.from_connection_status);
         imgProfile = findViewById(R.id.from_profile_image);
         tvChannelId = findViewById(R.id.from_channel_id);
+        tvUSerName = findViewById(R.id.from_user_name);
         tvFromEmail = findViewById(R.id.from_email);
         tvSpeakingTopic = findViewById(R.id.from_speaking_topic);
         btnSpeaker = findViewById(R.id.from_btn_speaker);
@@ -203,14 +167,14 @@ public class FromCallingViewActivity extends AppCompatActivity {
             }
         });
 
-        setUserData(TO_EMAIL);
+        setUserData(requestListModel.getTo_email());
 
     }
 
     private void setUserData(String email) {
-        tvChannelId.setText("ChannelID : " + CHANNEL_ID);
-        tvFromEmail.setText("With : " + TO_EMAIL);
-        tvSpeakingTopic.setText("Topic : " + REQ_TOPIC);
+        tvChannelId.setText("ChannelID : " + requestListModel.getChannel_id());
+        tvFromEmail.setText("With : " + requestListModel.getFrom_email());
+        tvSpeakingTopic.setText("Topic : " + requestListModel.getReq_topic());
         mFirestore.collection("users")
                 .whereEqualTo("email", email)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -221,16 +185,23 @@ public class FromCallingViewActivity extends AppCompatActivity {
                             return;
                         }
 
-                        for (QueryDocumentSnapshot snapshot : snapshots) {
-                            CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(getApplicationContext());
-                            circularProgressDrawable.setCenterRadius(30f);
-                            circularProgressDrawable.setStrokeWidth(5f);
-                            imgProfile.setBackgroundDrawable(null);
-                            GlideApp.with(getApplicationContext())
-                                    .load(snapshot.getString("url_photo"))
-                                    .apply(RequestOptions.centerCropTransform())
-                                    .placeholder(circularProgressDrawable)
-                                    .into(imgProfile);
+                        if (snapshots != null) {
+                            for (QueryDocumentSnapshot snapshot : snapshots) {
+
+                                tvUSerName.setText(snapshot.getString("user_name"));
+
+                                if (!snapshot.getString("url_photo").equals("")) {
+                                    CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(getApplicationContext());
+                                    circularProgressDrawable.setCenterRadius(30f);
+                                    circularProgressDrawable.setStrokeWidth(5f);
+                                    imgProfile.setBackgroundDrawable(null);
+                                    GlideApp.with(getApplicationContext())
+                                            .load(snapshot.getString("url_photo"))
+                                            .apply(RequestOptions.centerCropTransform())
+                                            .placeholder(circularProgressDrawable)
+                                            .into(imgProfile);
+                                }
+                            }
                         }
 
                     }
@@ -238,23 +209,7 @@ public class FromCallingViewActivity extends AppCompatActivity {
     }
 
     private void deleteCallingData() {
-        mFirestore.collection("calling").whereEqualTo("channel_id", CHANNEL_ID)
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
-                        if (e != null) {
-                            Log.d(TAG, "Listen Error");
-                            return;
-                        }
-
-                        for (QueryDocumentSnapshot snapshot : snapshots) {
-                            DOC_ID = snapshot.getId();
-                            Log.d(TAG, "DOC_ID" + DOC_ID);
-                        }
-                    }
-                });
-
-        DocumentReference docRef = mFirestore.collection("calling").document(DOC_ID);
+        DocumentReference docRef = mFirestore.collection("calling").document(requestListModel.id);
         docRef.delete()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -272,10 +227,10 @@ public class FromCallingViewActivity extends AppCompatActivity {
 
     private void storeRecentData() {
         RecentListModel recentModel = new RecentListModel(
-                CHANNEL_ID,
-                REQ_TOPIC,
-                FirebaseAuth.getInstance().getCurrentUser().getEmail(),
-                TO_EMAIL,
+                requestListModel.getChannel_id(),
+                requestListModel.getReq_topic(),
+                requestListModel.getFrom_email(),
+                requestListModel.getTo_email(),
                 new Date()
         );
         mFirestore.collection("recent")
@@ -296,16 +251,8 @@ public class FromCallingViewActivity extends AppCompatActivity {
     }
 
     private void getIntentExtraData() {
-        if (!getIntent().getExtras().getString("CHANNEL_ID").equals("")) {
-            CHANNEL_ID = getIntent().getExtras().getString("CHANNEL_ID");
-        }
-
-        if (!getIntent().getExtras().getString("TO_EMAIL").equals("")) {
-            TO_EMAIL = getIntent().getExtras().getString("TO_EMAIL");
-        }
-
-        if (!getIntent().getExtras().getString("REQ_TOPIC").equals("")) {
-            REQ_TOPIC = getIntent().getExtras().getString("REQ_TOPIC");
+        if (getIntent().getSerializableExtra("REQ_MODEL") != null) {
+            requestListModel = (CallingRequestListModel) getIntent().getSerializableExtra("REQ_MODEL");
         }
 
     }
@@ -316,10 +263,8 @@ public class FromCallingViewActivity extends AppCompatActivity {
     }
 
     private void joinChannel() {
-        if (mAuth.getCurrentUser().getEmail() != null) {
-            mRtcEngine.joinChannel(null, CHANNEL_ID, "To : " + TO_EMAIL, 0);
-            Log.d(TAG, "Join channel successful");
-        }
+        mRtcEngine.joinChannel(null, requestListModel.getChannel_id(), "", 0);
+        Log.d(TAG, "Join channel successful");
     }
 
     private void initializeAgoraEngine() {
@@ -332,27 +277,11 @@ public class FromCallingViewActivity extends AppCompatActivity {
         }
     }
 
-    private boolean checkSelfPermission(String permission, int requestCode) {
-        Log.i(TAG, "checkSelfPermission " + permission + " " + requestCode);
-        if (ContextCompat.checkSelfPermission(this,
-                permission)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this,
-                    new String[]{permission},
-                    requestCode);
-            return false;
-        }
-        return true;
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         /* Have to store for recent data */
-        // storeRecentData();
-        /* Have to delete recent calling data */
-        // deleteCallingData();
+        storeRecentData();
 
         leaveChannel();
         RtcEngine.destroy();

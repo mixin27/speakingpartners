@@ -6,15 +6,6 @@
     android:padding="@dimen/general_padding_16"
     tools:context=".activity.SignUpActivity">
 
-    <ProgressBar
-        android:id="@+id/progress_sign_up"
-        style="@style/Widget.AppCompat.ProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:theme="@style/CircularProgress"
-        android:visibility="gone"/>
-
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -36,8 +27,7 @@
                     android:layout_width="70dp"
                     android:layout_height="70dp"
                     android:contentDescription="@string/app_name"
-                    android:src="@drawable/ic_person_white_24dp"
-                    android:background="@drawable/circular_border_image_view"/>
+                    android:src="@mipmap/ic_launcher"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -269,7 +259,7 @@
 
             </LinearLayout>
 
-            <LinearLayout
+            <!--<LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -302,7 +292,7 @@
                     android:textColor="@color/color_blue_700"
                     android:textSize="@dimen/general_text_size_14" />
 
-            </LinearLayout>
+            </LinearLayout>-->
 
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/btn_sign_up"
@@ -312,6 +302,16 @@
                 android:background="@drawable/log_in_button_design"
                 android:text="@string/str_sign_up"
                 android:textColor="@color/color_white" />
+
+            <ProgressBar
+                android:id="@+id/progress_sign_up"
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/general_padding_16"
+                android:layout_gravity="center_horizontal"
+                android:theme="@style/CircularProgress"
+                android:visibility="gone"/>
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/tv_already_have_account"

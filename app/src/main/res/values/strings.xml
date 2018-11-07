@@ -17,7 +17,7 @@
     <!-- Login | Sign up -->
     <string name="str_main_header_login">Looking for a partner to speak english?</string>
     <string name="str_main_header_sign_up">CREATE YOUR ACCOUNT</string>
-    <string name="str_main_subtitle">Join SpeakingPartners today.</string>
+    <string name="str_main_subtitle">Join Speaking Partners today.</string>
     <string name="str_agree">I accept</string>
     <string name="str_terms_and_policies"> terms of service and privacy policy</string>
 
@@ -121,6 +121,7 @@
 
     <!-- Voice Call -->
     <!-- Agora -->
+    <!--<string name="agora_app_id">58a1031c26ef41cc9e1792a3dfef62a1</string>-->
     <string name="agora_app_id">d08ab25c4cda4d63be2b37d0188d0409</string>
 
     <string name="str_pre_calling_request">Request</string>
@@ -141,5 +142,8 @@
     <string name="str_waiting_process">Waiting…</string>
     <string name="str_connected_process">Connected</string>
     <string name="str_edit_profile_header">Profile picture is required to know who you are.</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

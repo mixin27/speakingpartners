@@ -30,7 +30,7 @@
     <dimen name="general_text_size_32">32sp</dimen>
 
     <!-- List Row -->
-    <dimen name="list_row_height">75dp</dimen>
+    <dimen name="tab_height">50dp</dimen>
     <dimen name="big_list_row_height">90dp</dimen>
 
     <!-- Dialog -->

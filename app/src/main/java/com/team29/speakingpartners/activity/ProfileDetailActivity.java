@@ -37,22 +37,24 @@ import java.util.Date;
 import javax.annotation.Nullable;
 
 import com.team29.speakingpartners.R;
+import com.team29.speakingpartners.helper.RoundedCornersTransformation;
 import com.team29.speakingpartners.model.UserModel;
 import com.team29.speakingpartners.net.ConnectionChecking;
 import com.team29.speakingpartners.utils.GlideApp;
+import com.team29.speakingpartners.utils.GlideOptions;
 
 public class ProfileDetailActivity extends AppCompatActivity {
 
     public static final String TAG = ProfileDetailActivity.class.getSimpleName();
 
     AppCompatImageView imgProfile;
-    AppCompatTextView tvUserName, tvUserEmail, tvUserLevel, tvUserCountry, tvUserDOB, tvUserGender, tvVerifiedEmailStatus;
+    AppCompatTextView tvUserName, tvUserEmail, tvUserLevel, tvUserCountry, tvUserDOB, tvUserGender /*tvVerifiedEmailStatus*/;
     SwitchCompat switchOnlineOffline;
-    AppCompatButton btnEditProfile, btnLogOutLayout, btnChangePasswordLayout, btnVerify;
+    AppCompatButton btnEditProfile, btnLogOutLayout, btnChangePasswordLayout, btnAboutLayout /*btnVerify*/;
 
-    LinearLayout layoutVerifyEmail;
+    /*LinearLayout layoutVerifyEmail;
 
-    ProgressBar progressVerify;
+    ProgressBar progressVerify;*/
 
     String user_id = "";
     long active_status = 0;
@@ -165,6 +167,14 @@ public class ProfileDetailActivity extends AppCompatActivity {
                                 }
                             }
                         }).show();
+            }
+        });
+
+        btnAboutLayout = findViewById(R.id.btn_about_app);
+        btnAboutLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(ProfileDetailActivity.this, AboutActivity.class));
             }
         });
 
@@ -290,7 +300,9 @@ public class ProfileDetailActivity extends AppCompatActivity {
                             circularProgressDrawable.start();
                             GlideApp.with(getApplicationContext())
                                     .load(Uri.parse(model.getUrl_photo()))
-                                    /*.apply(GlideOptions.circleCropTransform())*/
+                                    .apply(GlideOptions.bitmapTransform(
+                                            new RoundedCornersTransformation(
+                                                    ProfileDetailActivity.this, 5, 2, "#BDBDBD", 10)))
                                     .placeholder(circularProgressDrawable)
                                     .into(imgProfile);
                         }

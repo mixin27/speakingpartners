@@ -128,14 +128,10 @@ public class PendingFragment extends Fragment implements PendingListAdapter.Butt
     }
 
     @Override
-    public void setOnAcceptButtonClick(CallingRequestListModel model, String docId) {
+    public void setOnAcceptButtonClick(CallingRequestListModel model, String id) {
         Intent i = new Intent(getActivity(), RequestReviewActivity.class);
-        i.putExtra("FROM_EMAIL", model.getFrom_email());
-        i.putExtra("TO_EMAIL", model.getTo_email());
-        i.putExtra("REQ_TOPIC", model.getReq_topic());
-        i.putExtra("CHANNEL_ID", model.getChannel_id());
-        i.putExtra("DOC_ID", docId);
-        i.putExtra("FLAG", "to");
+        i.putExtra("REQ_MODEL", model);
+        i.putExtra("ID", id);
         startActivity(i);
     }
 

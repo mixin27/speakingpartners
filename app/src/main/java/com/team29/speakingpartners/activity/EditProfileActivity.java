@@ -1,10 +1,13 @@
 package com.team29.speakingpartners.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -27,9 +30,8 @@ import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -56,15 +58,20 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.team29.speakingpartners.R;
+import com.team29.speakingpartners.helper.CheckPermissionForApp;
 import com.team29.speakingpartners.helper.ImagePickerHelper;
 import com.team29.speakingpartners.helper.ImageProcessingHelper;
+import com.team29.speakingpartners.helper.RoundedCornersTransformation;
 import com.team29.speakingpartners.model.UserModel;
 import com.team29.speakingpartners.net.ConnectionChecking;
 import com.team29.speakingpartners.utils.GlideApp;
+import com.team29.speakingpartners.utils.GlideOptions;
 
 public class EditProfileActivity extends AppCompatActivity {
 
     public static final String TAG = EditProfileActivity.class.getSimpleName();
+
+    public static final int PERMISSION_REQ_ID_CAMERA = 10;
 
     AppCompatEditText txtName, txtDateOfBirth;
     AppCompatSpinner spLevel, spCountry;
@@ -166,7 +173,12 @@ public class EditProfileActivity extends AppCompatActivity {
         btnUploadProfileImage = findViewById(R.id.btn_edit_profile_img);
         btnUploadProfileImage.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                showPhotoPicker();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (CheckPermissionForApp.checkSelfPermission(
+                            EditProfileActivity.this, Manifest.permission.CAMERA, PERMISSION_REQ_ID_CAMERA)) {
+                        showPhotoPicker();
+                    }
+                }
             }
         });
 
@@ -196,6 +208,25 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.i(TAG, "onRequestPermissionsResult " + grantResults[0] + " " + requestCode);
+
+        switch (requestCode) {
+            case PERMISSION_REQ_ID_CAMERA : {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    showPhotoPicker();
+                } else {
+                    Toast.makeText(getApplicationContext(), "No permission for " + Manifest.permission.RECORD_AUDIO, Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+                break;
+            }
+        }
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -211,9 +242,12 @@ public class EditProfileActivity extends AppCompatActivity {
                 circularProgressDrawable.setCenterRadius(30f);
                 circularProgressDrawable.start();
 
-                Glide.with(this)
+                GlideApp.with(this)
                         .load(profileImageBitmap)
-                        .apply(new RequestOptions().placeholder(circularProgressDrawable))
+                        .placeholder(circularProgressDrawable)
+                        .apply(GlideOptions.bitmapTransform(
+                                new RoundedCornersTransformation(
+                                        EditProfileActivity.this, 5, 2, "#BDBDBD", 10)))
                         .into(imgProfile);
 
                 storeImageToFirebase();

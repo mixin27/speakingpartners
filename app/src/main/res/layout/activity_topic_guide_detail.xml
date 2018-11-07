@@ -36,7 +36,9 @@
                 android:layout_height="wrap_content"
                 android:editable="false"
                 tools:ignore="Deprecated"
-                android:textSize="@dimen/general_text_size_14"/>
+                android:textSize="@dimen/general_text_size_14"
+                android:letterSpacing=".05"
+                tools:targetApi="lollipop" />
 
         </android.support.v7.widget.CardView>
 

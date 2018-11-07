@@ -15,11 +15,11 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="187dp"
-        android:layout_marginEnd="148dp"
-        android:layout_marginRight="148dp"
-        android:visibility="gone"
-        android:theme="@style/CircularProgress" />
+        android:layout_marginTop="94dp"
+        android:layout_marginEnd="152dp"
+        android:layout_marginRight="152dp"
+        android:theme="@style/CircularProgress"
+        android:visibility="gone" />
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"

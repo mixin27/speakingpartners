@@ -42,7 +42,7 @@
             android:theme="@style/Main.SpeakingPartner.BlueTheme" />
         <activity
             android:name=".MainActivity"
-            android:theme="@style/Main.SpeakingPartner.BlueTheme" />
+            android:theme="@style/Main.SpeakingPartner.BlueTheme.NoActionBar" />
         <activity
             android:name=".activity.voicecall.FromCallingViewActivity"
             android:theme="@style/Main.SpeakingPartner.BlueTheme.NoActionBar"
@@ -64,9 +64,15 @@
             android:name=".activity.voicecall.ToCallingViewActivity"
             android:theme="@style/Main.SpeakingPartner.BlueTheme.NoActionBar"
             tools:targetApi="jelly_bean" />
-
-        <activity android:name=".activity.TopicGuideDetailActivity"
+        <activity
+            android:name=".activity.TopicGuideDetailActivity"
             android:parentActivityName=".MainActivity"
+            android:theme="@style/Main.SpeakingPartner.LightBlueTheme"
+            tools:targetApi="jelly_bean" />
+
+        <activity android:name=".activity.AboutActivity"
+            android:parentActivityName=".activity.ProfileDetailActivity"
+            tools:targetApi="jelly_bean"
             android:theme="@style/Main.SpeakingPartner.LightBlueTheme"/>
     </application>
 

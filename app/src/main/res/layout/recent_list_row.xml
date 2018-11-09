@@ -55,6 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
             android:text="@string/pre_calling_topic"
             android:textSize="@dimen/general_text_size_14"
             android:textColor="@color/color_blue_500"/>

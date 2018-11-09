@@ -12,11 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -29,25 +26,25 @@ import com.team29.speakingpartners.utils.GlideOptions;
 
 import javax.annotation.Nullable;
 
-public class RecentListAdapter extends RecyclerView.Adapter<RecentListAdapter.RecentListViewHolder> {
+public class IncomingRecentListAdapter extends RecyclerView.Adapter<IncomingRecentListAdapter.RecentListViewHolder> {
 
-    public static final String TAG = RecentListAdapter.class.getSimpleName();
+    public static final String TAG = OutgoingRecentListAdapter.class.getSimpleName();
 
     private Context mContext;
     private List<RecentListModel> mLists;
 
     private RecentItemClickListener recentItemClickListener;
 
-    public RecentListAdapter(Context mContext) {
+    public IncomingRecentListAdapter(Context mContext) {
         this.mContext = mContext;
     }
 
-    public RecentListAdapter(Context mContext, List<RecentListModel> mLists) {
+    public IncomingRecentListAdapter(Context mContext, List<RecentListModel> mLists) {
         this.mContext = mContext;
         this.mLists = mLists;
     }
 
-    public RecentListAdapter(Context mContext, List<RecentListModel> mLists, RecentItemClickListener recentItemClickListener) {
+    public IncomingRecentListAdapter(Context mContext, List<RecentListModel> mLists, RecentItemClickListener recentItemClickListener) {
         this.mContext = mContext;
         this.mLists = mLists;
         this.recentItemClickListener = recentItemClickListener;
@@ -102,11 +99,7 @@ public class RecentListAdapter extends RecyclerView.Adapter<RecentListAdapter.Re
         private void bindView(RecentListModel model) {
             this.mRecentListModel = model;
 
-            if (FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(mRecentListModel.getFrom_email())) {
-                fetchUserData(mRecentListModel.getFrom_email());
-            } else if (FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(mRecentListModel.getTo_email())){
-                fetchUserData(mRecentListModel.getTo_email());
-            }
+            fetchUserData(mRecentListModel.getFrom_email());
 
             recentTopic.setText(mRecentListModel.getReq_topic());
             recentDate.setText(mRecentListModel.getDateString() + "\n" + mRecentListModel.getTimeString());

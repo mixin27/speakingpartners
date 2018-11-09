@@ -88,8 +88,8 @@ public class PendingFragment extends Fragment implements PendingListAdapter.Butt
         Query callingQuery = mFirestore
                 .collection("calling")
                 .whereEqualTo("to_email", FirebaseAuth.getInstance().getCurrentUser().getEmail())
-                .whereEqualTo("from_status", true)
-                .whereEqualTo("to_status", false)
+                .whereEqualTo("from_status", 1)
+                .whereEqualTo("call_type", 2)
                 .orderBy("date");
 
         callingQuery.addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -129,6 +129,23 @@ public class PendingFragment extends Fragment implements PendingListAdapter.Butt
 
     @Override
     public void setOnAcceptButtonClick(CallingRequestListModel model, String id) {
+
+        DocumentReference docRef = mFirestore.collection("calling")
+                .document(id);
+        docRef.update("call_type", 0)
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                })
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                    }
+                });
+
         Intent i = new Intent(getActivity(), RequestReviewActivity.class);
         i.putExtra("REQ_MODEL", model);
         i.putExtra("ID", id);

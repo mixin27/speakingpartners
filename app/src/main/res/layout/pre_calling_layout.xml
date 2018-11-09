@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/dialog_width"
     android:layout_height="@dimen/dialog_height"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/rounded_rectangle_border_image_view">
 
     <LinearLayout
@@ -18,6 +18,7 @@
             android:id="@+id/pre_calling_profile_img"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
             android:src="@drawable/ic_person_white_24dp"
             android:layout_marginLeft="@dimen/general_padding_8"
             android:layout_marginStart="@dimen/general_padding_8" />
@@ -35,207 +36,227 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <android.support.v7.widget.CardView
         android:id="@+id/pre_calling_content"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dialog_content"
-        android:layout_below="@id/calling_request_header"
-        android:padding="@dimen/general_padding_16"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <android.support.v7.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/str_pre_calling_motivation"
-            android:textSize="@dimen/general_text_size_16"
-            android:textStyle="bold"/>
+        android:padding="@dimen/general_padding_4"
+        app:cardCornerRadius="@dimen/general_padding_4"
+        app:cardElevation="@dimen/general_padding_4"
+        android:layout_margin="@dimen/general_padding_4"
+        android:layout_below="@id/calling_request_header">
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp">
+            android:layout_height="match_parent"
+            android:padding="@dimen/general_padding_16"
+            android:gravity="center"
+            android:orientation="vertical">
 
             <android.support.v7.widget.AppCompatTextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/str_user_level"
-                android:textStyle="bold"
+                android:text="@string/str_pre_calling_motivation"
                 android:textSize="@dimen/general_text_size_16"
-                android:textColor="@color/color_black"/>
+                android:textStyle="bold"/>
 
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/tv_pre_calling_level"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:textStyle="normal"
-                android:textSize="@dimen/general_text_size_14"/>
+                android:layout_marginTop="@dimen/general_padding_16">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/str_user_level"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/general_text_size_16"
+                    android:textColor="@color/color_black"/>
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/tv_pre_calling_level"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:textStyle="normal"
+                    android:textSize="@dimen/general_text_size_14"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/general_padding_16">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/str_user_country"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/general_text_size_16"
+                    android:textColor="@color/color_black"/>
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/tv_pre_calling_country"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:textStyle="normal"
+                    android:textSize="@dimen/general_text_size_14"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/general_padding_16">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/str_user_gender"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/general_text_size_16"
+                    android:textColor="@color/color_black"/>
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/tv_pre_calling_gender"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:textStyle="normal"
+                    android:textSize="@dimen/general_text_size_14"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:visibility="gone">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/str_user_email"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/general_text_size_16"
+                    android:textColor="@color/color_black"/>
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/tv_pre_calling_email"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:textStyle="normal"
+                    android:textSize="@dimen/general_text_size_14"/>
+
+            </LinearLayout>
+
+            <!--<LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/str_topic_selection_header"
+                    android:textSize="@dimen/general_text_size_16"
+                    android:textStyle="bold" />
+
+            </LinearLayout>-->
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/general_padding_32"
+                android:layout_marginTop="@dimen/general_padding_16">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="@string/pre_calling_topic"
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/general_text_size_16"
+                    android:textStyle="bold" />
+
+                <android.support.v7.widget.AppCompatSpinner
+                    android:id="@+id/sp_pre_calling_topic"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:gravity="center_vertical"
+                    android:entries="@array/speaking_level"/>
+
+            </LinearLayout>
+
 
         </LinearLayout>
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp">
+    </android.support.v7.widget.CardView>
 
-            <android.support.v7.widget.AppCompatTextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/str_user_country"
-                android:textStyle="bold"
-                android:textSize="@dimen/general_text_size_16"
-                android:textColor="@color/color_black"/>
-
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/tv_pre_calling_country"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:textStyle="normal"
-                android:textSize="@dimen/general_text_size_14"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp">
-
-            <android.support.v7.widget.AppCompatTextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/str_user_gender"
-                android:textStyle="bold"
-                android:textSize="@dimen/general_text_size_16"
-                android:textColor="@color/color_black"/>
-
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/tv_pre_calling_gender"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:textStyle="normal"
-                android:textSize="@dimen/general_text_size_14"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:visibility="gone">
-
-            <android.support.v7.widget.AppCompatTextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/str_user_email"
-                android:textStyle="bold"
-                android:textSize="@dimen/general_text_size_16"
-                android:textColor="@color/color_black"/>
-
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/tv_pre_calling_email"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:textStyle="normal"
-                android:textSize="@dimen/general_text_size_14"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
-
-            <android.support.v7.widget.AppCompatTextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/str_topic_selection_header"
-                android:textSize="@dimen/general_text_size_16"
-                android:textStyle="bold" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/general_padding_16">
-
-            <android.support.v7.widget.AppCompatTextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/pre_calling_topic"
-                android:textColor="@color/color_black"
-                android:textSize="@dimen/general_text_size_16"
-                android:textStyle="bold" />
-
-            <android.support.v7.widget.AppCompatSpinner
-                android:id="@+id/sp_pre_calling_topic"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:textSize="@dimen/general_text_size_14"
-                android:entries="@array/speaking_level"/>
-
-        </LinearLayout>
-
-
-    </LinearLayout>
-
-    <!--<View-->
-        <!--android:id="@+id/divider_view"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="3dip"-->
-        <!--android:layout_below="@id/pre_calling_content"-->
-        <!--android:background="@color/color_blue_500"/>-->
-
-    <LinearLayout
-        android:id="@+id/pre_calling_footer"
-        android:orientation="horizontal"
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="@dimen/dialog_footer_header"
-        android:layout_alignParentBottom="true"
-        android:padding="4dp"
-        tools:ignore="RtlHardcoded">
+        android:layout_below="@id/pre_calling_content">
 
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/pre_calling_request_cancel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/log_in_button_design"
-            android:text="@string/str_cancel"
-            android:textColor="@color/color_white"
-            android:textAllCaps="true"
-            android:layout_marginEnd="@dimen/general_padding_16"
-            android:layout_marginRight="@dimen/general_padding_16" />
+        <LinearLayout
+            android:id="@+id/pre_calling_footer"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dialog_footer_header"
+            android:padding="4dp"
+            tools:ignore="RtlHardcoded">
 
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/pre_calling_request"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/log_in_button_design"
-            android:text="@string/str_pre_calling_request"
-            android:textColor="@color/color_white"
-            android:textAllCaps="true"
-            android:layout_marginEnd="@dimen/general_padding_8"
-            android:layout_marginRight="@dimen/general_padding_8"/>
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/pre_calling_request_cancel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/log_in_button_design"
+                android:text="@string/str_cancel"
+                android:textColor="@color/color_white"
+                android:textAllCaps="true"
+                android:layout_marginEnd="@dimen/general_padding_16"
+                android:layout_marginRight="@dimen/general_padding_16" />
 
-    </LinearLayout>
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/pre_calling_request"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/log_in_button_design"
+                android:text="@string/str_pre_calling_request"
+                android:textColor="@color/color_white"
+                android:textAllCaps="true"
+                android:layout_marginEnd="@dimen/general_padding_16"
+                android:layout_marginRight="@dimen/general_padding_16" />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/pre_calling_request_call"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/sign_up_button_design"
+                android:text="@string/str_call"
+                android:textColor="@color/color_white"
+                android:textAllCaps="true" />
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
 
 </RelativeLayout>

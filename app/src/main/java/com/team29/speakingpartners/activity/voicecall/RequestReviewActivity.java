@@ -9,11 +9,15 @@ import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -23,6 +27,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.team29.speakingpartners.R;
 import com.team29.speakingpartners.model.CallingRequestListModel;
+
+import java.util.Date;
+import java.util.UUID;
 
 import javax.annotation.Nullable;
 
@@ -66,24 +73,48 @@ public class RequestReviewActivity extends AppCompatActivity {
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                DocumentReference docRef = mFirestore.collection("calling")
-                        .document(id);
-                docRef.update("to_status", true)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Log.d(TAG, "Accept Successful");
-                            }
-                        });
-
-                Intent i = new Intent(RequestReviewActivity.this, ToCallingViewActivity.class);
-                i.putExtra("REQ_MODEL", requestListModel);
-                startActivity(i);
-                finish();
+                doCall();
             }
         });
 
+    }
+
+    void doCall() {
+        if (!FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(requestListModel.getFrom_email())) {
+            final CallingRequestListModel model = new CallingRequestListModel(
+                    UUID.randomUUID().toString(),
+                    FirebaseAuth.getInstance().getCurrentUser().getEmail(),
+                    requestListModel.getFrom_email(),
+                    1,
+                    0,
+                    1,
+                    requestListModel.getReq_topic(),
+                    new Date()
+            );
+
+            mFirestore.collection("calling")
+                    .add(model)
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            Log.d(TAG, "Request Success");
+                            Toast.makeText(getApplicationContext(), "Call Success", Toast.LENGTH_SHORT).show();
+                            Intent i = new Intent(RequestReviewActivity.this, CallSplashActivity.class);
+                            i.putExtra("REQ_MODEL", model);
+                            startActivity(i);
+                            finish();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, "Calling Error");
+                        }
+                    });
+        } else {
+            Toast.makeText(getApplicationContext(), "You cannot make call yourself!", Toast.LENGTH_SHORT).show();
+            finish();
+        }
     }
 
     private void getIntentExtraData() {

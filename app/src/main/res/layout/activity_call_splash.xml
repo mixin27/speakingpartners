@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/calling_splash_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_light_blue_500"
+    tools:context=".activity.voicecall.IncomingSplashActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Information Content -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_centerVertical="true">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/calling_splash_profile_image"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/ic_person_white_24dp"
+                android:layout_gravity="center"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/calling_splash_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/str_user_name"
+                android:textStyle="bold"
+                android:textSize="@dimen/general_text_size_18"
+                android:textColor="@color/color_white"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/calling_splash_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/str_user_level"
+                android:textStyle="bold"
+                android:textSize="@dimen/general_text_size_18"
+                android:textColor="@color/color_white"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/calling_splash_topic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/pre_calling_topic"
+                android:textStyle="bold"
+                android:textSize="@dimen/general_text_size_18"
+                android:textColor="@color/color_white"/>
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/calling_splash_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/str_time_format"
+                android:textStyle="normal"
+                android:textSize="@dimen/general_text_size_18"
+                android:textColor="@color/color_white"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+        <!-- Speaking State -->
+        <LinearLayout
+            android:id="@+id/accept_call_btn_layout"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/color_light_blue_500"
+            android:orientation="horizontal"
+            android:visibility="visible"
+            android:baselineAligned="false">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <android.support.v7.widget.AppCompatImageButton
+                    android:id="@+id/calling_splash_speaker_btn"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerCrop"
+                    android:tint="@color/color_white"
+                    android:src="@drawable/ic_volume_up_black_24dp"
+                    android:background="@android:color/transparent"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <android.support.v7.widget.AppCompatImageButton
+                    android:id="@+id/calling_splash_end_btn"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:scaleType="center"
+                    android:tint="@color/color_white"
+                    android:src="@drawable/ic_call_black_24dp"
+                    android:background="@drawable/circular_end_call_button_design"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <android.support.v7.widget.AppCompatImageButton
+                    android:id="@+id/calling_splash_audio_btn"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerCrop"
+                    android:tint="@color/color_white"
+                    android:src="@drawable/ic_mic_none_black_24dp"
+                    android:background="@android:color/transparent"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+</android.support.constraint.ConstraintLayout>

@@ -236,8 +236,6 @@ public class SignUpActivity extends AppCompatActivity {
         String email = txtEmail.getText().toString().toLowerCase().trim();
         String password = txtPassword.getText().toString().trim();
         String gender = radMale.isChecked() ? getString(R.string.str_user_gender_male): getString(R.string.str_user_gender_female);
-        String level = spLevel.getSelectedItem().toString();
-        String country = spCountries.getSelectedItem().toString();
 
         if (user_name.isEmpty()) {
             txtUsername.setError("User name is required");
@@ -267,11 +265,14 @@ public class SignUpActivity extends AppCompatActivity {
             txtUsername.requestFocus();
         }
 
+        String level = spLevel.getSelectedItem().toString();
+        String country = spCountries.getSelectedItem().toString();
+
         clearFieldFocus();
         enableDisableField(false);
         btnSignUp.setVisibility(View.GONE);
         progressSignUp.setVisibility(View.VISIBLE);
-        doUserSignUp(email, password, user_name, gender, level, country);
+        doUserSignUp(email, password, user_name, gender, level, "");
     }
 
     private void doUserSignUp(final String email, String password, final String user_name, final String gender, final String level, final String country) {
@@ -301,7 +302,6 @@ public class SignUpActivity extends AppCompatActivity {
                             } else {
                                 Log.d(TAG, "FirebaseAuthError => " + task.getException().getMessage());
                                 Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
-                                finish();
                             }
                         }
                     }
@@ -358,17 +358,6 @@ public class SignUpActivity extends AppCompatActivity {
     private void updateLevelSpinner(String level) {
         levelList.add(level);
         spLevel.setAdapter(new ArrayAdapter<>(SignUpActivity.this, android.R.layout.simple_spinner_dropdown_item, levelList));
-        spLevel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
     }
 
     // Country List
@@ -395,17 +384,6 @@ public class SignUpActivity extends AppCompatActivity {
         countryNameList.add(name);
         spCountries.setAdapter(
                 new ArrayAdapter<>(SignUpActivity.this, android.R.layout.simple_spinner_dropdown_item, countryNameList));
-        spCountries.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
     }
 
 //    private void updateDateOfBirthField() {

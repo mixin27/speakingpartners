@@ -44,10 +44,6 @@
             android:name=".MainActivity"
             android:theme="@style/Main.SpeakingPartner.BlueTheme.NoActionBar" />
         <activity
-            android:name=".activity.voicecall.FromCallingViewActivity"
-            android:theme="@style/Main.SpeakingPartner.BlueTheme.NoActionBar"
-            tools:targetApi="jelly_bean" />
-        <activity
             android:name=".activity.EditProfileActivity"
             android:parentActivityName=".activity.ProfileDetailActivity"
             android:theme="@style/Main.SpeakingPartner.BlueTheme.NoActionBar"
@@ -61,19 +57,35 @@
             android:theme="@style/Main.SpeakingPartner.DialogTheme"
             tools:targetApi="lollipop" />
         <activity
-            android:name=".activity.voicecall.ToCallingViewActivity"
-            android:theme="@style/Main.SpeakingPartner.BlueTheme.NoActionBar"
-            tools:targetApi="jelly_bean" />
-        <activity
             android:name=".activity.TopicGuideDetailActivity"
             android:parentActivityName=".MainActivity"
             android:theme="@style/Main.SpeakingPartner.LightBlueTheme"
             tools:targetApi="jelly_bean" />
-
-        <activity android:name=".activity.AboutActivity"
+        <activity
+            android:name=".activity.AboutActivity"
             android:parentActivityName=".activity.ProfileDetailActivity"
-            tools:targetApi="jelly_bean"
-            android:theme="@style/Main.SpeakingPartner.LightBlueTheme"/>
+            android:theme="@style/Main.SpeakingPartner.LightBlueTheme"
+            tools:targetApi="jelly_bean" />
+
+        <!-- Service -->
+        <service android:name=".background.CallingStateService" />
+
+        <!-- Receiver -->
+        <receiver android:name=".background.CallingBroadCastReceiver">
+            <intent-filter>
+                <action
+                    android:name="android.net.conn.CONNECTIVITY_CHANGE"
+                    tools:ignore="BatteryLife" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".activity.voicecall.IncomingSplashActivity"
+            android:theme="@style/Main.SpeakingPartner.BlueTheme.NoActionBar"
+            tools:targetApi="jelly_bean"/>
+
+        <activity android:name=".activity.voicecall.CallSplashActivity"
+            android:theme="@style/Main.SpeakingPartner.BlueTheme.NoActionBar"
+            tools:targetApi="jelly_bean"/>
     </application>
 
 </manifest>

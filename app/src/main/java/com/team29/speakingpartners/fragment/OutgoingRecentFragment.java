@@ -20,7 +20,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.team29.speakingpartners.R;
-import com.team29.speakingpartners.adapter.RecentListAdapter;
+import com.team29.speakingpartners.adapter.OutgoingRecentListAdapter;
 import com.team29.speakingpartners.model.RecentListModel;
 import com.team29.speakingpartners.ui.DividerItemDecoration;
 
@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class OutgoingRecentFragment extends Fragment implements RecentListAdapter.RecentItemClickListener {
+public class OutgoingRecentFragment extends Fragment implements OutgoingRecentListAdapter.RecentItemClickListener {
 
 
     public static final String TAG = OutgoingRecentFragment.class.getSimpleName();
@@ -41,7 +41,7 @@ public class OutgoingRecentFragment extends Fragment implements RecentListAdapte
     FirebaseFirestore mFirestore;
 
     private List<RecentListModel> mLists = new ArrayList<>();
-    private RecentListAdapter mAdapter;
+    private OutgoingRecentListAdapter mAdapter;
     RecyclerView mRecentListView;
 
     AppCompatTextView emptyRecentView;
@@ -62,7 +62,7 @@ public class OutgoingRecentFragment extends Fragment implements RecentListAdapte
 
         emptyRecentView = root.findViewById(R.id.empty_out_going_recent_view);
 
-        mAdapter = new RecentListAdapter(getContext());
+        mAdapter = new OutgoingRecentListAdapter(getContext());
         mAdapter.setItemLists(mLists);
         mAdapter.setRecentItemClickListener(this);
 
@@ -81,7 +81,7 @@ public class OutgoingRecentFragment extends Fragment implements RecentListAdapte
     private void prepareData() {
         Query query = mFirestore
                 .collection("recent")
-                .whereEqualTo("to_email", FirebaseAuth.getInstance().getCurrentUser().getEmail())
+                .whereEqualTo("from_email", FirebaseAuth.getInstance().getCurrentUser().getEmail())
                 .orderBy("date_time");
 
         query.addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -97,12 +97,7 @@ public class OutgoingRecentFragment extends Fragment implements RecentListAdapte
                 mLists.clear();
                 for (QueryDocumentSnapshot change : snapshots) {
                     RecentListModel requestListModel = change.toObject(RecentListModel.class).withId(change.getId());
-
-                    if (requestListModel.getFrom_email().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
-                        mLists.add(requestListModel);
-                    } else if (requestListModel.getTo_email().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
-                        mLists.add(requestListModel);
-                    }
+                    mLists.add(requestListModel);
                 }
 
                 mAdapter.setItemLists(mLists);

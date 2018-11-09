@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.CircularProgressDrawable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -16,9 +17,7 @@ import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.Toast;
+import android.widget.RelativeLayout;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -27,12 +26,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import java.text.DateFormat;
-import java.util.Date;
 
 import javax.annotation.Nullable;
 
@@ -47,14 +42,12 @@ public class ProfileDetailActivity extends AppCompatActivity {
 
     public static final String TAG = ProfileDetailActivity.class.getSimpleName();
 
+    RelativeLayout thisLayout;
+
     AppCompatImageView imgProfile;
-    AppCompatTextView tvUserName, tvUserEmail, tvUserLevel, tvUserCountry, tvUserDOB, tvUserGender /*tvVerifiedEmailStatus*/;
+    AppCompatTextView tvUserName, tvUserEmail, tvUserLevel, tvUserCountry, tvUserDOB, tvUserGender;
     SwitchCompat switchOnlineOffline;
-    AppCompatButton btnEditProfile, btnLogOutLayout, btnChangePasswordLayout, btnAboutLayout /*btnVerify*/;
-
-    /*LinearLayout layoutVerifyEmail;
-
-    ProgressBar progressVerify;*/
+    AppCompatButton btnEditProfile, btnLogOutLayout, btnChangePasswordLayout, btnAboutLayout;
 
     String user_id = "";
     long active_status = 0;
@@ -73,6 +66,8 @@ public class ProfileDetailActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
 
         setContentView(R.layout.activity_profile_detail);
+
+        thisLayout = findViewById(R.id.profile_detail_layout);
 
         mAuth = FirebaseAuth.getInstance();
         mFirestore = FirebaseFirestore.getInstance();
@@ -95,30 +90,6 @@ public class ProfileDetailActivity extends AppCompatActivity {
         tvUserGender = findViewById(R.id.tv_profile_gender);
 
         switchOnlineOffline = findViewById(R.id.btn_switch_active);
-
-        /*layoutVerifyEmail = findViewById(R.id.verified_layout);
-
-        tvVerifiedEmailStatus = findViewById(R.id.email_verified);*/
-
-        /*progressVerify = findViewById(R.id.progress_verify);
-
-        btnVerify = findViewById(R.id.btn_send_me);
-        btnVerify.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                btnVerify.setVisibility(View.GONE);
-                progressVerify.setVisibility(View.VISIBLE);
-                mAuth.getCurrentUser()
-                        .sendEmailVerification()
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                progressVerify.setVisibility(View.GONE);
-                                tvVerifiedEmailStatus.setText(getString(R.string.str_sent_mail));
-                            }
-                        });
-            }
-        });*/
 
         // FetchInformation
         if (ConnectionChecking.checkConnection(this)) {
@@ -182,7 +153,7 @@ public class ProfileDetailActivity extends AppCompatActivity {
         btnChangePasswordLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Coming soon", Toast.LENGTH_SHORT).show();
+                Snackbar.make(thisLayout, "Comming Soon", Snackbar.LENGTH_SHORT).show();
             }
         });
 
@@ -190,12 +161,16 @@ public class ProfileDetailActivity extends AppCompatActivity {
         btnEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(ProfileDetailActivity.this, EditProfileActivity.class);
-                if (mAuth.getCurrentUser() != null) {
-                    i.putExtra("EMAIL", mAuth.getCurrentUser().getEmail());
+                if (ConnectionChecking.checkConnection(ProfileDetailActivity.this)) {
+                    Intent i = new Intent(ProfileDetailActivity.this, EditProfileActivity.class);
+                    if (mAuth.getCurrentUser() != null) {
+                        i.putExtra("EMAIL", mAuth.getCurrentUser().getEmail());
+                    }
+                    startActivity(i);
+                    overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                } else {
+                    Snackbar.make(thisLayout, "No internet connection", Snackbar.LENGTH_SHORT).show();
                 }
-                startActivity(i);
-                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
         });
     }
@@ -217,14 +192,6 @@ public class ProfileDetailActivity extends AppCompatActivity {
                 });
     }
 
-    private String getDateOfBirth(Date dateOfBirth) {
-        if (dateOfBirth == null) {
-            return "";
-        }
-
-        return DateFormat.getDateInstance(DateFormat.FULL).format(dateOfBirth);
-    }
-
     private void setUpActionBar() {
         final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -236,25 +203,11 @@ public class ProfileDetailActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-        // Don't use this for now
-//        if (!mAuth.getCurrentUser().isEmailVerified()) {
-//            layoutVerifyEmail.setVisibility(View.VISIBLE);
-//        } else {
-//            layoutVerifyEmail.setVisibility(View.GONE);
-//        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-//        if (ConnectionChecking.checkConnection(getApplicationContext())) {
-//            if (!mAuth.getCurrentUser().isEmailVerified()) {
-//                layoutVerifyEmail.setVisibility(View.VISIBLE);
-//            } else {
-//                layoutVerifyEmail.setVisibility(View.GONE);
-//            }
-//        }
     }
 
     @Override
@@ -265,50 +218,50 @@ public class ProfileDetailActivity extends AppCompatActivity {
     private void fetchUserInformation() {
         if (mAuth.getCurrentUser() != null) {
             String email = mAuth.getCurrentUser().getEmail();
-            Query query = mFirestore.collection("users")
-                    .whereEqualTo("email", email);
-            query.addSnapshotListener(new EventListener<QuerySnapshot>() {
-                @Override
-                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                    if (e != null) {
-                        Log.w(TAG, "Listen error", e);
-                        return;
-                    }
+            mFirestore.collection("users")
+                    .whereEqualTo("email", email)
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                            if (e != null) {
+                                Log.w(TAG, "Listen error", e);
+                                return;
+                            }
 
-                    for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
-                        UserModel model = snapshot.toObject(UserModel.class).withId(snapshot.getId());
-                        user_id = model.id;
+                            for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
+                                UserModel model = snapshot.toObject(UserModel.class).withId(snapshot.getId());
+                                user_id = model.id;
 
-                        active_status = model.getActive_status();
-                        if (active_status == 1) {
-                            switchOnlineOffline.setChecked(true);
-                        } else {
-                            switchOnlineOffline.setChecked(false);
+                                active_status = model.getActive_status();
+                                if (active_status == 1) {
+                                    switchOnlineOffline.setChecked(true);
+                                } else {
+                                    switchOnlineOffline.setChecked(false);
+                                }
+
+                                tvUserName.setText(model.getUser_name());
+                                tvUserEmail.setText(model.getEmail());
+                                tvUserLevel.setText(model.getLevel());
+                                tvUserCountry.setText(model.getCountry());
+                                tvUserDOB.setText(model.getDateOfBirthString());
+                                tvUserGender.setText(model.getGender());
+
+                                if (!model.getUrl_photo().equals("")) {
+                                    CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(getApplicationContext());
+                                    circularProgressDrawable.setStrokeWidth(5f);
+                                    circularProgressDrawable.setCenterRadius(30f);
+                                    circularProgressDrawable.start();
+                                    GlideApp.with(getApplicationContext())
+                                            .load(Uri.parse(model.getUrl_photo()))
+                                            .apply(GlideOptions.bitmapTransform(
+                                                    new RoundedCornersTransformation(
+                                                            ProfileDetailActivity.this, 5, 2, "#BDBDBD", 10)))
+                                            .placeholder(circularProgressDrawable)
+                                            .into(imgProfile);
+                                }
+                            }
                         }
-
-                        tvUserName.setText(model.getUser_name());
-                        tvUserEmail.setText(model.getEmail());
-                        tvUserLevel.setText(model.getLevel());
-                        tvUserCountry.setText(model.getCountry());
-                        tvUserDOB.setText(model.getDateOfBirthString());
-                        tvUserGender.setText(model.getGender());
-
-                        if (!model.getUrl_photo().equals("")) {
-                            CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(getApplicationContext());
-                            circularProgressDrawable.setStrokeWidth(5f);
-                            circularProgressDrawable.setCenterRadius(30f);
-                            circularProgressDrawable.start();
-                            GlideApp.with(getApplicationContext())
-                                    .load(Uri.parse(model.getUrl_photo()))
-                                    .apply(GlideOptions.bitmapTransform(
-                                            new RoundedCornersTransformation(
-                                                    ProfileDetailActivity.this, 5, 2, "#BDBDBD", 10)))
-                                    .placeholder(circularProgressDrawable)
-                                    .into(imgProfile);
-                        }
-                    }
-                }
-            });
+                    });
         }
     }
 

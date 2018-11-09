@@ -11,9 +11,9 @@ import java.util.Date;
 public class RecentListModel extends Model implements Serializable {
 
     private String channel_id;
-    private String req_topic;
     private String from_email;
     private String to_email;
+    private String req_topic;
     private Date date_time;
 
     public RecentListModel() {

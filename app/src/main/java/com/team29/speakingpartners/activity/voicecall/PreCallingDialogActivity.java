@@ -18,7 +18,9 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -28,8 +30,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.team29.speakingpartners.R;
 import com.team29.speakingpartners.model.CallingRequestListModel;
 import com.team29.speakingpartners.model.UserModel;
+import com.team29.speakingpartners.net.ConnectionChecking;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
@@ -42,7 +47,7 @@ public class PreCallingDialogActivity extends AppCompatActivity {
     String USER_LEVEL = "";
 
     AppCompatTextView tvUserName, tvUserLevel, tvUserCountry, tvUserEmail, tvUserGender;
-    AppCompatButton btnCancel, btnRequest;
+    AppCompatButton btnCancel, btnRequest, btnDirectCall;
     AppCompatImageView imgUserProfile;
     AppCompatSpinner spTopic;
 
@@ -50,9 +55,9 @@ public class PreCallingDialogActivity extends AppCompatActivity {
 
     UserModel userModel;
 
-    String[] topicLists = {
-            "Myself", "Hobby", "Birthday"
-    };
+    List<String> topicLists = new ArrayList<>();
+
+    ArrayAdapter<String> mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +72,6 @@ public class PreCallingDialogActivity extends AppCompatActivity {
 
         imgUserProfile = findViewById(R.id.pre_calling_profile_img);
 
-        spTopic = findViewById(R.id.sp_pre_calling_topic);
-        spTopic.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, topicLists));
-
         tvUserName = findViewById(R.id.tv_pre_calling_user_name);
         tvUserLevel = findViewById(R.id.tv_pre_calling_level);
         tvUserCountry = findViewById(R.id.tv_pre_calling_country);
@@ -79,46 +81,35 @@ public class PreCallingDialogActivity extends AppCompatActivity {
         // DataSet
         setPartnerDetail();
 
+        spTopic = findViewById(R.id.sp_pre_calling_topic);
+        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, topicLists);
+        spTopic.setAdapter(mAdapter);
+
         btnRequest = findViewById(R.id.pre_calling_request);
         btnRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                btnRequest.setEnabled(false);
-
-                if (!FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(USER_EMAIL)) {
-                    final CallingRequestListModel model = new CallingRequestListModel(
-                            UUID.randomUUID().toString(),
-                            true,
-                            false,
-                            FirebaseAuth.getInstance().getCurrentUser().getEmail(),
-                            USER_EMAIL,
-                            new Date(),
-                            spTopic.getSelectedItem().toString()
-                    );
-
-                    mFirestore.collection("calling")
-                            .add(model)
-                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                @Override
-                                public void onSuccess(DocumentReference documentReference) {
-                                    Log.d(TAG, "Request Success");
-                                    Toast.makeText(getApplicationContext(), "Request sent", Toast.LENGTH_SHORT).show();
-                                    Intent i = new Intent(PreCallingDialogActivity.this, FromCallingViewActivity.class);
-                                    i.putExtra("REQ_MODEL", model);
-                                    startActivity(i);
-                                    finish();
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.d(TAG, "Request Error");
-                                }
-                            });
+                if (topicLists.size() > 0) {
+                    doRequest();
                 } else {
-                    Toast.makeText(getApplicationContext(), "You cannot make call yourself!", Toast.LENGTH_SHORT).show();
-                    finish();
+                    Toast.makeText(getApplicationContext(), "Try again", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        btnDirectCall = findViewById(R.id.pre_calling_request_call);
+        btnDirectCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ConnectionChecking.checkConnection(PreCallingDialogActivity.this)) {
+                    if (topicLists.size() > 0) {
+                        doCall();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Try again", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "No internet connection", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -131,6 +122,123 @@ public class PreCallingDialogActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    void doRequest() {
+        btnRequest.setEnabled(false);
+        btnRequest.setTextColor(getResources().getColor(R.color.color_grey));
+
+        if (!FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(USER_EMAIL)) {
+            final CallingRequestListModel model = new CallingRequestListModel(
+                    UUID.randomUUID().toString(),
+                    FirebaseAuth.getInstance().getCurrentUser().getEmail(),
+                    USER_EMAIL,
+                    1,
+                    0,
+                    2,
+                    spTopic.getSelectedItem().toString(),
+                    new Date()
+            );
+
+            mFirestore.collection("calling")
+                    .add(model)
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            Log.d(TAG, "Request Success");
+                            Toast.makeText(getApplicationContext(), "Request sent", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, "Request Error");
+                        }
+                    });
+        } else {
+            Toast.makeText(getApplicationContext(), "You cannot make call yourself!", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+    }
+
+    void doCall() {
+        btnDirectCall.setEnabled(false);
+
+        if (!FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(USER_EMAIL)) {
+            final CallingRequestListModel model = new CallingRequestListModel(
+                    UUID.randomUUID().toString(),
+                    FirebaseAuth.getInstance().getCurrentUser().getEmail(),
+                    USER_EMAIL,
+                    1,
+                    0,
+                    1,
+                    spTopic.getSelectedItem().toString(),
+                    new Date()
+            );
+
+            mFirestore.collection("calling")
+                    .add(model)
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            Log.d(TAG, "Request Success");
+                            Toast.makeText(getApplicationContext(), "Call Success", Toast.LENGTH_SHORT).show();
+                            Intent i = new Intent(PreCallingDialogActivity.this, CallSplashActivity.class);
+                            i.putExtra("REQ_MODEL", model);
+                            startActivity(i);
+                            finish();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, "Calling Error");
+                        }
+                    });
+        } else {
+            Toast.makeText(getApplicationContext(), "You cannot make call yourself!", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+    }
+
+    void setDataToTopicSpinner() {
+        String id = "1";
+
+        Log.d("level",tvUserLevel.getText().toString());
+        switch (tvUserLevel.getText().toString()) {
+            case "Elementary":
+                id = "1";
+                break;
+            case "Upper-intermediate":
+                id = "2";
+                break;
+            case "Intermediate":
+                id = "3";
+                break;
+            case "Advance":
+                id = "4";
+                break;
+            case "Native":
+                id = "4";
+                break;
+        }
+
+        Log.d(TAG, "TOPICS DOC_ID = " + id);
+         mFirestore.collection("skills")
+                 .document(id)
+                 .collection("topics")
+                 .get()
+                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                     @Override
+                     public void onSuccess(QuerySnapshot snapshots) {
+                         topicLists.clear();
+                         for (QueryDocumentSnapshot snapshot : snapshots) {
+                             topicLists.add(snapshot.getString("title"));
+                         }
+                         mAdapter.notifyDataSetChanged();
+                     }
+                 });
     }
 
     private void setPartnerDetail() {
@@ -147,7 +255,7 @@ public class PreCallingDialogActivity extends AppCompatActivity {
                     if (snapshots != null) {
                         for (QueryDocumentSnapshot snapshot: snapshots) {
                             userModel = snapshot.toObject(UserModel.class);
-                            Log.d(TAG, userModel.getEmail());
+
                             tvUserName.setText(userModel.getUser_name());
                             tvUserLevel.setText(userModel.getLevel());
                             tvUserCountry.setText(userModel.getCountry());
@@ -161,6 +269,9 @@ public class PreCallingDialogActivity extends AppCompatActivity {
                                         .into(imgUserProfile);
                             }
                         }
+
+                        setDataToTopicSpinner();
+
                     }
                 }
             });

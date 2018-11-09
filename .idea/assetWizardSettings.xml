@@ -97,7 +97,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/E:/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/navigation/ic_chevron_right_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/E:/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/av/ic_volume_off_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -107,7 +107,7 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_chevron_right_black_24dp" />
+                            <entry key="outputName" value="ic_volume_off_black_24dp" />
                             <entry key="sourceFile" value="C:\Users\Norm" />
                           </map>
                         </option>

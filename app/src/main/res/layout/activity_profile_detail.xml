@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/color_white"
+    android:id="@+id/profile_detail_layout"
     tools:context=".activity.ProfileDetailActivity">
 
     <android.support.v4.widget.NestedScrollView

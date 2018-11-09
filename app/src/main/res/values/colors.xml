@@ -13,8 +13,6 @@
     <color name="color_grey">#BDBDBD</color>
     <color name="color_more_grey">#848484</color>
 
-    <color name="color_green_700">#388e3c</color>
-    <color name="color_green_500">#4caf50</color>
     <color name="color_orange_500">#ff9800</color>
     <color name="color_orange_700">#c66900</color>
     <color name="color_orange_A_200">#ffff00</color>
@@ -31,5 +29,13 @@
     <color name="color_blue_500">#2196F3</color>
     <color name="color_blue_700">#1976D2</color>
     <color name="color_accent_blue_500">#FF5252</color>
+
+    <!-- Red Theme -->
+    <color name="color_red_500">#f44336</color>
+    <color name="color_red_700">#d32f2f</color>
+
+    <!-- Green Theme -->
+    <color name="color_green_700">#388e3c</color>
+    <color name="color_green_500">#4caf50</color>
 
 </resources>

@@ -1,11 +1,15 @@
 package com.team29.speakingpartners;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +20,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -24,12 +29,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.team29.speakingpartners.activity.EditProfileActivity;
 import com.team29.speakingpartners.activity.ProfileDetailActivity;
 import com.team29.speakingpartners.adapter.MyViewPagerAdapter;
+import com.team29.speakingpartners.background.CallingStateService;
 import com.team29.speakingpartners.fragment.ActiveUserFragment;
 import com.team29.speakingpartners.fragment.HomeFragment;
 import com.team29.speakingpartners.fragment.PendingFragment;
 import com.team29.speakingpartners.fragment.RecentFragment;
+import com.team29.speakingpartners.helper.CheckPermissionForApp;
 import com.team29.speakingpartners.net.ConnectionChecking;
 import com.team29.speakingpartners.utils.GlideApp;
 import com.team29.speakingpartners.utils.GlideOptions;
@@ -39,6 +47,9 @@ import javax.annotation.Nullable;
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = MainActivity.class.getSimpleName();
+
+    private static final int PERMISSION_REQ_ID_RECORD_AUDIO = 22;
+    public static final int PERMISSION_REQ_ID_CAMERA = 10;
 
     private BottomNavigationView mBottomNavView;
     private ViewPager mViewPager;
@@ -55,11 +66,16 @@ public class MainActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth;
 
+    boolean hasRecordAudioPermission, hasCameraPermission;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "Activity created");
         setContentView(R.layout.activity_main);
+
+        // Permission
+        requestApplicationPermission();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
 
@@ -73,6 +89,26 @@ public class MainActivity extends AppCompatActivity {
         setUpViewPager();
 
         mAuth = FirebaseAuth.getInstance();
+    }
+
+    private void requestApplicationPermission() {
+        hasRecordAudioPermission = (ContextCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED);
+        if(!hasRecordAudioPermission){
+            // ask the permission
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSION_REQ_ID_RECORD_AUDIO);
+        }
+
+        hasCameraPermission = (ContextCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+        if(!hasCameraPermission){
+            // ask the permission
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.CAMERA},
+                    PERMISSION_REQ_ID_CAMERA);
+        }
     }
 
     // ViewPager
@@ -189,21 +225,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    // Menu
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.action_profile:
-                return true;
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQ_ID_RECORD_AUDIO && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            hasRecordAudioPermission = true;
+        }else if (requestCode == PERMISSION_REQ_ID_CAMERA && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            hasCameraPermission = true;
         }
-        return super.onOptionsItemSelected(item);
+
     }
 
     // Activity
@@ -217,6 +247,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Log.i(TAG, "Activity destroyed");
+//        stopBackgroundService();
     }
 
     @Override
@@ -226,12 +257,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (mAuth.getCurrentUser() == null) {
             finish();
-        }
-
-        if (ConnectionChecking.checkConnection(this)) {
-            Log.d(TAG, "Online");
-        } else {
-            Log.d(TAG, "Offline");
         }
     }
 
@@ -260,6 +285,20 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.d(TAG, "Offline");
         }
+
+        if (ConnectionChecking.checkConnection(this)) {
+            startBackgroundService();
+        }
+    }
+
+    private void startBackgroundService() {
+        Intent intent = new Intent(this, CallingStateService.class);
+        startService(intent);
+    }
+
+    private void stopBackgroundService() {
+        Intent intent = new Intent(this, CallingStateService.class);
+        stopService(intent);
     }
 
     @Override

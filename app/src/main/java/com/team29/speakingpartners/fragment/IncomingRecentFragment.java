@@ -20,7 +20,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.team29.speakingpartners.R;
-import com.team29.speakingpartners.adapter.RecentListAdapter;
+import com.team29.speakingpartners.adapter.IncomingRecentListAdapter;
 import com.team29.speakingpartners.model.RecentListModel;
 import com.team29.speakingpartners.ui.DividerItemDecoration;
 
@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class IncomingRecentFragment extends Fragment implements RecentListAdapter.RecentItemClickListener {
+public class IncomingRecentFragment extends Fragment implements IncomingRecentListAdapter.RecentItemClickListener {
 
     public static final String TAG = IncomingRecentFragment.class.getSimpleName();
 
@@ -40,7 +40,7 @@ public class IncomingRecentFragment extends Fragment implements RecentListAdapte
     FirebaseFirestore mFirestore;
 
     private List<RecentListModel> mLists = new ArrayList<>();
-    private RecentListAdapter mAdapter;
+    private IncomingRecentListAdapter mAdapter;
     RecyclerView mRecentListView;
 
     AppCompatTextView emptyRecentView;
@@ -61,7 +61,7 @@ public class IncomingRecentFragment extends Fragment implements RecentListAdapte
 
         emptyRecentView = root.findViewById(R.id.empty_incoming_recent_view);
 
-        mAdapter = new RecentListAdapter(getContext());
+        mAdapter = new IncomingRecentListAdapter(getContext());
         mAdapter.setItemLists(mLists);
         mAdapter.setRecentItemClickListener(this);
 
@@ -96,12 +96,7 @@ public class IncomingRecentFragment extends Fragment implements RecentListAdapte
                 mLists.clear();
                 for (QueryDocumentSnapshot change : snapshots) {
                     RecentListModel requestListModel = change.toObject(RecentListModel.class).withId(change.getId());
-
-                    if (requestListModel.getFrom_email().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
-                        mLists.add(requestListModel);
-                    } else if (requestListModel.getTo_email().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
-                        mLists.add(requestListModel);
-                    }
+                    mLists.add(requestListModel);
                 }
 
                 mAdapter.setItemLists(mLists);

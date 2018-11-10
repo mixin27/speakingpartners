@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -55,6 +56,10 @@ public class ActiveUserFragment extends Fragment implements ActiveUserListAdapte
 
         // Firestore
         mFirestore = FirebaseFirestore.getInstance();
+        FirebaseFirestoreSettings firestoreSettings = new FirebaseFirestoreSettings.Builder()
+                .setTimestampsInSnapshotsEnabled(false)
+                .build();
+        mFirestore.setFirestoreSettings(firestoreSettings);
 
         mActiveUserList = root.findViewById(R.id.active_user_list);
 

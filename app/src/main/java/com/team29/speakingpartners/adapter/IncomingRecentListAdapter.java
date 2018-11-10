@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.CircularProgressDrawable;
+import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -77,12 +79,13 @@ public class IncomingRecentListAdapter extends RecyclerView.Adapter<IncomingRece
         return mLists.size();
     }
 
-    public class RecentListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class RecentListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
 
         RecentListModel mRecentListModel;
 
         AppCompatTextView recentUsername, recentTopic, recentDate;
         AppCompatImageView imgRecentUserProfile;
+        AppCompatImageButton btnDelete;
 
         public RecentListViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -92,7 +95,10 @@ public class IncomingRecentListAdapter extends RecyclerView.Adapter<IncomingRece
 
             imgRecentUserProfile = itemView.findViewById(R.id.recent_user_img);
 
+            btnDelete = itemView.findViewById(R.id.btn_recent_remove);
+
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
         @SuppressLint("SetTextI18n")
@@ -103,6 +109,13 @@ public class IncomingRecentListAdapter extends RecyclerView.Adapter<IncomingRece
 
             recentTopic.setText(mRecentListModel.getReq_topic());
             recentDate.setText(mRecentListModel.getDateString() + "\n" + mRecentListModel.getTimeString());
+
+            btnDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    recentItemClickListener.setOnItemLongClick(mRecentListModel);
+                }
+            });
         }
 
         private void fetchUserData(String email) {
@@ -128,7 +141,7 @@ public class IncomingRecentListAdapter extends RecyclerView.Adapter<IncomingRece
                                     circularProgressDrawable.start();
                                     GlideApp.with(mContext)
                                             .load(urlPhoto)
-                                            .apply(GlideOptions.centerCropTransform())
+                                            .apply(GlideOptions.circleCropTransform())
                                             .placeholder(circularProgressDrawable)
                                             .into(imgRecentUserProfile);
                                 }
@@ -141,10 +154,18 @@ public class IncomingRecentListAdapter extends RecyclerView.Adapter<IncomingRece
         public void onClick(View v) {
             recentItemClickListener.setOnItemClick(mRecentListModel);
         }
+
+        @Override
+        public boolean onLongClick(View v) {
+            recentItemClickListener.setOnItemLongClick(mRecentListModel);
+            return false;
+        }
     }
 
     public interface RecentItemClickListener {
         void setOnItemClick(RecentListModel model);
+
+        boolean setOnItemLongClick(RecentListModel model);
     }
 
 }

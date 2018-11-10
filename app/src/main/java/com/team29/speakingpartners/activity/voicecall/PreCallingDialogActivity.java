@@ -1,5 +1,6 @@
 package com.team29.speakingpartners.activity.voicecall;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,8 @@ import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -18,9 +21,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -43,8 +44,13 @@ public class PreCallingDialogActivity extends AppCompatActivity {
 
     public static final String TAG = PreCallingDialogActivity.class.getSimpleName();
 
+    ProgressDialog progressDialog;
+
     String USER_EMAIL = "";
     String USER_LEVEL = "";
+
+    LinearLayout countryView;
+    RelativeLayout preCallingLayout;
 
     AppCompatTextView tvUserName, tvUserLevel, tvUserCountry, tvUserEmail, tvUserGender;
     AppCompatButton btnCancel, btnRequest, btnDirectCall;
@@ -67,8 +73,12 @@ public class PreCallingDialogActivity extends AppCompatActivity {
         // FirebaseFirestore
         mFirestore = FirebaseFirestore.getInstance();
 
+        progressDialog = new ProgressDialog(this);
+
         // Get intent data
         getIntentData();
+
+        preCallingLayout = findViewById(R.id.pre_calling_layout);
 
         imgUserProfile = findViewById(R.id.pre_calling_profile_img);
 
@@ -77,6 +87,8 @@ public class PreCallingDialogActivity extends AppCompatActivity {
         tvUserCountry = findViewById(R.id.tv_pre_calling_country);
         tvUserGender = findViewById(R.id.tv_pre_calling_gender);
         tvUserEmail = findViewById(R.id.tv_pre_calling_email);
+
+        countryView = findViewById(R.id.country_view);
 
         // DataSet
         setPartnerDetail();
@@ -104,6 +116,7 @@ public class PreCallingDialogActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (ConnectionChecking.checkConnection(PreCallingDialogActivity.this)) {
                     if (topicLists.size() > 0) {
+                        btnDirectCall.setEnabled(false);
                         doCall();
                     } else {
                         Toast.makeText(getApplicationContext(), "Try again", Toast.LENGTH_SHORT).show();
@@ -125,8 +138,7 @@ public class PreCallingDialogActivity extends AppCompatActivity {
     }
 
     void doRequest() {
-        btnRequest.setEnabled(false);
-        btnRequest.setTextColor(getResources().getColor(R.color.color_grey));
+        progressDialog.show();
 
         if (!FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(USER_EMAIL)) {
             final CallingRequestListModel model = new CallingRequestListModel(
@@ -154,16 +166,19 @@ public class PreCallingDialogActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             Log.d(TAG, "Request Error");
+                            if (progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                            }
                         }
                     });
         } else {
-            Toast.makeText(getApplicationContext(), "You cannot make call yourself!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "You cannot request yourself!", Toast.LENGTH_SHORT).show();
             finish();
         }
     }
 
     void doCall() {
-        btnDirectCall.setEnabled(false);
+        progressDialog.show();
 
         if (!FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(USER_EMAIL)) {
             final CallingRequestListModel model = new CallingRequestListModel(
@@ -194,6 +209,9 @@ public class PreCallingDialogActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             Log.d(TAG, "Calling Error");
+                            if (progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                            }
                         }
                     });
         } else {
@@ -256,9 +274,15 @@ public class PreCallingDialogActivity extends AppCompatActivity {
                         for (QueryDocumentSnapshot snapshot: snapshots) {
                             userModel = snapshot.toObject(UserModel.class);
 
+                            if (userModel.getCountry().equals("")) {
+                                countryView.setVisibility(View.GONE);
+                            } else {
+                                countryView.setVisibility(View.VISIBLE);
+                                tvUserCountry.setText(userModel.getCountry());
+                            }
+
                             tvUserName.setText(userModel.getUser_name());
                             tvUserLevel.setText(userModel.getLevel());
-                            tvUserCountry.setText(userModel.getCountry());
                             tvUserGender.setText(userModel.getGender());
                             tvUserEmail.setText(userModel.getEmail());
 
@@ -285,6 +309,14 @@ public class PreCallingDialogActivity extends AppCompatActivity {
 
         if (!getIntent().getStringExtra("USER_LEVEL").isEmpty()) {
             USER_LEVEL = getIntent().getStringExtra("USER_LEVEL");
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
         }
     }
 }

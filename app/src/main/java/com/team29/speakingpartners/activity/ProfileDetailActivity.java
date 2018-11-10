@@ -102,10 +102,14 @@ public class ProfileDetailActivity extends AppCompatActivity {
                 if (ConnectionChecking.checkConnection(getApplicationContext())) {
                     if (isChecked) {
                         switchOnlineOffline.setText(getResources().getString(R.string.str_online));
-                        updateActiveStatus(1);
+                        if (ConnectionChecking.checkConnection(ProfileDetailActivity.this)) {
+                            updateActiveStatus(1);
+                        }
                     } else {
                         switchOnlineOffline.setText(getResources().getString(R.string.str_offline));
-                        updateActiveStatus(0);
+                        if (ConnectionChecking.checkConnection(ProfileDetailActivity.this)) {
+                            updateActiveStatus(0);
+                        }
                     }
                 }
             }

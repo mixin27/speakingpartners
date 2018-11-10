@@ -20,7 +20,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Guides For You"
-                android:textSize="@dimen/general_text_size_16"
+                android:textSize="@dimen/general_text_size_18"
                 android:textStyle="bold"
                 android:layout_gravity="center_horizontal"/>
 

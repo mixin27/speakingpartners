@@ -9,6 +9,7 @@ import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -44,7 +45,9 @@ public class RequestReviewActivity extends AppCompatActivity {
 
     private AppCompatImageView imgProfile;
     private AppCompatTextView tvUserName, tvUserLevel, tvUserCountry, tvUserGender, tvUserEmail, tvRequestTopic;
-    private AppCompatButton btnStart;
+    AppCompatButton btnStart;
+
+    LinearLayout countryView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,8 @@ public class RequestReviewActivity extends AppCompatActivity {
         tvUserLevel = findViewById(R.id.tv_calling_request_level);
         tvUserGender = findViewById(R.id.tv_calling_request_gender);
         tvUserCountry = findViewById(R.id.tv_calling_request_country);
+
+        countryView = findViewById(R.id.pre_country_view);
 
         fetchRequestUserInformation();
 
@@ -146,9 +151,15 @@ public class RequestReviewActivity extends AppCompatActivity {
                     String level = snapshot.getString("level");
                     String url_photo = snapshot.getString("url_photo");
 
+                    if (country.equals("")) {
+                        countryView.setVisibility(View.GONE);
+                    } else {
+                        countryView.setVisibility(View.VISIBLE);
+                        tvUserCountry.setText(country);
+                    }
+
                     tvUserName.setText(user_name);
                     tvUserGender.setText(gender);
-                    tvUserCountry.setText(country);
                     tvUserLevel.setText(level);
 
                     if (!url_photo.equals("")) {

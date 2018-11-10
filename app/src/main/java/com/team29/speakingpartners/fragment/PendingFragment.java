@@ -1,6 +1,7 @@
 package com.team29.speakingpartners.fragment;
 
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -44,6 +45,8 @@ public class PendingFragment extends Fragment implements PendingListAdapter.Butt
 
     public static final String TAG = PendingFragment.class.getSimpleName();
 
+    ProgressDialog progressDialog;
+
     // Firebase
     private FirebaseFirestore mFirestore;
     private PendingListAdapter mAdapter;
@@ -65,6 +68,8 @@ public class PendingFragment extends Fragment implements PendingListAdapter.Butt
         View root = inflater.inflate(R.layout.fragment_pending, container, false);
 
         mFirestore = FirebaseFirestore.getInstance();
+
+        progressDialog = new ProgressDialog(getContext());
 
         emptyTextView = root.findViewById(R.id.empty_pending_view);
 
@@ -130,19 +135,24 @@ public class PendingFragment extends Fragment implements PendingListAdapter.Butt
     @Override
     public void setOnAcceptButtonClick(CallingRequestListModel model, String id) {
 
+        progressDialog.show();
         DocumentReference docRef = mFirestore.collection("calling")
                 .document(id);
         docRef.update("call_type", 0)
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
                     }
                 })
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
                     }
                 });
 
@@ -154,18 +164,25 @@ public class PendingFragment extends Fragment implements PendingListAdapter.Butt
 
     @Override
     public void setOnRejectButtonClick(String docId) {
+        progressDialog.show();
         DocumentReference docRef = mFirestore.collection("calling").document(docId);
         docRef.delete()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Log.d(TAG, "Delete Success");
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.d(TAG, "Failed to delete");
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
                     }
                 });
     }

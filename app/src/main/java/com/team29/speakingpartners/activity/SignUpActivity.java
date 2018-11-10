@@ -266,7 +266,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
         String level = spLevel.getSelectedItem().toString();
-        String country = spCountries.getSelectedItem().toString();
+        /*String country = spCountries.getSelectedItem().toString();*/
 
         clearFieldFocus();
         enableDisableField(false);

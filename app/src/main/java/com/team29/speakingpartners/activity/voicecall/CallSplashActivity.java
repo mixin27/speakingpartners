@@ -1,7 +1,6 @@
 package com.team29.speakingpartners.activity.voicecall;
 
 import android.Manifest;
-import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -14,30 +13,24 @@ import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.team29.speakingpartners.R;
-import com.team29.speakingpartners.background.CallingStateService;
 import com.team29.speakingpartners.helper.CheckPermissionForApp;
 import com.team29.speakingpartners.model.CallingRequestListModel;
-import com.team29.speakingpartners.model.RecentListModel;
 import com.team29.speakingpartners.utils.GlideApp;
 import com.team29.speakingpartners.utils.GlideOptions;
 
-import java.util.Date;
 import java.util.Locale;
 
 import javax.annotation.Nullable;
@@ -60,6 +53,11 @@ public class CallSplashActivity extends AppCompatActivity {
         }
 
         @Override
+        public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
+            super.onJoinChannelSuccess(channel, uid, elapsed);
+        }
+
+        @Override
         public void onUserMuteAudio(int uid, boolean muted) {
             super.onUserMuteAudio(uid, muted);
             onRemoteUserVoiceMuted(uid, muted);
@@ -71,7 +69,7 @@ public class CallSplashActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     onRemoteUserLeft(uid, reason);
-                    // doReject();
+                    doReject();
                     finish();
                 }
             });
@@ -82,7 +80,7 @@ public class CallSplashActivity extends AppCompatActivity {
 
     AppCompatImageView profileImageView;
     AppCompatImageButton btnEndCall, btnSpeaker, btnAudio;
-    AppCompatTextView tvUserName, tvUserLevel, tvUserTopic;
+    AppCompatTextView tvUserName, tvUserLevel, tvUserTopic, tvDuration;
 
     FirebaseAuth mAuth;
     FirebaseFirestore mDB;
@@ -118,26 +116,38 @@ public class CallSplashActivity extends AppCompatActivity {
         // Audio
         actionButtonAudio();
 
-        //listenAcceptOrReject();
+        listenAcceptOrReject();
     }
 
     private void listenAcceptOrReject() {
-        mDB.collection("calling")
-                .whereEqualTo("channel_id", callingRequestModel.getChannel_id())
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
-                        if (e != null) {
-                            return;
-                        }
+        if (FirebaseAuth.getInstance().getCurrentUser().getEmail() != null) {
 
-                        for (QueryDocumentSnapshot snapshot : snapshots) {
-                            if (Integer.parseInt(snapshot.get("to_status").toString()) == 2) {
-                                finish();
+            FirebaseFirestore.getInstance().collection("calling")
+                    .whereEqualTo("channel_id", callingRequestModel.getChannel_id())
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
+                            if (e != null) {
+                                Log.e(TAG, "Listen Error");
+//                                return;
+                            }
+
+                            for (DocumentChange change : snapshots.getDocumentChanges()) {
+
+                                if(change.getType().equals(DocumentChange.Type.REMOVED)) {
+                                    Log.d(TAG, "REMOVE");
+                                    finish();
+                                }
+
+                                if(change.getType().equals(DocumentChange.Type.MODIFIED)) {
+                                    Log.d(TAG, "MODIFIED");
+                                    tvDuration.setVisibility(View.VISIBLE);
+                                    tvDuration.setText("Another User Joined");
+                                }
                             }
                         }
-                    }
-                });
+                    });
+        }
     }
 
     // Firebase
@@ -167,6 +177,7 @@ public class CallSplashActivity extends AppCompatActivity {
         tvUserName = findViewById(R.id.calling_splash_name);
         tvUserLevel = findViewById(R.id.calling_splash_level);
         tvUserTopic = findViewById(R.id.calling_splash_topic);
+        tvDuration = findViewById(R.id.calling_splash_duration);
     }
 
     // User Information
@@ -215,8 +226,8 @@ public class CallSplashActivity extends AppCompatActivity {
         btnEndCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                doReject();
                 finish();
-                // doReject();
             }
         });
     }
@@ -240,7 +251,7 @@ public class CallSplashActivity extends AppCompatActivity {
     private void doRejectUpdate(String docId) {
         DocumentReference docRef = mDB.collection("calling")
                 .document(docId);
-        docRef.update("to_status", 2)
+        docRef.delete()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {

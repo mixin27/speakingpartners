@@ -17,14 +17,14 @@
     <!-- Login | Sign up -->
     <string name="str_main_header_login">Looking for a partner to speak english?</string>
     <string name="str_main_header_sign_up">CREATE YOUR ACCOUNT</string>
-    <string name="str_main_subtitle">Join Speaking Partners today.</string>
+    <string name="str_main_subtitle">Meet your partner and talk together.</string>
     <string name="str_agree">I accept</string>
     <string name="str_terms_and_policies"> terms of service and privacy policy</string>
 
     <!-- Main menu -->
     <string name="action_settings">Settings</string>
     <string name="action_rate_my_app">Rate</string>
-    <string name="action_about">About</string>
+    <string name="action_about">About Application</string>
     <string name="action_profile">Me</string>
     <string name="action_report_problem">Report a problem</string>
 
@@ -105,8 +105,7 @@
 
     <!-- Level -->
     <string-array name="speaking_level">
-        <item>Elementary</item>
-        <item>Intermediate</item>
+        <item>Select Your Level</item>
     </string-array>
 
     <!-- Country -->
@@ -143,8 +142,20 @@
     <string name="str_connected_process">Connected</string>
     <string name="str_edit_profile_header">Profile picture is required to know who you are.</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <string name="str_call">Call</string>
+
+    <!-- About -->
+    <string name="str_about_application">
+        \t\tSpeaking Partners Application သည္ English Speaking ကို Partners ရွာျပီး ေျပာရေသာ Online App တစ္မ်ိဳးျဖစ္သည္။
+        လူျကားထဲတြင္ English စကားေျပာဆိုရန္ ရွက္ေသာသူ၊ English သင္တန္းမ်ားကုိ level ေတာ္ေတာ္မ်ားမ်ား တက္ေရာက္ျပီး
+        ျပန္မေလ့လာနိုင္ေသာသူမ်ား အတြက္ Partners မ်ားကို ေရြးခ်ယ္ျပီး ေလ့က်င့္နုိင္ပါသည္။
+        App ထဲတြင္ Topics မ်ား ျကိုျပီး သတ္မွတ္ထားေပးသည့္အတြက္ Topic တစ္ခုခ်င္းစီကို ျကို၍ ေလ့လာထားနိုင္ပါသည္။
+        Chatting App မဟုတ္ဘဲ Calling App ျဖစ္သည့္အတြက္ Listening and Speaking Skills ကုိ တိုးတက္ေစပါသည္။
+    </string>
+    <string name="str_developer_team">Developer Team</string>
+    <string name="str_cho_mi_mg_aye">Cho Mi Maung Aye (UCSY)</string>
+    <string name="str_saw_thandar">Saw Thandar (UCSY)</string>
+    <string name="str_k_z_y_t">Kyaw Zayar Tun (UCSY)</string>
 
 </resources>

@@ -1,12 +1,9 @@
 package com.team29.speakingpartners;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -17,27 +14,25 @@ import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.team29.speakingpartners.activity.EditProfileActivity;
 import com.team29.speakingpartners.activity.ProfileDetailActivity;
+import com.team29.speakingpartners.activity.voicecall.IncomingSplashActivity;
 import com.team29.speakingpartners.adapter.MyViewPagerAdapter;
-import com.team29.speakingpartners.background.CallingStateService;
 import com.team29.speakingpartners.fragment.ActiveUserFragment;
 import com.team29.speakingpartners.fragment.HomeFragment;
 import com.team29.speakingpartners.fragment.PendingFragment;
 import com.team29.speakingpartners.fragment.RecentFragment;
-import com.team29.speakingpartners.helper.CheckPermissionForApp;
+import com.team29.speakingpartners.model.CallingRequestListModel;
 import com.team29.speakingpartners.net.ConnectionChecking;
 import com.team29.speakingpartners.utils.GlideApp;
 import com.team29.speakingpartners.utils.GlideOptions;
@@ -74,13 +69,13 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, "Activity created");
         setContentView(R.layout.activity_main);
 
-        // Permission
-        requestApplicationPermission();
-
         Toolbar toolbar = findViewById(R.id.toolbar);
 
         // ActionBar
         setUpTooBar(toolbar);
+
+        // Permission
+        requestApplicationPermission();
 
         // BottomNavigationView
         setUpBottomNavView();
@@ -89,6 +84,42 @@ public class MainActivity extends AppCompatActivity {
         setUpViewPager();
 
         mAuth = FirebaseAuth.getInstance();
+
+        if (ConnectionChecking.checkConnection(this)) {
+            listenIncomingCall();
+        }
+    }
+
+    private void listenIncomingCall() {
+        if (FirebaseAuth.getInstance().getCurrentUser().getEmail() != null) {
+            FirebaseFirestore.getInstance().collection("calling")
+                    .whereEqualTo("to_email", FirebaseAuth.getInstance().getCurrentUser().getEmail())
+                    .whereEqualTo("from_status", 1)
+                    .whereEqualTo("to_status", 0)
+                    .whereEqualTo("call_type", 1)
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
+                            if (e != null) {
+                                Log.e(TAG, "Listen Error");
+//                                return;
+                            }
+
+                            for (DocumentChange change : snapshots.getDocumentChanges()) {
+
+                                if(change.getType().equals(DocumentChange.Type.ADDED)) {
+                                    Log.d(TAG, "ADDED");
+                                    CallingRequestListModel model = change.getDocument()
+                                            .toObject(CallingRequestListModel.class).withId(change.getDocument().getId());
+                                    Intent i = new Intent(MainActivity.this, IncomingSplashActivity.class);
+                                    i.putExtra("REQ_MODEL", model);
+                                    i.putExtra("ID", model.id);
+                                    startActivity(i);
+                                }
+                            }
+                        }
+                    });
+        }
     }
 
     private void requestApplicationPermission() {
@@ -102,11 +133,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         hasCameraPermission = (ContextCompat.checkSelfPermission(MainActivity.this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+                Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED);
         if(!hasCameraPermission){
             // ask the permission
             ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.CAMERA},
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     PERMISSION_REQ_ID_CAMERA);
         }
     }
@@ -228,12 +259,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSION_REQ_ID_RECORD_AUDIO && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (grantResults.length > 0 && requestCode == PERMISSION_REQ_ID_RECORD_AUDIO && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             hasRecordAudioPermission = true;
-        }else if (requestCode == PERMISSION_REQ_ID_CAMERA && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        }else if (grantResults.length > 0 && requestCode == PERMISSION_REQ_ID_CAMERA && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             hasCameraPermission = true;
         }
-
     }
 
     // Activity
@@ -285,20 +315,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.d(TAG, "Offline");
         }
-
-        if (ConnectionChecking.checkConnection(this)) {
-            startBackgroundService();
-        }
-    }
-
-    private void startBackgroundService() {
-        Intent intent = new Intent(this, CallingStateService.class);
-        startService(intent);
-    }
-
-    private void stopBackgroundService() {
-        Intent intent = new Intent(this, CallingStateService.class);
-        stopService(intent);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.team29.speakingpartners.activity;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -82,7 +83,6 @@ public class EditProfileActivity extends AppCompatActivity {
     AppCompatButton btnUploadProfileImage;
 
     LinearLayout btnSave, btnCancel;
-    ProgressBar progressBar;
 
     ArrayList<String> levelLists, countryLists;
     String currentLevel = "", currentCountry = "";
@@ -100,6 +100,8 @@ public class EditProfileActivity extends AppCompatActivity {
 
     Bitmap profileImageBitmap;
 
+    ProgressDialog progressDialog;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +117,7 @@ public class EditProfileActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mFirestore = FirebaseFirestore.getInstance();
 
-        progressBar = findViewById(R.id.progress_profile_edit);
+        progressDialog = new ProgressDialog(this);
 
         // ActionBar
         setUpActionBar();
@@ -151,8 +153,13 @@ public class EditProfileActivity extends AppCompatActivity {
                 myCalendar.set(Calendar.MONTH, month);
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-                dateOfBirth = myCalendar.getTime();
-                txtDateOfBirth.setText(new SimpleDateFormat("dd/MM/yyyy").format(myCalendar.getTime()));
+                if (myCalendar.getTimeInMillis() < System.currentTimeMillis()) {
+                    dateOfBirth = myCalendar.getTime();
+                    txtDateOfBirth.setText(new SimpleDateFormat("dd/MM/yyyy").format(myCalendar.getTime()));
+                } else {
+                    dateOfBirth = null;
+                    txtDateOfBirth.setText("Invalid Date.");
+                }
             }
         };
 
@@ -190,7 +197,6 @@ public class EditProfileActivity extends AppCompatActivity {
                     txtName.setError("Name is required!");
                     txtName.requestFocus();
                 }
-                progressBar.setVisibility(View.VISIBLE);
                 saveToFireStore();
 
                 finish();
@@ -249,7 +255,6 @@ public class EditProfileActivity extends AppCompatActivity {
                                 new RoundedCornersTransformation(
                                         EditProfileActivity.this, 5, 2, "#BDBDBD", 10)))
                         .into(imgProfile);
-
                 storeImageToFirebase();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -260,6 +265,7 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void storeImageToFirebase() {
+        progressDialog.show();
         final StorageReference profileImageRef = FirebaseStorage.getInstance()
                 .getReference("user-profile-images/"
                         + mAuth.getCurrentUser().getEmail()
@@ -268,7 +274,7 @@ public class EditProfileActivity extends AppCompatActivity {
         Log.d(TAG, "Path = " + profileImageRef.getDownloadUrl());
 
         if (profileImageBitmap != null) {
-            progressBar.setVisibility(View.VISIBLE);
+            // progressBar.setVisibility(View.VISIBLE);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             profileImageBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
             byte[] data = baos.toByteArray();
@@ -290,7 +296,9 @@ public class EditProfileActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         urlProfileImage = task.getResult().toString();
                         Log.d(TAG, "Image URL = " + urlProfileImage);
-                        progressBar.setVisibility(View.GONE);
+                        if (progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
                     } else {
                         // Handle failures
                         // ...
@@ -308,6 +316,8 @@ public class EditProfileActivity extends AppCompatActivity {
 
 
     private void saveToFireStore() {
+        progressDialog.show();
+
         String name = txtName.getText().toString();
         String gender = radMale.isChecked() ? getString(R.string.str_user_gender_male) : getString(R.string.str_user_gender_female);
         String level = spLevel.getSelectedItem().toString();
@@ -344,7 +354,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d(TAG, "Update Success " + field_name + " = " + date);
-                        progressBar.setVisibility(View.GONE);
+                        // progressBar.setVisibility(View.GONE);
                     }
                 });
     }
@@ -462,6 +472,14 @@ public class EditProfileActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setTitle("Edit");
             actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
         }
     }
 }

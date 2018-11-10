@@ -3,7 +3,12 @@ package com.team29.speakingpartners.activity.voicecall;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BaseTransientBottomBar;
@@ -25,22 +30,23 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.team29.speakingpartners.MainActivity;
 import com.team29.speakingpartners.R;
-import com.team29.speakingpartners.background.CallingStateService;
 import com.team29.speakingpartners.helper.CheckPermissionForApp;
 import com.team29.speakingpartners.model.CallingRequestListModel;
 import com.team29.speakingpartners.model.RecentListModel;
 import com.team29.speakingpartners.utils.GlideApp;
 import com.team29.speakingpartners.utils.GlideOptions;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Locale;
 
@@ -52,6 +58,8 @@ import io.agora.rtc.RtcEngine;
 public class IncomingSplashActivity extends AppCompatActivity {
 
     private static final String TAG = IncomingSplashActivity.class.getSimpleName();
+
+    MediaPlayer mediaPlayer;
 
     /* Agora Engine */
     private static final int PERMISSION_REQ_ID_RECORD_AUDIO = 22;
@@ -88,7 +96,7 @@ public class IncomingSplashActivity extends AppCompatActivity {
 
     AppCompatImageView profileImageView;
     AppCompatImageButton btnAcceptCall, btnRejectCall, btnEndCall, btnSpeaker, btnAudio;
-    AppCompatTextView tvUserName, tvUserLevel, tvUserTopic;
+    AppCompatTextView tvUserName, tvUserLevel, tvUserTopic, tvDuration;
 
     FirebaseAuth mAuth;
     FirebaseFirestore mDB;
@@ -104,6 +112,9 @@ public class IncomingSplashActivity extends AppCompatActivity {
         enableFullScreen();
 
         setContentView(R.layout.activity_incoming_splash);
+
+        // Ringtone
+        setUpRingTone();
 
         // Firebase
         setUpFirebase();
@@ -126,8 +137,19 @@ public class IncomingSplashActivity extends AppCompatActivity {
         // Audio
         actionButtonAudio();
 
-        //listenRejected();
+        listenRejected();
 
+    }
+
+    private void setUpRingTone() {
+        mediaPlayer = MediaPlayer.create(this, Settings.System.DEFAULT_RINGTONE_URI);
+        try {
+            if (!mediaPlayer.isPlaying()) {
+                mediaPlayer.start();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
     }
 
     private void listenRejected() {
@@ -137,11 +159,14 @@ public class IncomingSplashActivity extends AppCompatActivity {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
                         if (e != null) {
-                            return;
+                            Log.e(TAG, "Listen Error");
+//                                return;
                         }
 
-                        for (QueryDocumentSnapshot snapshot : snapshots) {
-                            if (Integer.parseInt(snapshot.get("to_status").toString()) == 2) {
+                        for (DocumentChange change : snapshots.getDocumentChanges()) {
+
+                            if(change.getType().equals(DocumentChange.Type.REMOVED)) {
+                                Log.d(TAG, "REMOVE");
                                 finish();
                             }
                         }
@@ -165,11 +190,14 @@ public class IncomingSplashActivity extends AppCompatActivity {
         btnRejectCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // doReject();
-                Log.d("mydebug125","actionButtonReject()");
-
+                try {
+                    if (mediaPlayer.isPlaying()) {
+                        mediaPlayer.stop();
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage());
+                }
                 doReject();
-                finish();
             }
         });
     }
@@ -177,17 +205,17 @@ public class IncomingSplashActivity extends AppCompatActivity {
     private void doReject() {
         DocumentReference docRef = mDB.collection("calling")
                 .document(docId);
-        docRef.update("to_status", 2)
+        docRef.delete()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-
+                        finish();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-
+                        finish();
                     }
                 });
     }
@@ -196,7 +224,7 @@ public class IncomingSplashActivity extends AppCompatActivity {
         btnEndCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // doReject();
+                doReject();
                 finish();
             }
         });
@@ -207,12 +235,17 @@ public class IncomingSplashActivity extends AppCompatActivity {
         btnAcceptCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                try {
+                    mediaPlayer.stop();
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage());
+                }
                 toggleButtonLayout();
 
+                tvDuration.setVisibility(View.VISIBLE);
+                tvDuration.setText("Join Successful");
                 //stopService(new Intent(IncomingSplashActivity.this, CallingStateService.class));
                 doAccept();
-
-                storeRecentData();
 
                 // Agora Engine Initialization
                 initAgoraEngine();
@@ -223,19 +256,6 @@ public class IncomingSplashActivity extends AppCompatActivity {
     private void doAccept() {
         DocumentReference docRef = mDB.collection("calling")
                 .document(docId);
-        /*docRef.update("to_status", 1)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-
-                    }
-                });*/
         docRef.update("to_status", 1)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -388,6 +408,7 @@ public class IncomingSplashActivity extends AppCompatActivity {
         tvUserName = findViewById(R.id.incoming_splash_name);
         tvUserLevel = findViewById(R.id.incoming_splash_level);
         tvUserTopic = findViewById(R.id.incoming_splash_topic);
+        tvDuration = findViewById(R.id.incoming_splash_duration);
     }
 
     /* Full Screen Mode */
@@ -465,6 +486,8 @@ public class IncomingSplashActivity extends AppCompatActivity {
         leaveChannel();
         RtcEngine.destroy();
         mRtcEngine = null;
+
+        storeRecentData();
     }
 
     @Override

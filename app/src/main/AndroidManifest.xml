@@ -19,6 +19,7 @@
         android:theme="@style/Main.SpeakingPartner.LightBlueTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
+            android:screenOrientation="portrait"
             android:name=".activity.LoginActivity"
             android:theme="@style/AppTheme"
             tools:targetApi="lollipop">
@@ -29,61 +30,63 @@
             </intent-filter>
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".activity.SignUpActivity"
             android:theme="@style/AppTheme"
             tools:targetApi="lollipop" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".activity.ProfileDetailActivity"
             android:parentActivityName=".MainActivity"
             android:theme="@style/Main.SpeakingPartner.BlueTheme.NoActionBar"
             tools:targetApi="jelly_bean" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".activity.SettingsActivity"
             android:theme="@style/Main.SpeakingPartner.BlueTheme" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".MainActivity"
             android:theme="@style/Main.SpeakingPartner.BlueTheme.NoActionBar" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".activity.EditProfileActivity"
             android:parentActivityName=".activity.ProfileDetailActivity"
             android:theme="@style/Main.SpeakingPartner.BlueTheme.NoActionBar"
             tools:targetApi="jelly_bean" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".activity.voicecall.PreCallingDialogActivity"
             android:theme="@style/Main.SpeakingPartner.DialogTheme"
             tools:targetApi="lollipop" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".activity.voicecall.RequestReviewActivity"
             android:theme="@style/Main.SpeakingPartner.DialogTheme"
             tools:targetApi="lollipop" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".activity.TopicGuideDetailActivity"
             android:parentActivityName=".MainActivity"
             android:theme="@style/Main.SpeakingPartner.LightBlueTheme"
             tools:targetApi="jelly_bean" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".activity.AboutActivity"
+            android:label="@string/action_about"
             android:parentActivityName=".activity.ProfileDetailActivity"
-            android:theme="@style/Main.SpeakingPartner.LightBlueTheme"
+            android:theme="@style/Main.SpeakingPartner.BlueTheme.NoActionBar"
             tools:targetApi="jelly_bean" />
 
-        <!-- Service -->
-        <service android:name=".background.CallingStateService" />
-
-        <!-- Receiver -->
-        <receiver android:name=".background.CallingBroadCastReceiver">
-            <intent-filter>
-                <action
-                    android:name="android.net.conn.CONNECTIVITY_CHANGE"
-                    tools:ignore="BatteryLife" />
-            </intent-filter>
-        </receiver>
-
-        <activity android:name=".activity.voicecall.IncomingSplashActivity"
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".activity.voicecall.IncomingSplashActivity"
             android:theme="@style/Main.SpeakingPartner.BlueTheme.NoActionBar"
             tools:targetApi="jelly_bean"/>
 
-        <activity android:name=".activity.voicecall.CallSplashActivity"
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".activity.voicecall.CallSplashActivity"
             android:theme="@style/Main.SpeakingPartner.BlueTheme.NoActionBar"
             tools:targetApi="jelly_bean"/>
     </application>

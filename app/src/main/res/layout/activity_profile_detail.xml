@@ -337,7 +337,8 @@
                     <View
                         android:layout_width="wrap_content"
                         android:layout_height="1dp"
-                        android:background="@color/color_grey"/>
+                        android:background="@color/color_grey"
+                        android:visibility="gone"/>
 
                     <LinearLayout
                         android:id="@+id/btn_change_password_layout"
@@ -347,7 +348,8 @@
                         android:gravity="center"
                         android:clickable="true"
                         android:background="@drawable/click_event"
-                        android:focusable="true">
+                        android:focusable="true"
+                        android:visibility="gone">
 
                         <android.support.v7.widget.AppCompatImageView
                             android:layout_width="35dp"

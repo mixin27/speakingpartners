@@ -35,50 +35,22 @@
 
             </LinearLayout>
 
-            <!--<LinearLayout-->
-            <!--android:orientation="horizontal"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content">-->
-
-            <!--<TextView-->
-            <!--android:id="@+id/header_2"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/str_main_header_2"-->
-            <!--android:textSize="@dimen/general_text_size_20"-->
-            <!--android:textColor="@color/color_black"-->
-            <!--android:textStyle="normal"-->
-            <!--android:gravity="center"/>-->
-
-            <!--</LinearLayout>-->
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:layout_marginTop="@dimen/general_padding_16"
-                android:visibility="gone">
-
-                <ImageView
-                    android:id="@+id/app_logo"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:src="@mipmap/ic_launcher"
-                    android:contentDescription="@string/app_name"/>
-
-            </LinearLayout>
-
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/general_padding_16">
 
+                <android.support.v7.widget.AppCompatImageView
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:src="@drawable/sample"/>
+
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/subtitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:text="@string/str_main_subtitle"
                     android:textSize="@dimen/general_text_size_16"
                     android:textStyle="normal"
@@ -90,18 +62,19 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/general_padding_16"
-                android:padding="5dp">
+                android:layout_marginTop="@dimen/general_padding_16">
 
                 <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/txt_login_email"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/general_padding_64"
+                    android:padding="@dimen/general_padding_16"
                     android:inputType="textEmailAddress"
                     android:drawableRight="@drawable/ic_person_white_24dp"
-                    android:drawableTint="@color/color_blue_500"
+                    android:drawableTint="@color/color_black"
                     android:hint="@string/str_user_email"
                     android:drawableEnd="@drawable/ic_person_white_24dp"
+                    android:background="@drawable/edit_text_design"
                     tools:targetApi="m" />
 
             </LinearLayout>
@@ -121,16 +94,17 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:padding="5dp">
+                android:layout_marginTop="5dp">
 
                 <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/txt_login_password"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/general_padding_64"
+                    android:padding="@dimen/general_padding_16"
+                    android:background="@drawable/edit_text_design"
                     android:inputType="textPassword"
                     android:drawableRight="@drawable/ic_lock_black_24dp"
-                    android:drawableTint="@color/color_blue_500"
+                    android:drawableTint="@color/color_black"
                     android:hint="@string/str_user_password"
                     android:drawableEnd="@drawable/ic_lock_black_24dp"
                     tools:targetApi="m" />
@@ -141,7 +115,7 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="@dimen/general_padding_16">
 
                 <android.support.v7.widget.AppCompatButton
                     android:id="@+id/btn_login"
@@ -149,7 +123,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/log_in_button_design"
                     android:text="@string/str_log_in"
-                    android:textColor="@color/color_white"/>
+                    android:textColor="@color/color_white" />
 
                 <ProgressBar
                     android:id="@+id/progress_login"

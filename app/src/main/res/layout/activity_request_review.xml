@@ -61,7 +61,7 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/general_padding_16">
+                android:layout_marginTop="@dimen/general_padding_32">
 
                 <android.support.v7.widget.AppCompatTextView
                     android:layout_width="0dp"
@@ -83,10 +83,12 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/pre_country_view"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/general_padding_16">
+                android:layout_marginTop="@dimen/general_padding_16"
+                android:visibility="gone">
 
                 <android.support.v7.widget.AppCompatTextView
                     android:layout_width="0dp"

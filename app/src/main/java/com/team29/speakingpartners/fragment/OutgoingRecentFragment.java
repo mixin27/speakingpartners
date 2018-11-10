@@ -1,7 +1,11 @@
 package com.team29.speakingpartners.fragment;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,7 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -40,6 +48,8 @@ public class OutgoingRecentFragment extends Fragment implements OutgoingRecentLi
     // Firebase
     FirebaseFirestore mFirestore;
 
+    ProgressDialog progressDialog;
+
     private List<RecentListModel> mLists = new ArrayList<>();
     private OutgoingRecentListAdapter mAdapter;
     RecyclerView mRecentListView;
@@ -59,6 +69,8 @@ public class OutgoingRecentFragment extends Fragment implements OutgoingRecentLi
 
         // FirebaseFirestore
         mFirestore = FirebaseFirestore.getInstance();
+
+        progressDialog = new ProgressDialog(getContext());
 
         emptyRecentView = root.findViewById(R.id.empty_out_going_recent_view);
 
@@ -127,6 +139,44 @@ public class OutgoingRecentFragment extends Fragment implements OutgoingRecentLi
     @Override
     public void setOnItemClick(RecentListModel model) {
         Toast.makeText(getContext(), model.getChannel_id(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void setOnItemLongClick(final RecentListModel model) {
+        new AlertDialog.Builder(getContext())
+                .setMessage("Are you sure want to delete?")
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        progressDialog.show();
+                        DocumentReference docRef = mFirestore.collection("recent")
+                                .document(model.id);
+                        docRef.delete()
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (progressDialog.isShowing()) {
+                                            progressDialog.dismiss();
+                                        }
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        if (progressDialog.isShowing()) {
+                                            progressDialog.dismiss();
+                                        }
+                                    }
+                                });
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 
 }

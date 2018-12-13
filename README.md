@@ -1,4 +1,7 @@
-# SAMSUNG TECH INSTITUTE Myanmar
+# SAMSUNG TECH INSTITUTE
+<div>
+  at UCSY (Shwe Pyi Thar)
+</div>
 
 Final Project
 

@@ -1,7 +1,4 @@
 # SpeakingPartners
----
-
-### Project Description
 `SpeakingPartners` is an android application for people who want to speak foreign language, especially `English`, with his/her `partner`.
 
 ### Purpose

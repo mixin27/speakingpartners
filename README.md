@@ -1,4 +1,6 @@
-# SpeakingPartners
+## Samsung Mobile Application Training 2018 - Final Project
+
+## SpeakingPartners
 `SpeakingPartners` is an android application for people who want to speak foreign language, especially `English`, with his/her `partner`.
 
 ### Purpose
